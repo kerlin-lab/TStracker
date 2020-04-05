@@ -8,6 +8,8 @@
  *	Terminating the program by click on the image window and press any keys.\
  * 	Spinnaker example folder /usr/src/spinnaker
  *	Read file ./ActionCommand/ActionCommand.cpp to see example for getting timestamp
+ *	Remember to increase USB commandline limit before running acquisition 
+ *	https://www.flir.com/support-center/iis/machine-vision/application-note/understanding-usbfs-on-linux/
  */
 
 #include <opencv2/core.hpp>
