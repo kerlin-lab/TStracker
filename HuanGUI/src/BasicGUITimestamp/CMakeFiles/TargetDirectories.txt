@@ -1,0 +1,7 @@
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/install/strip.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/edit_cache.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/BasicGUITimeStamp.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/rebuild_cache.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/list_install_components.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/install/local.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/BasicGUITimestamp/CMakeFiles/install.dir
