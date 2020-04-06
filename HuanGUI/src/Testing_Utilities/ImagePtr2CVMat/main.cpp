@@ -21,16 +21,21 @@ using namespace Spinnaker::GenICam;
 
 using namespace cv;
 
+bool DEBUG=true;
+
+
+void dbhere(int a=0)
+{
+	cout<<"Here "<<a<<endl;
+}
 /*
  *	Return a CONTINUOUS mono 8 Mat
  *	with each pixel of type uchar and 
  *	each size width*height
  */
-Mat createMono8Mat(int width,int height)
+void createMono8Mat(Mat& frame,int width,int height)
 {
-	Mat frame;
 	frame.create(height,width,CV_8UC1);
-	return frame;
 }
 
 /*
@@ -61,7 +66,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 {
     int result = 0;
     int imgWidth,imgHeight,imgSize;
-    Mat* frame;
+    Mat frame;
 
     cout << endl << endl << "*** IMAGE ACQUISITION ***" << endl << endl;
 
@@ -109,7 +114,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
         cout<<"Image height value from Camera Setting: "<<imgHeight<<endl;
 
         // Reserve memmory that OpenCv will use to hold the image
-        *frame=createMono8Mat(imgWidth,imgHeight);
+        createMono8Mat(frame,imgWidth,imgHeight);
 
 
         //
@@ -150,7 +155,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
         cout << endl;
 
 
-        while(waitKey(5)>=0)
+        while(true)
         {
             try
             {
@@ -186,37 +191,16 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
                 }
                 else
                 {
-                    //
-                    // Print image information; height and width recorded in pixels
-                    //
-                    // *** NOTES ***
-                    // Images have quite a bit of available metadata including
-                    // things such as CRC, image status, and offset values, to
-                    // name a few.
-                    //
-                    const size_t width = pResultImage->GetWidth();
 
-                    const size_t height = pResultImage->GetHeight();
-
-                    cout << "Grabbed image width = " << width << ", height = " << height << endl;
-
-                    //
-                    // Convert image to mono 8
-                    //
-                    // *** NOTES ***
-                    // Images can be converted between pixel formats by using
-                    // the appropriate enumeration value. Unlike the original
-                    // image, the converted one does not need to be released as
-                    // it does not affect the camera buffer.
-                    //
-                    // When converting images, color processing algorithm is an
-                    // optional parameter.
-                    //
                     ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
 
                     // Converting to OpenCV Mat
-                    ImagePtr2CVMat_CV_8UC1(convertedImage,*frame,imgSize);
-					imshow("Picture", *frame);
+                    ImagePtr2CVMat_CV_8UC1(convertedImage,frame,imgSize);
+					imshow("Picture", frame);
+					if(waitKey(1)>=0)
+					{
+						break;
+					}
                 }
 
                 //
@@ -239,7 +223,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
         }
 
 		// Release matrix to save memmory
-		frame->release();
+		frame.release();
         //
         // End acquisition
         //

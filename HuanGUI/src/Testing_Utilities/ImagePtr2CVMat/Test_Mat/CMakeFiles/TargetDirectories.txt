@@ -1,3 +1,0 @@
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/Testing_Utilities/Test_Mat/CMakeFiles/rebuild_cache.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/Testing_Utilities/Test_Mat/CMakeFiles/TestMat.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/Testing_Utilities/Test_Mat/CMakeFiles/edit_cache.dir
