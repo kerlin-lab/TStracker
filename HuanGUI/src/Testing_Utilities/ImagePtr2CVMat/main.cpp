@@ -212,8 +212,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
                 // buffer.
                 //
                 pResultImage->Release();
-
-                cout << endl;
             }
             catch (Spinnaker::Exception& e)
             {
