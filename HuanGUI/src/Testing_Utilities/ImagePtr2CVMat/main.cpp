@@ -1,3 +1,8 @@
+/*
+ *  This is an example how to open Flir camera, acquire image
+ *  convert ImagePtr to Mat structure of OpenCV with function 
+ *  ImagePtr2CVMat_CV_8UC1() and display the acquired image with OpenCV
+ */
 // Standard Lib
 #include <string>
 #include <iostream>

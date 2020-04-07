@@ -1,8 +1,10 @@
 /*
  *  Program when run will acquire image from FLIR cam
  *  extract timestamp of each image
- *  and show the acquire image continuously with
+ *  show the acquire image continuously with
  *  the timestamp displayed in the bottom left corner
+ *  and when terminating 
+ *  make video from all the acquired image then save it to disk
  */
 // Standard Lib
 #include <string>
@@ -24,10 +26,20 @@ using namespace Spinnaker::GenICam;
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/videoio/videoio_c.h>
+
 
 using namespace cv;
 
 #define TEXT_OFFSET 10
+#define DEFAULT_CODEC CV_FOURCC('M','J','P','G')
+
+// Setting up VideoWriter
+bool setupVideoWriter(VideoWriter& vOut, string filename, int frameWidth, int frameHeight, int FPS, int CODEC, bool isColor=false)
+{
+    vOut.open(filename,CODEC,FPS,Size(frameWidth,frameHeight),isColor);
+    return vOut.isOpened();
+}
 
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp)
@@ -97,6 +109,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
     VideoWriter vOut;
     string vOutFileName;
 
+    // Asking for video file name to safe
+    cout<<"Input the file name for the output video: ";
+    cin>>vOutFileName;
+
     cout << endl << endl << "*** IMAGE ACQUISITION ***" << endl << endl;
 
     try
@@ -126,6 +142,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
         cout << "Acquisition mode set to continuous..." << endl;
 
+        /*
+         *      My Custom setting for the camera
+         */
+
         // Turn off trigger, otherwise ,
         // "Failed waiting for EventData on NEW_BUFFER_DATA event" error will happen
         cout<<"Turn off trigger mode"<<endl;
@@ -142,8 +162,27 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
         cout<<"Image width value from Camera Setting: "<<imgWidth<<endl;
         cout<<"Image height value from Camera Setting: "<<imgHeight<<endl;
 
+        // Get the current frame rate; acquisition frame rate recorded in hertz
+        CFloatPtr ptrAcquisitionFrameRate = nodeMap.GetNode("AcquisitionFrameRate");
+
+        if (!IsAvailable(ptrAcquisitionFrameRate) || !IsReadable(ptrAcquisitionFrameRate))
+        {
+            cout << "Unable to retrieve frame rate. Aborting..." << endl << endl;
+            return -1;
+        }
+
+        int frameRate= (int) ptrAcquisitionFrameRate->GetValue();
+
+
+        /*
+         *      Configuring pripheral
+         */
         // Reserve memmory that OpenCv will use to hold the image
         createMono8Mat(frame,imgWidth,imgHeight);
+
+        // Set up video writer
+
+        setupVideoWriter(vOut,vOutFileName,imgWidth,imgHeight,frameRate,DEFAULT_CODEC);
 
 
         //
@@ -229,7 +268,11 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
                     timestamp=convertedImage->GetTimeStamp();
                     // Draw timestamp
                     drawTime(frame,getReadableTimestamp(timestamp)/1000000.0);
+                    // Show the frame
                     imshow("Picture", frame);
+                    // Add the frame to the video
+                    vOut.write(frame);
+                    // Check for signal to stop recording from user
                     if(waitKey(1)>=0)
                     {
                         break;
@@ -253,8 +296,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
             }
         }
 
-        // Release matrix to save memmory
-        frame.release();
         //
         // End acquisition
         //
@@ -264,6 +305,12 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
         //
 
         pCam->EndAcquisition();
+
+        // Release OpenCV Mat to save memmory
+        frame.release();
+        // Release VideoWriter to save the video to disk
+        vOut.release();
+
     }
     catch (Spinnaker::Exception& e)
     {
