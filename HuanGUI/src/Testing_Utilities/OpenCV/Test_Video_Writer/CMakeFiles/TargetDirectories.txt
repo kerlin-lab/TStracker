@@ -1,0 +1,3 @@
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/OpenCV/Test_Video_Writer/CMakeFiles/rebuild_cache.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/OpenCV/Test_Video_Writer/CMakeFiles/VideoWriter.dir
+/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/OpenCV/Test_Video_Writer/CMakeFiles/edit_cache.dir

@@ -1,3 +1,6 @@
+/*
+ *  Basic example of how to display an image in OpenCV
+ */
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 using namespace cv;
