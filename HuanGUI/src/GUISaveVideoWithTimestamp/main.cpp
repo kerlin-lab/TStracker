@@ -2,9 +2,18 @@
  *  Program when run will acquire image from FLIR cam
  *  extract timestamp of each image
  *  show the acquire image continuously with
- *  the timestamp displayed in the bottom left corner
+ *  the timestamp and fps displayed in the bottom left corner
  *  and when terminating 
  *  make video from all the acquired image then save it to disk
+ *  
+ *  TODO - This program save video under *.avi type which impose
+ *  upper limit for file size at 2GB
+ *  HOWEVER, openCV3.0 has already addressed this issue by allowing
+ *  saving data file under *.mkv or *.mp4 or *.wav or uncompressed
+ *  Job is to implement *.mkv or *.wav or *.mp4 ,... rather tan *.avi
+ *  
+ *  Help resource: 
+ *  https://stackoverflow.com/questions/35567585/does-opencv-3-0-still-has-limits-on-videowriter-size
  */
 // Standard Lib
 #include <string>
@@ -57,9 +66,9 @@ uint64_t getReadableTimestamp(uint64_t timestamp)
 }
 
 
-void drawTime(Mat& frame,double time)
+void drawTimeAndFPS(Mat& frame,double time, int fps)
 {
-    putText(frame,to_string(time)+"s",Point(TEXT_OFFSET,frame.rows - TEXT_OFFSET),FONT_HERSHEY_SIMPLEX,0.5,Scalar(255,255,255));
+    putText(frame,to_string(time)+"s at"+to_string(fps)+" fps",Point(TEXT_OFFSET,frame.rows - TEXT_OFFSET),FONT_HERSHEY_SIMPLEX,0.5,Scalar(255,255,255));
 }
 
 void dbhere(int a=0)
@@ -267,7 +276,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
                     // Get timestamp
                     timestamp=convertedImage->GetTimeStamp();
                     // Draw timestamp
-                    drawTime(frame,getReadableTimestamp(timestamp)/1000000.0);
+                    drawTimeAndFPS(frame,getReadableTimestamp(timestamp)/1000000.0,frameRate);
                     // Show the frame
                     imshow("Picture", frame);
                     // Add the frame to the video
