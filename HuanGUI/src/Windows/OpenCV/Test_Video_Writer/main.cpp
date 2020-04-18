@@ -104,7 +104,7 @@ void drawTime(Mat& frame)
 Mat getMatFromCam()
 {
 	// Open default camera
-	static VideoCapture cap(0);
+	static VideoCapture cap(0,CAP_DSHOW);
 	Mat frame;
 	// Generating a Mat from the webcam
 	cap.read(frame);
