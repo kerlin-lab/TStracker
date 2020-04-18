@@ -1,0 +1,5 @@
+Pick you choice of input ( 0 for webcame, other for auto-generated Mat ): Press any key to start capturing
+[ INFO:0] global D:\Software\Programming_software\External_Library\opencv\sources\modules\videoio\src\videoio_registry.cpp (187) cv::`anonymous-namespace'::VideoBackendRegistry::VideoBackendRegistry VIDEOIO: Enabled backends(7, sorted by priority): FFMPEG(1000); GSTREAMER(990); INTEL_MFX(980); MSMF(970); DSHOW(960); CV_IMAGES(950); CV_MJPEG(940)
+[ INFO:0] global D:\Software\Programming_software\External_Library\opencv\sources\modules\videoio\src\backend_plugin.cpp (353) cv::impl::getPluginCandidates Found 2 plugin(s) for GSTREAMER
+[ INFO:0] global D:\Software\Programming_software\External_Library\opencv\sources\modules\videoio\src\backend_plugin.cpp (172) cv::impl::DynamicLib::libraryLoad load C:\Windows\system32\opencv_videoio_gstreamer430_64.dll => FAILED
+[ INFO:0] global D:\Software\Programming_software\External_Library\opencv\sources\modules\videoio\src\backend_plugin.cpp (172) cv::impl::DynamicLib::libraryLoad load opencv_videoio_gstreamer430_64.dll => FAILED

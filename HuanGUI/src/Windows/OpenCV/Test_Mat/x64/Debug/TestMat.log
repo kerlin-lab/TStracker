@@ -1,22 +1,5 @@
-﻿  Building Custom Rule C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeLists.txt
-  CMake is re-running because C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeFiles/generate.stamp dependency file is missing.
-  CMake Error at CMakeLists.txt:3 (find_package):
-    By not providing "FindOpenCV.cmake" in CMAKE_MODULE_PATH this project has
-    asked CMake to find a package configuration file provided by "OpenCV", but
-    CMake did not find one.
-  
-    Could not find a package configuration file provided by "OpenCV" with any
-    of the following names:
-  
-      OpenCVConfig.cmake
-      opencv-config.cmake
-  
-    Add the installation prefix of "OpenCV" to CMAKE_PREFIX_PATH or set
-    "OpenCV_DIR" to a directory containing one of the above files.  If "OpenCV"
-    provides a separate development package or SDK, be sure it has been
-    installed.
-  
-  
-  -- Configuring incomplete, errors occurred!
-  See also "C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeFiles/CMakeOutput.log".
-C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppCommon.targets(171,5): error MSB6006: "cmd.exe" exited with code 1.
+﻿  TestMat.cpp
+C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\OpenCV\Test_Mat\TestMat.cpp(88): warning C4996: 'asctime': This function or variable may be unsafe. Consider using asctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\time.h(116): note: see declaration of 'asctime'
+  TestMat.vcxproj -> C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\OpenCV\Test_Mat\x64\Debug\TestMat.exe
+  TestMat.vcxproj -> C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/Debug/TestMat.pdb (Full PDB)
