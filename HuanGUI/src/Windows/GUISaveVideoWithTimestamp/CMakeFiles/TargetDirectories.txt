@@ -1,0 +1,4 @@
+C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/GUISaveVideoWithTimestamp/CMakeFiles/GUISaveVideoWithTimestamp.dir
+C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/GUISaveVideoWithTimestamp/CMakeFiles/INSTALL.dir
+C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/GUISaveVideoWithTimestamp/CMakeFiles/ALL_BUILD.dir
+C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/GUISaveVideoWithTimestamp/CMakeFiles/ZERO_CHECK.dir
