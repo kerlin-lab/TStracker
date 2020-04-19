@@ -1,6 +1,0 @@
-﻿  Building Custom Rule C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/BasicGUITimestamp/CMakeLists.txt
-  main.cpp
-C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\BasicGUITimestamp\main.cpp(138): warning C4244: '=': conversion from 'int64_t' to 'int', possible loss of data
-C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\BasicGUITimestamp\main.cpp(139): warning C4244: '=': conversion from 'int64_t' to 'int', possible loss of data
-c:\users\trankim\desktop\working\flir_blackfly_s_usb3_guitimestamp\huangui\src\windows\basicguitimestamp\main.cpp(367): warning C4700: uninitialized local variable 'result' used
-LINK : fatal error LNK1104: cannot open file 'Spinnaker_C.lib'
