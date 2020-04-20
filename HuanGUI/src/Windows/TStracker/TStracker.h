@@ -38,6 +38,8 @@ using namespace Spinnaker::GUI_WPF;
 
 using namespace cv;
 
+#define APP_NAME "TStracker"
+
 #define TEXT_OFFSET 10
 
 // Return time from running acquisition in sub milisecond

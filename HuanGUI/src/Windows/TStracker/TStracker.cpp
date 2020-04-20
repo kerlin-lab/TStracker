@@ -106,8 +106,8 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		CIntegerPtr width = nodeMap.GetNode("Width");
 		CIntegerPtr height = nodeMap.GetNode("Height");
 
-		imgWidth = width->GetValue();
-		imgHeight = height->GetValue();
+		imgWidth = (int)width->GetValue();
+		imgHeight = (int)height->GetValue();
 		imgSize = imgWidth*imgHeight;
 
 		cout << "Image width value from Camera Setting: " << imgWidth << endl;
