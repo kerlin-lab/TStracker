@@ -67,8 +67,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	uint64_t timestamp;
 	VideoWriter vOut;
 	string vOutFileName;
-
-
+	string camSerial;
+	
+	// Getting camera serial
+	camSerial = pCam->DeviceSerialNumber();
 	try
 	{
 
@@ -129,25 +131,9 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 		pCam->BeginAcquisition();
 
-
-		//
-		// Retrieve device serial number for filename
-		//
-		// *** NOTES ***
-		// The device serial number is retrieved in order to keep cameras from
-		// overwriting one another. Grabbing image IDs could also accomplish
-		// this.
-		//
-		//gcstring deviceSerialNumber("");
-		//CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-		//if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
-		//{
-		//	deviceSerialNumber = ptrStringSerial->GetValue();
-
-		//	cout << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
-		//}
-		//cout << endl;
-
+		
+		// Create a OpenCV window for displaying
+		namedWindow(camSerial);
 
 		while (true)
 		{
@@ -165,7 +151,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 				// needed, the image must be released in order to keep the
 				// buffer from filling up.
 				//
-				ImagePtr pResultImage = pCam->GetNextImage(1000);
+				ImagePtr pResultImage = pCam->GetNextImage(3000);
 
 				//
 				// Ensure image completion
@@ -182,6 +168,8 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 					//cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
 					//	<< "..." << endl
 					//	<< endl;
+					MessageBox(NULL, "Image incomplete", "Error", MB_OK);
+					waitKey(500);
 				}
 				else
 				{
@@ -193,7 +181,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 					timestamp = convertedImage->GetTimeStamp();
 					// Draw timestamp
 					drawTime(frame, getReadableTimestamp(timestamp) / 1000000.0);
-					imshow("Picture", frame);
+					imshow(camSerial, frame);
 					if (waitKey(1) >= 0)
 					{
 						break;
@@ -220,6 +208,8 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 		}
 
+		// Destroy OpenCV window
+		destroyWindow(camSerial);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
 		// Release matrix to save memmory
 		frame.release();
 		//
@@ -396,12 +386,7 @@ UINT __cdecl openCVCamCapture(LPVOID camPtr)
 	// parameter is a CamPtr
 
 	CameraPtr pCam = *((CameraPtr*)camPtr);
-	MessageBox(NULL, "RUN", "TEST", MB_OK);
-
 	// Run acquisition
 	RunAcquisition(pCam);
-
-	MessageBox(NULL, "OUt_RUN", "TEST", MB_OK);
-
 	return 0;
 }
