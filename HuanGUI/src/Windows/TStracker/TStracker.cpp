@@ -187,7 +187,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 				{
 
 					ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
-
 					// Converting to OpenCV Mat
 					ImagePtr2CVMat_CV_8UC1(convertedImage, frame, imgSize);
 					// Get timestamp
@@ -213,7 +212,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 			catch (Spinnaker::Exception& e)
 			{
-				MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+				if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+				{
+					MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+				}
 				result = -1;
 			}
 		}
@@ -232,7 +234,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+		{
+			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+		}
 		return -1;
 	}
 
@@ -265,7 +270,10 @@ int RunAcquisition(CameraPtr pCam)
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+		{
+			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+		}
 		result = -1;
 	}
 
@@ -388,9 +396,12 @@ UINT __cdecl openCVCamCapture(LPVOID camPtr)
 	// parameter is a CamPtr
 
 	CameraPtr pCam = *((CameraPtr*)camPtr);
+	MessageBox(NULL, "RUN", "TEST", MB_OK);
 
 	// Run acquisition
 	RunAcquisition(pCam);
+
+	MessageBox(NULL, "OUt_RUN", "TEST", MB_OK);
 
 	return 0;
 }

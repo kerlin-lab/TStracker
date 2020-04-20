@@ -2,7 +2,8 @@
 
 // Static member initialization
 CameraSelectionDlg * TStrackerMain::camSelectDlg= nullptr;		// Pointer to the camera selector dialog
-SystemPtr TStrackerMain::spinSys;						// Pointer to the kernel of Spinnaker SDK
+SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker SDK
+map<string, CameraPtr*> TStrackerMain::CamList;				
 GUI::GUIFactory TStrackerMain::gui;
 
 TStrackerMain::TStrackerMain()
@@ -62,6 +63,26 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 	// for now, only process if a camera is clicked
 	if (isCamera)
 	{
+		// Check if there is already a connection to this camera in CamList
+		//string camSerial = (*pCamera)->DeviceSerialNumber();
+		//if (TStrackerMain::CamList.count(camSerial))
+		//{
+		//	// There is one CameraPtr in the list to this camera
+		//	try
+		//	{
+		//		// De-Init the old pointer
+		//		(*CamList[camSerial])->DeInit();
+		//	}
+		//	catch (Spinnaker::Exception& e)
+		//	{
+		//		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+		//		{
+		//			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+		//		}
+		//	}
+		//	// Save the new pointer to camera
+		//	CamList[camSerial] = pCamera;
+		//}
 		// Open Acquisition and the property dialog box for the clicked 
 		(*pCamera)->Init();										//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
 		// Set up property dialog for this camera
@@ -70,9 +91,8 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 		//PropertyGridDlg* dlg = new GUI::PropertyGridDlg();
 		dlg->Connect(*pCamera);									// Connect the dialog to the camera
 		dlg->Open();											// show the dialog
-
 		// Set up a thread uses OpenCV to acquire and save image
-		//AfxBeginThread(openCVCamCapture, pCamera);
+		AfxBeginThread(openCVCamCapture, pCamera);
 	}
 }
 
@@ -80,24 +100,58 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 // TStrackerMainWnd messages handler
 BEGIN_MESSAGE_MAP(TStrackerMainWnd,CFrameWnd)
 		ON_WM_CREATE()
-		ON_BN_CLICKED(CAM_SELECT_DIALOG_BUTTON_ID, OpenCamSelectDialogButtonClick)
+		ON_BN_CLICKED(CAM_SELECT_DIALOG_BUTTON_ID, OpenCamSelectDialogButtonClickHandler)
+		ON_BN_CLICKED(RECORD_ALL_CAMS_BUTTON_ID, RecordAllCamButtonClickHandler)
 END_MESSAGE_MAP()
 
 int TStrackerMainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	// Camera select dialog button
 	CFrameWnd::OnCreate(lpCreateStruct);
+
+
+	// Camera select dialog button
 	ShowCamSelectDialog.Create(_T("Select Camera"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		CRect(20, 20, 150, 40),
+		CRect(20, 20, 160, 40),
 		this, CAM_SELECT_DIALOG_BUTTON_ID);
+
+	// Start record all cams button
+	RecordAllCam.Create(_T("Record all Cameras"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		CRect(20, 50, 160, 70),
+		this, RECORD_ALL_CAMS_BUTTON_ID);
 
 	return 0;
 }
 
 
 // Camera select dialog button handler
-void TStrackerMainWnd::OpenCamSelectDialogButtonClick()
+void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
+{
+	try
+	{
+		// Close the current cam select dialog, this might potential cause problem in the future?
+		TStrackerMain::camSelectDlg->Close();
+		free(TStrackerMain::camSelectDlg);
+	}
+	catch (Spinnaker::Exception e)
+	{
+		MessageBox(e.GetFullErrorMessage(), "Error", MB_OK);
+	}
+	// Create a new cam select dialog
+	TStrackerMain::camSelectDlg = camSelectInitializer();
+	// Show it
+	TStrackerMain::camSelectDlg->Open();
+	/*
+	Why not just call camSelectDlg->Open() ?
+	Because if the user previously close the Cam select dialog, the
+	pointer camSelectDlg would point to an invalid memory thus calling camSelectDlg->Open() would cause error
+	So call Close on the current one (Don't know why this does not cause error) then create a new one
+	*/
+}
+
+// Record all cameras button handler
+void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 {
 	try
 	{
