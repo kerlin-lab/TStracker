@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\OpenCV\Test_OpenCV_QtGUI\CMakeFiles\8b3ea9c3cdb841d9968de23a93f98e94\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{270A1A4B-191B-39E6-80A7-3FC1D37973CD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

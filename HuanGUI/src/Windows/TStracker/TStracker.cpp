@@ -68,39 +68,38 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	VideoWriter vOut;
 	string vOutFileName;
 
-	cout << endl << endl << "*** IMAGE ACQUISITION ***" << endl << endl;
 
 	try
 	{
 
-		// Retrieve enumeration node from nodemap
-		CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-		if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
-		{
-			cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
-			return -1;
-		}
+		//// Retrieve enumeration node from nodemap
+		//CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
+		//if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+		//{
+		//	cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
+		//	return -1;
+		//}
 
-		// Retrieve entry node from enumeration node
-		CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-		if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
-		{
-			cout << "Unable to set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
-			return -1;
-		}
+		//// Retrieve entry node from enumeration node
+		//CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
+		//if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+		//{
+		//	cout << "Unable to set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
+		//	return -1;
+		//}
 
-		// Retrieve integer value from entry node
-		const int64_t acquisitionModeContinuous = ptrAcquisitionModeContinuous->GetValue();
+		//// Retrieve integer value from entry node
+		//const int64_t acquisitionModeContinuous = ptrAcquisitionModeContinuous->GetValue();
 
-		// Set integer value from entry node as new value of enumeration node
-		ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
+		//// Set integer value from entry node as new value of enumeration node
+		//ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
 
-		cout << "Acquisition mode set to continuous..." << endl;
+		//cout << "Acquisition mode set to continuous..." << endl;
 
-		// Turn off trigger, otherwise ,
-		// "Failed waiting for EventData on NEW_BUFFER_DATA event" error will happen
-		cout << "Turn off trigger mode" << endl;
-		pCam->TriggerMode.SetValue(Spinnaker::TriggerModeEnums::TriggerMode_Off);
+		//// Turn off trigger, otherwise ,
+		//// "Failed waiting for EventData on NEW_BUFFER_DATA event" error will happen
+		////cout << "Turn off trigger mode" << endl;
+		////pCam->TriggerMode.SetValue(Spinnaker::TriggerModeEnums::TriggerMode_Off);
 
 		// Get image width and height in the setting
 		CIntegerPtr width = nodeMap.GetNode("Width");
@@ -109,9 +108,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		imgWidth = (int)width->GetValue();
 		imgHeight = (int)height->GetValue();
 		imgSize = imgWidth*imgHeight;
-
-		cout << "Image width value from Camera Setting: " << imgWidth << endl;
-		cout << "Image height value from Camera Setting: " << imgHeight << endl;
 
 		// Reserve memmory that OpenCv will use to hold the image
 		createMono8Mat(frame, imgWidth, imgHeight);
@@ -133,8 +129,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 		pCam->BeginAcquisition();
 
-		cout << "Acquiring images..." << endl;
-
 
 		//
 		// Retrieve device serial number for filename
@@ -144,15 +138,15 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		// overwriting one another. Grabbing image IDs could also accomplish
 		// this.
 		//
-		gcstring deviceSerialNumber("");
-		CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-		if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
-		{
-			deviceSerialNumber = ptrStringSerial->GetValue();
+		//gcstring deviceSerialNumber("");
+		//CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
+		//if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+		//{
+		//	deviceSerialNumber = ptrStringSerial->GetValue();
 
-			cout << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
-		}
-		cout << endl;
+		//	cout << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
+		//}
+		//cout << endl;
 
 
 		while (true)
@@ -185,9 +179,9 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 				if (pResultImage->IsIncomplete())
 				{
 					// Retrieve and print the image status description
-					cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
-						<< "..." << endl
-						<< endl;
+					//cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
+					//	<< "..." << endl
+					//	<< endl;
 				}
 				else
 				{
@@ -219,7 +213,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 			catch (Spinnaker::Exception& e)
 			{
-				cout << "Error: " << e.what() << endl;
+				MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 				result = -1;
 			}
 		}
@@ -238,7 +232,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		cout << "Error: " << e.what() << endl;
+		MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 		return -1;
 	}
 
@@ -271,7 +265,7 @@ int RunAcquisition(CameraPtr pCam)
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		cout << "Error: " << e.what() << endl;
+		MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 		result = -1;
 	}
 
@@ -387,4 +381,16 @@ int oldmain(int /*argc*/, char** /*argv*/)
 	}
 
 	return result;
+}
+
+UINT __cdecl openCVCamCapture(LPVOID camPtr)
+{
+	// parameter is a CamPtr
+
+	CameraPtr pCam = *((CameraPtr*)camPtr);
+
+	// Run acquisition
+	RunAcquisition(pCam);
+
+	return 0;
 }

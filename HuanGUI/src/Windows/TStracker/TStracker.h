@@ -95,3 +95,7 @@ int mainTest(int /*argc*/, char** /*argv*/);
 
 
 int oldmain(int /*argc*/, char** /*argv*/);
+
+
+// Using openCV to show image in a different thread
+UINT __cdecl openCVCamCapture(LPVOID camPtr);

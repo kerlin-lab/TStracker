@@ -34,7 +34,7 @@ BOOL TStrackerMain::InitInstance()
 	
 	// Initialize the camera selector dialog
 	camSelectDlg=camSelectInitializer();
-	camSelectDlg->Open();
+	//camSelectDlg->Open();				// Show camera selector
 
 
 	// Initialize the pointer to communicate with Spinnaker kernel
@@ -45,6 +45,7 @@ BOOL TStrackerMain::InitInstance()
 	TStrackerMainWnd *pnframe = new TStrackerMainWnd;
 	m_pMainWnd = pnframe;
 	pnframe->Create(0, APP_NAME);
+	pnframe->SetWindowPos(m_pMainWnd, 100, 100, 200, 150, SWP_NOZORDER);
 	pnframe->ShowWindow(SW_SHOW);
 	return TRUE;
 }
@@ -64,13 +65,14 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 		// Open Acquisition and the property dialog box for the clicked 
 		(*pCamera)->Init();										//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
 		// Set up property dialog for this camera
-		TStrackerMain::gui.ConnectGUILib(*pCamera);				// This some how prevents CameraPropertyDialog from being duplicated
+		TStrackerMain::gui.ConnectGUILib(*pCamera);				// This some how prevent the camera selection box from disapearing after choosing a camera
 		PropertyGridDlg* dlg = TStrackerMain::gui.GetPropertyGridDlg();
 		//PropertyGridDlg* dlg = new GUI::PropertyGridDlg();
 		dlg->Connect(*pCamera);									// Connect the dialog to the camera
 		dlg->Open();											// show the dialog
 
 		// Set up a thread uses OpenCV to acquire and save image
+		//AfxBeginThread(openCVCamCapture, pCamera);
 	}
 }
 

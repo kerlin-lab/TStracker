@@ -1,26 +1,27 @@
 /*
- *	@Author: Huan Tran
- *	@Date: 04/05/2020
- *	@Note: The program is to demonstrate how to save a set of Mat object to make a video 
- *	
- *	User can pick the frame to be showed to be from the webcam or a generated blue background
- *	The program will try to draw a moving white box onto the background
- *	The current time will also be written on to the bottom right corner of the frame
- *	Terminating the program by click on the image window and press any keys.\
- *	After receiving terminating signal from the user, the program will save all the 
- *	frames showed in the window to a video file using class VideoWriter
- *
- * 	Spinnaker example folder /usr/src/spinnaker
- *	Read file ./ActionCommand/ActionCommand.cpp to see example for getting timestamp
- *	Remember to increase USB commandline limit before running acquisition 
- *	https://www.flir.com/support-center/iis/machine-vision/application-note/understanding-usbfs-on-linux/
- */
+*	@Author: Huan Tran
+*	@Date: 04/05/2020
+*	@Note: The program is to demonstrate how to save a set of Mat object to make a video
+*
+*	User can pick the frame to be showed to be from the webcam or a generated blue background
+*	The program will try to draw a moving white box onto the background
+*	The current time will also be written on to the bottom right corner of the frame
+*	Terminating the program by click on the image window and press any keys.\
+*	After receiving terminating signal from the user, the program will save all the
+*	frames showed in the window to a video file using class VideoWriter
+*
+* 	Spinnaker example folder /usr/src/spinnaker
+*	Read file ./ActionCommand/ActionCommand.cpp to see example for getting timestamp
+*	Remember to increase USB commandline limit before running acquisition
+*	https://www.flir.com/support-center/iis/machine-vision/application-note/understanding-usbfs-on-linux/
+*/
 
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio/videoio_c.h>
+#include <opencv2/highgui/highgui_c.h>
 
 // Standard
 #include <string>
@@ -48,83 +49,88 @@ using namespace std;
 
 string type2str(int type)
 {
-  string r;
+	string r;
 
-  uchar depth = type & CV_MAT_DEPTH_MASK;
-  uchar chans = 1 + (type >> CV_CN_SHIFT);
+	uchar depth = type & CV_MAT_DEPTH_MASK;
+	uchar chans = 1 + (type >> CV_CN_SHIFT);
 
-  switch ( depth ) {
-    case CV_8U:  r = "8U"; break;
-    case CV_8S:  r = "8S"; break;
-    case CV_16U: r = "16U"; break;
-    case CV_16S: r = "16S"; break;
-    case CV_32S: r = "32S"; break;
-    case CV_32F: r = "32F"; break;
-    case CV_64F: r = "64F"; break;
-    default:     r = "User"; break;
-  }
+	switch (depth) {
+	case CV_8U:  r = "8U"; break;
+	case CV_8S:  r = "8S"; break;
+	case CV_16U: r = "16U"; break;
+	case CV_16S: r = "16S"; break;
+	case CV_32S: r = "32S"; break;
+	case CV_32F: r = "32F"; break;
+	case CV_64F: r = "64F"; break;
+	default:     r = "User"; break;
+	}
 
-  r += "C";
-  r += (chans+'0');
+	r += "C";
+	r += (chans + '0');
 
-  return r;
+	return r;
 }
 void drawRectangle(Mat& frame)
 {
-	static int lastRow=0,lastCol=0;
+	static int lastRow = 0, lastCol = 0;
 	// Move the box
-	lastCol+=BOX_SIZE;
-	if(lastCol>=frame.cols - BOX_SIZE)
+	lastCol += BOX_SIZE;
+	if (lastCol >= frame.cols - BOX_SIZE)
 	{
-		lastCol=0;
-		lastRow+=BOX_SIZE;
-		if(lastRow >= frame.rows - BOX_SIZE)
+		lastCol = 0;
+		lastRow += BOX_SIZE;
+		if (lastRow >= frame.rows - BOX_SIZE)
 		{
-			lastRow=0;
+			lastRow = 0;
 		}
 	}
 	// Draw the box
-	for(int i=0;i<BOX_SIZE;i++)
+	for (int i = 0; i<BOX_SIZE; i++)
 	{
-		for(int j=0;j<BOX_SIZE;j++)
+		for (int j = 0; j<BOX_SIZE; j++)
 		{
-			uchar* pixel = frame.ptr(lastRow+i,lastCol+j);
-			pixel[0]=pixel[1]=pixel[2]=255;
+			uchar* pixel = frame.ptr(lastRow + i, lastCol + j);
+			pixel[0] = pixel[1] = pixel[2] = 255;
 		}
 	}
 }
 
 void drawTime(Mat& frame)
 {
-	time_t theTime=time(nullptr);
-	string myTime=string(asctime(localtime(&theTime)));
-	putText(frame,myTime,Point(DEFAULT_TIME_X_POS,DEFAULT_TIME_Y_POS),FONT_HERSHEY_SIMPLEX,0.5,Scalar(255,255,255));
+	time_t theTime = time(nullptr);
+	string myTime = string(asctime(localtime(&theTime)));
+	putText(frame, myTime, Point(DEFAULT_TIME_X_POS, DEFAULT_TIME_Y_POS), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
 }
 
 Mat getMatFromCam()
 {
 	// Open default camera
-	static VideoCapture cap(0,CAP_DSHOW);
+	static VideoCapture cap(0, CAP_DSHOW);
 	Mat frame;
 	// Generating a Mat from the webcam
 	cap.read(frame);
-	if(!cap.isOpened())
+	if (!cap.isOpened())
 	{
-		cerr<<"Error openning camera";
-		return Mat(0,0,0);
+		cerr << "Error openning camera";
+		return Mat(0, 0, 0);
 	}
-	if(frame.empty())
+	if (frame.empty())
 	{
-		cerr<<"Error acquiring frame from camera";
-		return Mat(0,0,0);
+		cerr << "Error acquiring frame from camera";
+		return Mat(0, 0, 0);
 	}
 	return frame;
 }
 
 Mat genMatAuto()
 {
-	Mat theMat(DEFAULT_NUM_ROWS,DEFAULT_NUM_COLS,DEFAULT_IMAGE_TYPE,DEFAULT_IMAGE_VALUE);
+	Mat theMat(DEFAULT_NUM_ROWS, DEFAULT_NUM_COLS, DEFAULT_IMAGE_TYPE, DEFAULT_IMAGE_VALUE);
 	return theMat;
+}
+
+void PushBT(int state, void* para)
+{
+	//cout << "Button pushed" << endl;
 }
 int main(int n, char** args)
 {
@@ -133,47 +139,50 @@ int main(int n, char** args)
 	VideoWriter vOut;
 
 	// Pick your choice of input
-	cout<<"Pick you choice of input ( 0 for webcame, other for auto-generated Mat ): ";
-	cin>>choice;
-	if(choice != WEBCAM)
+	cout << "Pick you choice of input ( 0 for webcame, other for auto-generated Mat ): ";
+	cin >> choice;
+	if (choice != WEBCAM)
 	{
 		choice = AUTOGENERATED;
 	}
 
 	// Initialize the VideoWriter
-	if(choice==AUTOGENERATED)
+	if (choice == AUTOGENERATED)
 	{
 		// Setting up output for automated generated Mat
-		vOut.open(OUTPUT_FILE_PATH,CODEC,FPS,Size(DEFAULT_NUM_COLS,DEFAULT_NUM_ROWS),true);
+		vOut.open(OUTPUT_FILE_PATH, CODEC, FPS, Size(DEFAULT_NUM_COLS, DEFAULT_NUM_ROWS), true);
 	}
 	else
 	{
 		// Setting up output for camera setting
 		VideoCapture cam(0);
-		vOut.open(OUTPUT_FILE_PATH,CODEC,FPS,Size((int)cam.get(CAP_PROP_FRAME_WIDTH),(int)cam.get(CAP_PROP_FRAME_HEIGHT)),true);
+		vOut.open(OUTPUT_FILE_PATH, CODEC, FPS, Size((int)cam.get(CAP_PROP_FRAME_WIDTH), (int)cam.get(CAP_PROP_FRAME_HEIGHT)), true);
 		cam.release();
 	}
-	if(!vOut.isOpened())
+	if (!vOut.isOpened())
 	{
-		cout<<"Error openning output file stream"<<endl;
+		cout << "Error openning output file stream" << endl;
 		return -1;
 	}
 	else
 	{
-		cout<<"Output stream ready"<<endl;
+		cout << "Output stream ready" << endl;
 	}
 	// Wait for signal from user
-	cout<<"Press any key to start capturing"<<endl;
+	cout << "Press any key to start capturing" << endl;
 	waitKey(0);
-	while(1)
+	namedWindow("Picture", CV_WINDOW_NORMAL);
+//	createButton("OK", NULL);
+
+	while (1)
 	{
-		switch(choice)
+		switch (choice)
 		{
-			case WEBCAM:
-				frame=getMatFromCam();
-				break;
-			case AUTOGENERATED:
-				frame=genMatAuto();
+		case WEBCAM:
+			frame = getMatFromCam();
+			break;
+		case AUTOGENERATED:
+			frame = genMatAuto();
 		}
 		// Draw moving rectangle
 		drawRectangle(frame);
@@ -184,10 +193,10 @@ int main(int n, char** args)
 		// Save the image to video
 		vOut.write(frame);
 		// Check for stopping signal from user
-		if(waitKey(50)>=0)
+		if (waitKey(50) >= 0)
 		{
 			// If key is pressed , exit
-			break;
+			//break;
 		}
 		frame.release();
 	}
