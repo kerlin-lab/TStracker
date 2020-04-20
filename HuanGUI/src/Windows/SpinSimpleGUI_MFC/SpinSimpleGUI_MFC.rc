@@ -62,7 +62,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\SpinnakerMFC.ico"
+
 IDR_SpinSimpleGUIMFCTYPE ICON                    "res\\SpinnakerMFCDoc.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -70,6 +72,7 @@ IDR_SpinSimpleGUIMFCTYPE ICON                    "res\\SpinnakerMFCDoc.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -182,6 +185,7 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
+            VALUE "AssemblyInformationalVersion", "1, 29, 0, 5"
             VALUE "CompanyName", "FLIR Integrated Imaging Solutions, Inc."
             VALUE "FileDescription", "SpinnakerSimpleGUI_MFC"
             VALUE "FileVersion", "1, 29, 0, 5"
@@ -190,7 +194,6 @@ BEGIN
             VALUE "OriginalFilename", "SpinnakerSimpleGUI_MFC.exe"
             VALUE "ProductName", "Spinnaker SDK"
             VALUE "ProductVersion", "1, 29, 0, 5"
-            VALUE "AssemblyInformationalVersion", "1, 29, 0, 5"
         END
     END
     BLOCK "VarFileInfo"
@@ -217,6 +220,17 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 
 /////////////////////////////////////////////////////////////////////////////
