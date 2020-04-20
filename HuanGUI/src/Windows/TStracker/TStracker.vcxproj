@@ -591,6 +591,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\main.cpp" />
     <ClCompile Include="TStracker.cpp" />
     <ClCompile Include="TStrackerMFC.cpp" />
+    <ClCompile Include="TStrackerThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\ZERO_CHECK.vcxproj">
@@ -604,6 +605,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="resource.h" />
     <ClInclude Include="TStracker.h" />
     <ClInclude Include="TStrackerMFC.h" />
+    <ClInclude Include="TStrackerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

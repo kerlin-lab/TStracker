@@ -9,6 +9,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 
 using namespace std;
 
@@ -73,29 +74,14 @@ void createMono8Mat(Mat& frame, int width, int height);
 void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size);
 
 // This function acquires and saves 10 images from a device.
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice);
+// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, boolean* runSignal);
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
-int RunAcquisition(CameraPtr pCam);
+int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
 
 
 
 
-UINT __cdecl ThreadHandlerMFC(LPVOID pParam);
-
-
-
-UINT __cdecl ThreadHandlerWPF(LPVOID pParam);
-
-
-int mainTest(int /*argc*/, char** /*argv*/);
-
-
-
-
-int oldmain(int /*argc*/, char** /*argv*/);
-
-
-// Using openCV to show image in a different thread
-UINT __cdecl openCVCamCapture(LPVOID camPtr);
+//int oldmain(int /*argc*/, char** /*argv*/);

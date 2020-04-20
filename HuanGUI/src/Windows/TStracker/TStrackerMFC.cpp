@@ -3,7 +3,7 @@
 // Static member initialization
 CameraSelectionDlg * TStrackerMain::camSelectDlg= nullptr;		// Pointer to the camera selector dialog
 SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker SDK
-map<string, CameraPtr*> TStrackerMain::CamList;				
+unordered_map<string, CamAcquireThreadInfo*> TStrackerMain::CamList;				
 GUI::GUIFactory TStrackerMain::gui;
 
 TStrackerMain::TStrackerMain()
@@ -15,8 +15,15 @@ TStrackerMain::~TStrackerMain()
 
 CameraSelectionDlg* camSelectInitializer()
 {
-	CameraSelectionDlg* dlg = new GUI::CameraSelectionDlg();
-	dlg->RegisterDoubleClickedCallback(TStrackerMain::CameraSelectionDialogCamDoubleClickHandler);	// Register the handler when user double click on a camera name
+	static boolean isCallBackRegistered = false;
+	CameraSelectionDlg* dlg = new GUI::CameraSelectionDlg();				// Using new will create a lot of instances of CameraSelectionDlg, but using gui.GetCemraSelectionDlg() will resultin problem if the user close the dialog intentionally by click X of the dialog
+	if (!isCallBackRegistered)
+	{
+		// This prevent the program from registering the call back function with new dialog
+		// Without this, the program will create a chain of the same call back and the call back funcion will be called many time when 1 event occurs
+		dlg->RegisterDoubleClickedCallback(TStrackerMain::CameraSelectionDialogCamDoubleClickHandler);	// Register the handler when user double click on a camera name
+		isCallBackRegistered = true;
+	}
 	return dlg;
 }
 
@@ -32,10 +39,11 @@ BOOL TStrackerMain::InitInstance()
 		AfxMessageBox("CoInitializeEx initialization failed");
 		//return FALSE;
 	}
-	
+
+
 	// Initialize the camera selector dialog
 	camSelectDlg=camSelectInitializer();
-	//camSelectDlg->Open();				// Show camera selector
+	camSelectDlg->Open();				// Show camera selector
 
 
 	// Initialize the pointer to communicate with Spinnaker kernel
@@ -61,38 +69,59 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 	bool isSystem)
 {
 	// for now, only process if a camera is clicked
-	if (isCamera)
+	MessageBox(NULL, "CALLED", "INFORM", MB_OK);
+	try
 	{
-		// Check if there is already a connection to this camera in CamList
-		//string camSerial = (*pCamera)->DeviceSerialNumber();
-		//if (TStrackerMain::CamList.count(camSerial))
-		//{
-		//	// There is one CameraPtr in the list to this camera
-		//	try
-		//	{
-		//		// De-Init the old pointer
-		//		(*CamList[camSerial])->DeInit();
-		//	}
-		//	catch (Spinnaker::Exception& e)
-		//	{
-		//		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
-		//		{
-		//			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
-		//		}
-		//	}
-		//	// Save the new pointer to camera
-		//	CamList[camSerial] = pCamera;
-		//}
-		// Open Acquisition and the property dialog box for the clicked 
-		(*pCamera)->Init();										//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
-		// Set up property dialog for this camera
-		TStrackerMain::gui.ConnectGUILib(*pCamera);				// This some how prevent the camera selection box from disapearing after choosing a camera
-		PropertyGridDlg* dlg = TStrackerMain::gui.GetPropertyGridDlg();
-		//PropertyGridDlg* dlg = new GUI::PropertyGridDlg();
-		dlg->Connect(*pCamera);									// Connect the dialog to the camera
-		dlg->Open();											// show the dialog
-		// Set up a thread uses OpenCV to acquire and save image
-		AfxBeginThread(openCVCamCapture, pCamera);
+
+		if (isCamera)
+		{
+			// Init to the camera to get 
+			(*pCamera)->Init();														//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
+
+			// Get the camera Serial number
+			string camSerial = (*pCamera)->DeviceSerialNumber();
+
+			// Check if there is already a connection to this camera in CamList
+			if (TStrackerMain::CamList.count(camSerial))
+			{
+				MessageBox(NULL, "OLD", "INFORM", MB_OK);
+				// There is one CameraPtr in the list to this camera
+
+				CamAcquireThreadInfo* threadInfo = TStrackerMain::CamList[camSerial];
+				// Check if thread has been terminated
+				if (!threadInfo->threadStatus)
+				{
+					// Thread has been terminated
+					MessageBox(NULL, "Thread terminated", "INFORM", MB_OK);
+					// So delete the object of the old thread
+					delete threadInfo;
+					// create a new thread and get it running acquisition 
+					threadInfo = CamList[camSerial] = new CamAcquireThreadInfo(camSerial, pCamera, TStrackerMain::gui);
+				}
+				else
+				{
+					// Thread has not been terminated
+
+					// Inform user about this, may be he accidentally click the camera again
+					MessageBox(NULL, "One thread asccociating with this camera is running", "Warning", MB_OK);
+
+					// Or maybe he just wants to reopen the Property Dialog box. so show it!
+					threadInfo->propDialog->Open();
+				}
+			}
+			else
+			{
+				MessageBox(NULL, "NEW", "INFORM", MB_OK);
+				// This camera is new!
+
+				// Create a thread object to acquire the image from this camera
+				CamList[camSerial] = new CamAcquireThreadInfo(camSerial, pCamera, TStrackerMain::gui);
+			}
+		}
+	}
+	catch (Spinnaker::Exception e)
+	{
+		MessageBox(NULL, e.what(), "Error", MB_OK);
 	}
 }
 
@@ -132,7 +161,6 @@ void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
 	{
 		// Close the current cam select dialog, this might potential cause problem in the future?
 		TStrackerMain::camSelectDlg->Close();
-		free(TStrackerMain::camSelectDlg);
 	}
 	catch (Spinnaker::Exception e)
 	{

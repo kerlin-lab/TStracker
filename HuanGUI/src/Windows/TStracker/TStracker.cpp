@@ -59,7 +59,8 @@ void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size)
 }
 
 // This function acquires and saves 10 images from a device.
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
+// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice,boolean* runSignal)
 {
 	int result = 0;
 	int imgWidth, imgHeight, imgSize;
@@ -68,7 +69,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	VideoWriter vOut;
 	string vOutFileName;
 	string camSerial;
-	
+
 	// Getting camera serial
 	camSerial = pCam->DeviceSerialNumber();
 	try
@@ -114,7 +115,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		// Reserve memmory that OpenCv will use to hold the image
 		createMono8Mat(frame, imgWidth, imgHeight);
 
-
+		
 		//
 		// Begin acquiring images
 		//
@@ -135,7 +136,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		// Create a OpenCV window for displaying
 		namedWindow(camSerial);
 
-		while (true)
+		while (*runSignal)
 		{
 			try
 			{
@@ -203,6 +204,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 				if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
 				{
 					MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+					break;
 				}
 				result = -1;
 			}
@@ -237,32 +239,44 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
-int RunAcquisition(CameraPtr pCam)
+int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus)
 {
 	int result;
 
 	try
 	{
+		// Initialize camera
+		if (!pCam->IsInitialized())
+		{
+			pCam->Init();
+		}
+
+
 		// Retrieve TL device nodemap and print device information
 		INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
 
-		// Initialize camera
-		pCam->Init();
 
 		// Retrieve GenICam nodemap
 		INodeMap& nodeMap = pCam->GetNodeMap();
 
-		// Acquire images
-		result = result | AcquireAndShowImages(pCam, nodeMap, nodeMapTLDevice);
+		// Acquire images, keep attempt to acquire until user turn off this camera
+		while(*camStatus)
+		{
+			if (*runAcquireSignal)
+			{
+				result = result | AcquireAndShowImages(pCam, nodeMap, nodeMapTLDevice, runAcquireSignal);
+			}
+		}
 
 		// Deinitialize camera
-		pCam->DeInit();
+		pCam->DeInit();					// DeInit() to make user open another Dialog next time he uses this camera
 	}
 	catch (Spinnaker::Exception& e)
 	{
 		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
 		{
 			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+			waitKey(1000);
 		}
 		result = -1;
 	}
@@ -273,120 +287,79 @@ int RunAcquisition(CameraPtr pCam)
 
 
 
-UINT __cdecl ThreadHandlerWPF(LPVOID pParam)
-{
-	// *** NOTES ***
-	// Dialog based MFC applications may incorrectly initialize the threading model to MTA.
-	// To prevent this, initialize the threading model to STA with the following code block.
-	// Without this code block, the STA error will rise
-	const HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-	if (FAILED(hr))
-	{
-		cout << "CoInitializeEx initialization failed" << endl;
-		return FALSE;
-	}
-	try
-	{
-		GUI::GUIFactory SpinGUI;
-		CameraSelectionDlg* camSelect = SpinGUI.GetCameraSelectionDlg();
-		camSelect->Open();
-		while (1)
-		{
-			camSelect->Refresh();
-		}
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << e.GetFullErrorMessage() << endl;
-	}
-}
-
-
-UINT __cdecl ThreadHandlerMFC(LPVOID pParam)
-{
-	((CameraSelectionDlg*)pParam)->Open();
-	while (1)
-	{
-	}
-	return 1;
-}
-
-int mainTest(int /*argc*/, char** /*argv*/)
-{
-
-	AfxBeginThread(ThreadHandlerWPF, 0);
-	return 0;
-}
-
-
-
 
 // Example entry point; please see Enumeration example for more in-depth
 // comments on preparing and cleaning up the system.
-int oldmain(int /*argc*/, char** /*argv*/)
-{
-	int result = 0;
-	// Retrieve singleton reference to system object
-	SystemPtr system = System::GetInstance();
+//int oldmain(int /*argc*/, char** /*argv*/)
+//{
+//	int result = 0;
+//	// Retrieve singleton reference to system object
+//	SystemPtr system = System::GetInstance();
+//
+//	// Retrieve list of cameras from the system
+//	CameraList camList = system->GetCameras();
+//
+//	const unsigned int numCameras = camList.GetSize();
+//
+//	cout << "Number of cameras detected: " << numCameras << endl << endl;
+//
+//	// Finish if there are no cameras
+//	if (numCameras == 0)
+//	{
+//		// Clear camera list before releasing system
+//		camList.Clear();
+//
+//		// Release system
+//		system->ReleaseInstance();
+//
+//		cout << "Not enough cameras!" << endl;
+//		cout << "Done! Press Enter to exit..." << endl;
+//		getchar();
+//
+//		return -1;
+//	}
+//	else
+//	{
+//		// Camera found, so run
+//
+//		CameraPtr pCam = nullptr;
+//
+//
+//		// use the first camera found
+//		pCam = camList.GetByIndex(0);
+//
+//		// Run acquisition
+//		RunAcquisition(pCam);
+//
+//		// Clean UP
+//		pCam = nullptr;
+//
+//		// Clear camera list before releasing system
+//		camList.Clear();
+//
+//		// Release system
+//		system->ReleaseInstance();
+//
+//		cout << endl << "Done! Press Enter to exit..." << endl;
+//		getchar();
+//
+//	}
+//
+//	return result;
+//}
 
-	// Retrieve list of cameras from the system
-	CameraList camList = system->GetCameras();
-
-	const unsigned int numCameras = camList.GetSize();
-
-	cout << "Number of cameras detected: " << numCameras << endl << endl;
-
-	// Finish if there are no cameras
-	if (numCameras == 0)
-	{
-		// Clear camera list before releasing system
-		camList.Clear();
-
-		// Release system
-		system->ReleaseInstance();
-
-		cout << "Not enough cameras!" << endl;
-		cout << "Done! Press Enter to exit..." << endl;
-		getchar();
-
-		return -1;
-	}
-	else
-	{
-		// Camera found, so run
-
-		CameraPtr pCam = nullptr;
+/*
 
 
-		// use the first camera found
-		pCam = camList.GetByIndex(0);
+// Open Acquisition and the property dialog box for the clicked
+(*pCamera)->Init();										//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
+// Set up property dialog for this camera
+TStrackerMain::gui.ConnectGUILib(*pCamera);				// This some how prevent the camera selection box from disapearing after choosing a camera
+PropertyGridDlg* dlg = TStrackerMain::gui.GetPropertyGridDlg();
 
-		// Run acquisition
-		RunAcquisition(pCam);
+//PropertyGridDlg* dlg = new GUI::PropertyGridDlg();
+dlg->Connect(*pCamera);									// Connect the dialog to the camera
+dlg->Open();											// show the dialog
 
-		// Clean UP
-		pCam = nullptr;
-
-		// Clear camera list before releasing system
-		camList.Clear();
-
-		// Release system
-		system->ReleaseInstance();
-
-		cout << endl << "Done! Press Enter to exit..." << endl;
-		getchar();
-
-	}
-
-	return result;
-}
-
-UINT __cdecl openCVCamCapture(LPVOID camPtr)
-{
-	// parameter is a CamPtr
-
-	CameraPtr pCam = *((CameraPtr*)camPtr);
-	// Run acquisition
-	RunAcquisition(pCam);
-	return 0;
-}
+// Set up a thread uses OpenCV to acquire and save image
+AfxBeginThread(openCVCamCapture, pCamera);*/

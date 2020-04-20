@@ -6,6 +6,7 @@
     </ClCompile>
     <ClCompile Include="TStracker.cpp" />
     <ClCompile Include="TStrackerMFC.cpp" />
+    <ClCompile Include="TStrackerThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt" />
@@ -19,6 +20,7 @@
     <ClInclude Include="TStracker.h" />
     <ClInclude Include="TStrackerMFC.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TStrackerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
