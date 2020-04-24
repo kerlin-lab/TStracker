@@ -602,6 +602,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cvui.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TStracker.h" />
     <ClInclude Include="TStrackerMFC.h" />

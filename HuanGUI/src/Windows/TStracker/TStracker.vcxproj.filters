@@ -21,6 +21,7 @@
     <ClInclude Include="TStrackerMFC.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TStrackerThread.h" />
+    <ClInclude Include="cvui.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

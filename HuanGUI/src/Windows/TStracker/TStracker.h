@@ -36,12 +36,17 @@ using namespace Spinnaker::GUI_WPF;
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/videoio/videoio_c.h>
+#include <opencv2/highgui/highgui_c.h>
 
 using namespace cv;
 
+// OpenCV gui
 #define APP_NAME "TStracker"
 
-#define TEXT_OFFSET 10
+#define TEXT_OFFSET 5
+
+#define CODEC CV_FOURCC('M','J','P','G')
 
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp);
@@ -80,7 +85,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
 int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
-
 
 
 

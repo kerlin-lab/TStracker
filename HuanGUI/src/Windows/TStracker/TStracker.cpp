@@ -1,4 +1,9 @@
-#include "TStracker.h"
+﻿#include "TStracker.h"
+
+#define CVUI_IMPLEMENTATION
+#include "cvui.h"
+
+
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp)
 {
@@ -19,6 +24,13 @@ void drawTime(Mat& frame, double time)
 {
 	putText(frame, to_string(time) + "s", Point(TEXT_OFFSET, frame.rows - TEXT_OFFSET), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
 }
+
+
+void drawTimeAndFPS(Mat& frame, double time, int fps)
+{
+	putText(frame, to_string(time) + "s at " + to_string(fps) + " fps", Point(TEXT_OFFSET, frame.rows - TEXT_OFFSET), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255));
+}
+
 
 void dbhere(int a)
 {
@@ -58,15 +70,140 @@ void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size)
 	}
 }
 
+
+// Get infor
+void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam)
+{
+	// Get the current frame rate; acquisition frame rate recorded in hertz
+	CFloatPtr ptrAcquisitionFrameRate = nodeMap.GetNode("AcquisitionFrameRate");
+
+	if (!IsAvailable(ptrAcquisitionFrameRate) || !IsReadable(ptrAcquisitionFrameRate))
+	{
+		MessageBox(NULL, "Unable to retrieve frame rate. Aborting...", "Error", MB_OK);
+		return;
+	}
+
+	frameRate = (int)ptrAcquisitionFrameRate->GetValue();
+	// Get image width and height in the setting
+	CIntegerPtr width = nodeMap.GetNode("Width");
+	CIntegerPtr height = nodeMap.GetNode("Height");
+
+	imgWidth = (int)width->GetValue();
+	imgHeight = (int)height->GetValue();
+	imgSize = imgWidth*imgHeight;
+
+	// Reserve memmory that OpenCv will use to hold the image
+	createMono8Mat(imgFrame, imgWidth, imgHeight);
+
+	// Warning to turn off trigger, otherwise , will see blank window
+	// "Failed waiting for EventData on NEW_BUFFER_DATA event" error will happen
+	if (pCam->TriggerMode.GetValue() == Spinnaker::TriggerModeEnums::TriggerMode_On)
+	{
+		MessageBox(NULL, "Trigger mode is ON,\nif you don't have hardware trigger set up,\nconsidering setting the trigger to OFF,\notherwise, the camera will not send image data\n and you will see a blank window when acquisition starts", "Warning", MB_ICONWARNING);
+	}
+
+	// Warning to put Acquisition in Continuous mode
+	if (pCam->AcquisitionMode.GetValue() != Spinnaker::AcquisitionModeEnums::AcquisitionMode_Continuous)
+	{
+		MessageBox(NULL, "Acquisition mode is NOT in continuous mode \nConsidering setting the Acquisition Mode to Continuous\nOtherwise, the camera will show only one image if it is in single mode when acquisition starts.\nRemember to stop the acquisition before attempting to change acquisition mode!", "Warning", MB_ICONWARNING);
+	}
+}
+
+
+// Draw GUI components
+void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, bool& acquireSignal, bool& runSignal, bool& runRecord, CameraPtr& pCam, INodeMap& nodeMap)
+{
+	static char* BUTTON_START = "Start Acquisition";
+	static char* BUTTON_STOP = "Stop Acquisition";
+	static char* BUTTON_START_RECORD = "Start Recording";
+	static char* BUTTON_STOP_RECROD = "Stop Recording";
+	static char* BUTTON_STOP_CAMERA = "Detach Camera";
+	// Alternating button label
+	static char* SS_Button_label = BUTTON_START;
+	static char* SSRecord_Button_label = BUTTON_START_RECORD;
+
+
+	Mat canvas(Size(imgWidth,100), CV_8UC1, Scalar(30,30,30));
+
+	vconcat (canvas, imgFrame,frame);
+
+	// Draw the acquisition control button
+	if (cvui::button(frame, 0, 3, SS_Button_label))
+	{
+		//*runSignal = !runSignal;
+		acquireSignal = !acquireSignal;
+
+		// Temporarily pause the Acquisition 
+		if (!acquireSignal)
+		{
+			pCam->EndAcquisition();
+			SS_Button_label = BUTTON_START;
+		}
+		else
+		{
+			retriveImageInfo(nodeMap, imgFrame, imgWidth, imgHeight, imgSize, frameRate, pCam);
+			pCam->BeginAcquisition();
+			SS_Button_label = BUTTON_STOP;
+		}
+	}
+
+	// Draw the camera detachment control button
+	if (cvui::button(frame, 0, 40, BUTTON_STOP_CAMERA))
+	{
+		runSignal = false;
+		SS_Button_label = BUTTON_START;
+	}
+
+	// Draw recording control button
+	if (cvui::button(frame, 0, 80, SSRecord_Button_label))
+	{
+		runRecord = !runRecord;
+		if (runRecord)
+		{
+			SSRecord_Button_label = BUTTON_STOP_RECROD;
+		}
+		else
+		{
+			SSRecord_Button_label = BUTTON_START_RECORD;
+		}
+	}
+}
+
+// Processing recording feature
+void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight, int frameRate, VideoWriter& vOut, string file_prefix, string videoType)
+{
+	static int count = 0;
+	if (runRecord)
+	{
+		if (!vOut.isOpened())
+		{
+			vOut.open(file_prefix + "_" + to_string(count++) + videoType, CODEC, frameRate, Size(imgWidth, imgHeight), false);
+			MessageBox(NULL, (file_prefix + "_" + to_string(count++) + videoType).c_str(), "Warning", MB_OK);
+		}
+		vOut.write(imgFrame);
+	}
+	else
+	{
+		if (vOut.isOpened())
+		{
+			MessageBox(NULL, "Stop recording", "Warning", MB_OK);
+			vOut.release();
+		}
+	}
+}
 // This function acquires and saves 10 images from a device.
 // @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
 int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice,boolean* runSignal)
 {
 	int result = 0;
-	int imgWidth, imgHeight, imgSize;
-	Mat frame;
-	uint64_t timestamp;
+	int imgWidth, imgHeight, imgSize, frameRate;
+	
+	Mat imgFrame;						// imageFrame is to hold the captured image
+	Mat displayFrame;					// displayFrame is to hold the captured image and the GUI components to be displayed
+
 	VideoWriter vOut;
+
+	uint64_t timestamp;
 	string vOutFileName;
 	string camSerial;
 
@@ -104,16 +241,27 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		////cout << "Turn off trigger mode" << endl;
 		////pCam->TriggerMode.SetValue(Spinnaker::TriggerModeEnums::TriggerMode_Off);
 
-		// Get image width and height in the setting
-		CIntegerPtr width = nodeMap.GetNode("Width");
-		CIntegerPtr height = nodeMap.GetNode("Height");
+		// Get the current frame rate; acquisition frame rate recorded in hertz
+		//CFloatPtr ptrAcquisitionFrameRate = nodeMap.GetNode("AcquisitionFrameRate");
 
-		imgWidth = (int)width->GetValue();
-		imgHeight = (int)height->GetValue();
-		imgSize = imgWidth*imgHeight;
+		//if (!IsAvailable(ptrAcquisitionFrameRate) || !IsReadable(ptrAcquisitionFrameRate))
+		//{
+		//	cout << "Unable to retrieve frame rate. Aborting..." << endl << endl;
+		//	return -1;
+		//}
 
-		// Reserve memmory that OpenCv will use to hold the image
-		createMono8Mat(frame, imgWidth, imgHeight);
+		//int frameRate = (int)ptrAcquisitionFrameRate->GetValue();
+		//// Get image width and height in the setting
+		//CIntegerPtr width = nodeMap.GetNode("Width");
+		//CIntegerPtr height = nodeMap.GetNode("Height");
+
+		//imgWidth = (int)width->GetValue();
+		//imgHeight = (int)height->GetValue();
+		//imgSize = imgWidth*imgHeight;
+
+		//// Reserve memmory that OpenCv will use to hold the image
+		//createMono8Mat(imgFrame, imgWidth, imgHeight);
+		retriveImageInfo(nodeMap, imgFrame, imgWidth, imgHeight, imgSize, frameRate, pCam);
 
 		
 		//
@@ -130,90 +278,120 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		// Image acquisition must be ended when no more images are needed.
 		//
 
-		pCam->BeginAcquisition();
+		//pCam->BeginAcquisition();
 
 		
 		// Create a OpenCV window for displaying
-		namedWindow(camSerial);
+		//namedWindow(camSerial);
+		cvui::init(camSerial);
 
-		while (*runSignal)
+		// Variables need for the acquisition loop
+		bool acquireSignal = false;
+		bool runSignal = true;
+		bool runRecord = false;
+
+		while (runSignal)
 		{
-			try
+
+			// Draw image if is capturing
+			//if (*runSignal)
+			if(acquireSignal)
 			{
-				//
-				// Retrieve next received image
-				//
-				// *** NOTES ***
-				// Capturing an image houses images on the camera buffer. Trying
-				// to capture an image that does not exist will hang the camera.
-				//
-				// *** LATER ***
-				// Once an image from the buffer is saved and/or no longer
-				// needed, the image must be released in order to keep the
-				// buffer from filling up.
-				//
-				ImagePtr pResultImage = pCam->GetNextImage(3000);
-
-				//
-				// Ensure image completion
-				//
-				// *** NOTES ***
-				// Images can easily be checked for completion. This should be
-				// done whenever a complete image is expected or required.
-				// Further, check image status for a little more insight into
-				// why an image is incomplete.
-				//
-				if (pResultImage->IsIncomplete())
+				try
 				{
-					// Retrieve and print the image status description
-					//cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
-					//	<< "..." << endl
-					//	<< endl;
-					MessageBox(NULL, "Image incomplete", "Error", MB_OK);
-					waitKey(500);
-				}
-				else
-				{
+					//
+					// Retrieve next received image
+					//
+					// *** NOTES ***
+					// Capturing an image houses images on the camera buffer. Trying
+					// to capture an image that does not exist will hang the camera.
+					//
+					// *** LATER ***
+					// Once an image from the buffer is saved and/or no longer
+					// needed, the image must be released in order to keep the
+					// buffer from filling up.
+					//
+					ImagePtr pResultImage = pCam->GetNextImage(3000);
 
-					ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
-					// Converting to OpenCV Mat
-					ImagePtr2CVMat_CV_8UC1(convertedImage, frame, imgSize);
-					// Get timestamp
-					timestamp = convertedImage->GetTimeStamp();
-					// Draw timestamp
-					drawTime(frame, getReadableTimestamp(timestamp) / 1000000.0);
-					imshow(camSerial, frame);
-					if (waitKey(1) >= 0)
+					//
+					// Ensure image completion
+					//
+					// *** NOTES ***
+					// Images can easily be checked for completion. This should be
+					// done whenever a complete image is expected or required.
+					// Further, check image status for a little more insight into
+					// why an image is incomplete.
+					//
+					if (pResultImage->IsIncomplete())
 					{
+						// Retrieve and print the image status description
+						//cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
+						//	<< "..." << endl
+						//	<< endl;
+						MessageBox(NULL, "Image incomplete", "Error", MB_OK);
+						waitKey(500);
+					}
+					else
+					{
+
+						ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+						// Converting to OpenCV Mat
+						ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
+						// Get timestamp
+						timestamp = convertedImage->GetTimeStamp();
+						// Draw timestamp
+						drawTimeAndFPS(imgFrame, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
+						// Show the frame
+
+						//imshow(camSerial, frame);
+						
+						// Save frame to file if recording is running
+						runRecordFeature(runRecord, imgFrame, imgWidth, imgHeight, frameRate, vOut, camSerial, ".mkv");
+
+						//if (waitKey(1) >= 0)
+						//{
+						//	break;
+						//}
+					}
+
+					//
+					// Release image
+					//
+					// *** NOTES ***
+					// Images retrieved directly from the camera (i.e. non-converted
+					// images) need to be released in order to keep from filling the
+					// buffer.
+					//
+					pResultImage->Release();
+				}
+				catch (Spinnaker::Exception& e)
+				{
+					if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+					{
+						MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 						break;
 					}
+					result = -1;
 				}
 
-				//
-				// Release image
-				//
-				// *** NOTES ***
-				// Images retrieved directly from the camera (i.e. non-converted
-				// images) need to be released in order to keep from filling the
-				// buffer.
-				//
-				pResultImage->Release();
 			}
-			catch (Spinnaker::Exception& e)
-			{
-				if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
-				{
-					MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
-					break;
-				}
-				result = -1;
-			}
+
+			// --------------------- Drawing the GUI -----------------------------------
+			// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on to
+			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap);
+
+
+			// Draw the change to the window
+			cvui::imshow(camSerial, displayFrame);
+
+			// Update the window
+			waitKey(1);
 		}
 
 		// Destroy OpenCV window
 		destroyWindow(camSerial);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
 		// Release matrix to save memmory
-		frame.release();
+		imgFrame.release();
 		//
 		// End acquisition
 		//
@@ -221,8 +399,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		// Ending acquisition appropriately helps ensure that devices clean up
 		// properly and do not need to be power-cycled to maintain integrity.
 		//
-
-		pCam->EndAcquisition();
+		if (pCam->IsStreaming())
+		{
+			pCam->EndAcquisition();
+		}
 	}
 	catch (Spinnaker::Exception& e)
 	{
@@ -236,6 +416,9 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 	return result;
 }
+
+
+
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
@@ -260,13 +443,13 @@ int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus
 		INodeMap& nodeMap = pCam->GetNodeMap();
 
 		// Acquire images, keep attempt to acquire until user turn off this camera
-		while(*camStatus)
-		{
+		//while(*camStatus)
+		//{
 			if (*runAcquireSignal)
 			{
 				result = result | AcquireAndShowImages(pCam, nodeMap, nodeMapTLDevice, runAcquireSignal);
 			}
-		}
+		//}
 
 		// Deinitialize camera
 		pCam->DeInit();					// DeInit() to make user open another Dialog next time he uses this camera
