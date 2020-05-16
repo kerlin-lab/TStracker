@@ -377,6 +377,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 
 			// --------------------- Drawing the GUI -----------------------------------
+			cvui::context(camSerial);
 			// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on to
 			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap);
 
