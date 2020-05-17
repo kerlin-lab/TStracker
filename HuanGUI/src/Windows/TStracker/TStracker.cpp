@@ -113,7 +113,7 @@ void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgH
 
 
 // Draw GUI components
-void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, bool& acquireSignal, bool& runSignal, bool& runRecord, CameraPtr& pCam, INodeMap& nodeMap)
+void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, bool& acquireSignal, bool& runSignal, bool& runRecord, CameraPtr& pCam, INodeMap& nodeMap,string camSerial)
 {
 	static char* BUTTON_START = "Start Acquisition";
 	static char* BUTTON_STOP = "Stop Acquisition";
@@ -121,10 +121,17 @@ void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSi
 	static char* BUTTON_STOP_RECROD = "Stop Recording";
 	static char* BUTTON_STOP_CAMERA = "Detach Camera";
 	// Alternating button label
-	static unordered_map<string, pair<bool, bool>> ButtonManager;
-	static char* SS_Button_label = BUTTON_START;
-	static char* SSRecord_Button_label = BUTTON_START_RECORD;
+	static unordered_map<string, pair<char*,char*>> ButtonManager;	// pair<Start/Stop button label,Start/Stop Record button label>
+	if (!ButtonManager.count(camSerial))
+	{
+		// This is the first time the camera is used so 
+		// initilize the labels
+		ButtonManager[camSerial].first = BUTTON_START;
+		ButtonManager[camSerial].second = BUTTON_START_RECORD;
+	}
 
+	char*& SS_Button_label = ButtonManager[camSerial].first;
+	char*& SSRecord_Button_label = ButtonManager[camSerial].second;
 
 	Mat canvas(Size(imgWidth,100), CV_8UC1, Scalar(30,30,30));
 
@@ -394,7 +401,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 			cvui::context(camSerial);
 			// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on to
-			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap);
+			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap,camSerial);
 
 			// Draw the change to the window
 			cvui::imshow(camSerial, displayFrame);
