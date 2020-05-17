@@ -119,6 +119,7 @@ void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSi
 	static char* BUTTON_STOP_RECROD = "Stop Recording";
 	static char* BUTTON_STOP_CAMERA = "Detach Camera";
 	// Alternating button label
+	static unordered_map<string, pair<bool, bool>> ButtonManager;
 	static char* SS_Button_label = BUTTON_START;
 	static char* SSRecord_Button_label = BUTTON_START_RECORD;
 
@@ -281,9 +282,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		//pCam->BeginAcquisition();
 
 		
-		// Create a OpenCV window for displaying
-		//namedWindow(camSerial);
-		cvui::init(camSerial);
 
 		// Variables need for the acquisition loop
 		bool acquireSignal = false;
@@ -292,6 +290,15 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 		while (runSignal)
 		{
+			// Check if the windows exists if not create one
+			// This also prevent stalled windows when user close windows by the x button not the detach camera button
+			// Solution proposed by https://medium.com/@mh_yip/opencv-detect-whether-a-window-is-closed-or-close-by-press-x-button-ee51616f7088
+			if (getWindowProperty(camSerial, cv::WND_PROP_VISIBLE) <= 0.5)
+			{
+				//Windows is closed or does not exist
+				// Create a OpenCV window for displaying
+				cvui::init(camSerial);
+			}
 
 			// Draw image if is capturing
 			//if (*runSignal)

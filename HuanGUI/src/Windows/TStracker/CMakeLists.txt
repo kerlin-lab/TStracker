@@ -17,7 +17,8 @@ set(HEADER_FILE
 	./resource.h
 	./TStracker.h
 	./TStrackerMFC.h
-	./TStrackerThread.h)
+	./TStrackerThread.h
+	./stdafx.h)
 
 # Open CV setting
 find_package(OpenCV REQUIRED)					# Link OpenCV

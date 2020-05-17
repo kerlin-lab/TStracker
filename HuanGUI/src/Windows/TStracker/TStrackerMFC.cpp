@@ -1,9 +1,11 @@
 #include "TStrackerMFC.h"
 
-// Static member initialization
+unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
+
+																// Static member initialization
 CameraSelectionDlg * TStrackerMain::camSelectDlg= nullptr;		// Pointer to the camera selector dialog
 SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker SDK
-unordered_map<string, CamAcquireThreadInfo*> TStrackerMain::CamList;				
+//unordered_map<string, CamAcquireThreadInfo*> TStrackerMain::CamList;				
 GUI::GUIFactory TStrackerMain::gui;
 
 TStrackerMain::TStrackerMain()
@@ -82,12 +84,12 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 			string camSerial = (*pCamera)->DeviceSerialNumber();
 
 			// Check if there is already a connection to this camera in CamList
-			if (TStrackerMain::CamList.count(camSerial))
+			if (CamList.count(camSerial))
 			{
 				//MessageBox(NULL, "OLD", "INFORM", MB_OK);
 				// There is one CameraPtr in the list to this camera
 
-				CamAcquireThreadInfo* threadInfo = TStrackerMain::CamList[camSerial];
+				CamAcquireThreadInfo* threadInfo = CamList[camSerial];
 				// Check if thread has been terminated
 				if (!threadInfo->threadStatus)
 				{
