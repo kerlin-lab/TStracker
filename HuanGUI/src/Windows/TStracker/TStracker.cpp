@@ -3,6 +3,8 @@
 #define CVUI_IMPLEMENTATION
 #include "cvui.h"
 
+HANDLE mtx;
+
 
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp)
@@ -127,6 +129,7 @@ void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSi
 	Mat canvas(Size(imgWidth,100), CV_8UC1, Scalar(30,30,30));
 
 	vconcat (canvas, imgFrame,frame);
+	//frame = imgFrame.clone();
 
 	// Draw the acquisition control button
 	if (cvui::button(frame, 0, 3, SS_Button_label))
@@ -207,6 +210,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	uint64_t timestamp;
 	string vOutFileName;
 	string camSerial;
+
 
 	// Getting camera serial
 	camSerial = pCam->DeviceSerialNumber();
@@ -297,6 +301,8 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			{
 				//Windows is closed or does not exist
 				// Create a OpenCV window for displaying
+				namedWindow(camSerial);
+				// Register with cvui
 				cvui::init(camSerial);
 			}
 
@@ -384,16 +390,19 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 
 			// --------------------- Drawing the GUI -----------------------------------
+			WaitForSingleObject(mtx, INFINITE);
+
 			cvui::context(camSerial);
 			// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on to
 			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap);
 
-
 			// Draw the change to the window
 			cvui::imshow(camSerial, displayFrame);
+			//cvui::imshow(camSerial, imgFrame);
 
 			// Update the window
 			waitKey(1);
+			ReleaseMutex(mtx);
 		}
 
 		// Destroy OpenCV window

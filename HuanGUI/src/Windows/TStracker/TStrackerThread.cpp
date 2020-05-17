@@ -1,6 +1,5 @@
 #include "TStrackerThread.h"
 
-
 CamAcquireThreadInfo::CamAcquireThreadInfo(string cSerial, CameraPtr * camPTR, GUI::GUIFactory gui ,boolean runAcqui, boolean cInitStatus, boolean threadStt)
 {
 	// initionalizing

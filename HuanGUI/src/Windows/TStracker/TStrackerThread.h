@@ -1,6 +1,7 @@
 #pragma once
 #include "TStracker.h"
 
+
 class CamAcquireThreadInfo
 {
 public:

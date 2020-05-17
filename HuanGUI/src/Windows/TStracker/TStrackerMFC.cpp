@@ -10,6 +10,12 @@ GUI::GUIFactory TStrackerMain::gui;
 
 TStrackerMain::TStrackerMain()
 {	
+	// Initializing mutex handle
+	mtx = CreateMutex(NULL, FALSE, NULL);
+	if (mtx == NULL)
+	{
+		MessageBox(NULL,"Error", "CreateMutex error",0);
+	}
 }
 TStrackerMain::~TStrackerMain()
 {

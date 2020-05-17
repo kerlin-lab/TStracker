@@ -41,6 +41,12 @@ using namespace Spinnaker::GUI_WPF;
 
 using namespace cv;
 
+// Win32 lib
+#include <Windows.h>
+
+extern HANDLE mtx;
+
+
 // OpenCV gui
 #define APP_NAME "TStracker"
 
