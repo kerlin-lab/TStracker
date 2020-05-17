@@ -15,7 +15,7 @@
 - The second box should be x64. Then hit OK
 - After configuring finishes, run **Generate**
 ## Build the solution
-- After genrating finishes, you should _TStracker.sln_ in the TStracker project folder
-- Open the _TStracker.sln_  with the visual studio installed in you machine
-- Hit _Build->Build Solution_
-- When building finishes, the folder x64/Release should contain the program TStracker.exe
+- After genrating finishes, you should **TStracker.sln** in the TStracker project folder
+- Open the **TStracker.sln**  with the visual studio installed in you machine
+- Hit **Build->Build Solution**
+- When building finishes, the folder x64/Release should contain the program **TStracker.exe**
