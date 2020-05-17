@@ -10,10 +10,10 @@
 ## Generating the project Visual Studio Solution
 - Run CMake GUI
 - Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \HuanGUI\src\Windows\TStracker in this repository
-- Hit _configure_
+- Hit **Configure**
 - If the configuration window pops up, in the first box, select the Visual Studio version that is currently installed in your machine
 - The second box should be x64. Then hit OK
-- After configuring finishes, run _Generate_
+- After configuring finishes, run **Generate**
 ## Build the solution
 - After genrating finishes, you should _TStracker.sln_ in the TStracker project folder
 - Open the _TStracker.sln_  with the visual studio installed in you machine
