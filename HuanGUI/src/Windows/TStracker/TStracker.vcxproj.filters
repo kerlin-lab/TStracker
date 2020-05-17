@@ -4,26 +4,42 @@
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TStracker.cpp" />
-    <ClCompile Include="TStrackerMFC.cpp" />
-    <ClCompile Include="TStrackerThread.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerMFC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\cvui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerMFC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8286C809-C613-32BC-9136-2BF6F7122451}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{9E9E8CB7-C9DF-3BD9-8CFB-AE9D00094EA2}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="TStracker.h" />
-    <ClInclude Include="TStrackerMFC.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="TStrackerThread.h" />
-    <ClInclude Include="cvui.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
 </Project>

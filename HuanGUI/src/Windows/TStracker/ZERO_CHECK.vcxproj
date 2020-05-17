@@ -1,84 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="MinSizeRel|x64">
-      <Configuration>MinSizeRel</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="MinSizeRel|Win32">
-      <Configuration>MinSizeRel</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="RelWithDebInfo|Win32">
-      <Configuration>RelWithDebInfo</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="RelWithDebInfo|x64">
-      <Configuration>RelWithDebInfo</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E43D5C5F-83F1-3766-ACD3-EE0CDBDE0B2B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <Platform>Win32</Platform>
+    <Platform>x64</Platform>
     <ProjectName>ZERO_CHECK</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
@@ -91,36 +39,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
       <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
@@ -140,59 +62,9 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
-    <Midl>
-      <AdditionalIncludeDirectories>C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\$(OpenCV_INCLUDE_DIRS);D:\Software\Programming_software\External_Library\Spinnaker\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\00188e28bb01a2d3a7f5730e610d9d7f\generate.stamp.rule">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Checking Build System</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Checking Build System</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
 "D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
 if %errorlevel% neq 0 goto :cmEnd
@@ -202,23 +74,10 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Checking Build System</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Checking Build System</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
 "D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
 if %errorlevel% neq 0 goto :cmEnd
@@ -228,64 +87,9 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Checking Build System</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Checking Build System</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Checking Build System</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Checking Build System</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
-"D:\phan mem\Programming software\CMake\bin\cmake.exe" -SC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker -BC:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/TStracker.sln
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeCXXCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeRCCompiler.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\3.17.1\CMakeSystem.cmake;C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig-version.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVConfig.cmake;D:\Software\Programming_software\External_Library\opencv\myBuild\OpenCVModules.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCXXInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeCommonLanguageInclude.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeGenericSystem.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeInitializeConfigs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeLanguageInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeRCInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInformation.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\CMakeSystemSpecificInitialize.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Compiler\MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageHandleStandardArgs.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\FindPackageMessage.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-C.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC-CXX.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows-MSVC.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\Windows.cmake;D:\phan mem\Programming software\CMake\share\cmake-3.17\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

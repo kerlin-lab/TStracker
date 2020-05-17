@@ -37,10 +37,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/Debug/TStracker.exe")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
     file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/Release/TStracker.exe")
-  elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/MinSizeRel/TStracker.exe")
-  elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/RelWithDebInfo/TStracker.exe")
   endif()
 endif()
 
