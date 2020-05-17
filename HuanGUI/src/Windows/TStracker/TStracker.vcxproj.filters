@@ -38,6 +38,11 @@
     <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\rc\TStracker.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="Header Files">
       <UniqueIdentifier>{8286C809-C613-32BC-9136-2BF6F7122451}</UniqueIdentifier>
     </Filter>

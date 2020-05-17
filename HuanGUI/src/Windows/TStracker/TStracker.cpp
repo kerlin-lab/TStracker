@@ -184,12 +184,13 @@ void drawGUI(Mat& frame, Mat& imgFrame,int& imgWidth, int& imgHeight, int& imgSi
 void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight, int frameRate, VideoWriter& vOut, string file_prefix, string videoType)
 {
 	static int count = 0;
+	count++;
 	if (runRecord)
 	{
 		if (!vOut.isOpened())
 		{
-			vOut.open(file_prefix + "_" + to_string(count++) + videoType, CODEC, frameRate, Size(imgWidth, imgHeight), false);
-			MessageBox(NULL, (file_prefix + "_" + to_string(count++) + videoType).c_str(), "Warning", MB_OK);
+			vOut.open(file_prefix + "_" + to_string(count) + videoType, CODEC, frameRate, Size(imgWidth, imgHeight), false);
+			MessageBox(NULL, (file_prefix + "_" + to_string(count) + videoType).c_str(), "Warning", MB_OK);
 		}
 		vOut.write(imgFrame);
 	}

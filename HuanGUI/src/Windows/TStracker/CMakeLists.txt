@@ -34,7 +34,7 @@ set(SpinView_LIBS "AdapterConfig_v140" "Spinnaker_v140" "SpinnakerC_v140" "Spinn
 
 ## Setting library uses
 set(CMAKE_MFC_FLAG 2)	# Turn on MFC
-add_executable(${ProjName} WIN32 ${SOURCE_FILE} ${HEADER_FILE})
+add_executable(${ProjName} WIN32 ${SOURCE_FILE} ${HEADER_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/rc/${ProjName}.rc)
 target_link_libraries(${ProjName}  ${OpenCV_LIBS})
 target_link_libraries(${ProjName} ${SpinView_LIBS})
 install(TARGETS ${ProjName} DESTINATION ./)
