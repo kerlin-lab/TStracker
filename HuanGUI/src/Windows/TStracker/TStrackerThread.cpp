@@ -1,11 +1,21 @@
 #include "TStrackerThread.h"
 
-CamAcquireThreadInfo::CamAcquireThreadInfo(string cSerial, CameraPtr * camPTR, GUI::GUIFactory gui ,boolean runAcqui, boolean cInitStatus, boolean threadStt)
+CamAcquireThreadInfo::CamAcquireThreadInfo(
+	string cSerial,
+	CameraPtr* camPTR,
+	GUI::GUIFactory gui,
+	boolean runGui,
+	boolean acsignal,
+	boolean runRecord,
+	boolean cInitStatus,
+	boolean threadStt)
 {
 	// initionalizing
 	this->camSerial = cSerial;
 	this->camPtr = camPTR;
-	this->runAcquisition = runAcqui;
+	this->runGUI = runGui;
+	this->acquireSignal = acsignal;
+	this->runRecord = runRecord;
 	this->cameraInitStatus = cInitStatus;
 	this->threadStatus = threadStt;
 
@@ -30,7 +40,7 @@ UINT __cdecl openCVCamCapture(LPVOID para)
 	CameraPtr pCam = *(threadInfo->camPtr);
 	
 	// Run acquisition
-	RunAcquisition(pCam,&threadInfo->runAcquisition,&threadInfo->cameraInitStatus);
+	RunAcquisition(threadInfo);
 	
 	// Marking thread is terminated (using thread-safe operation)
 	WaitForSingleObject(mtx, INFINITE);
@@ -40,8 +50,8 @@ UINT __cdecl openCVCamCapture(LPVOID para)
 }
 
 // This function acquires and saves 10 images from a device.
-// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, boolean* runSignal)
+// @para runGUI: a boolean variable instrcuts the acquiring loop when to stop
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireThreadInfo* threadInfo)
 {
 	int result = 0;
 	int imgWidth, imgHeight, imgSize, frameRate;
@@ -130,13 +140,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 		//pCam->BeginAcquisition();
 
 
-
-		// Variables need for the acquisition loop
-		bool acquireSignal = false;
-		bool runSignal = true;
-		bool runRecord = false;
-
-		while (runSignal)
+		while (threadInfo->runGUI)
 		{
 			// Check if the windows exists if not create one
 			// This also prevent stalled windows when user close windows by the x button not the detach camera button
@@ -151,8 +155,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 			}
 
 			// Draw image if is capturing
-			//if (*runSignal)
-			if (acquireSignal)
+			if (threadInfo->acquireSignal)
 			{
 				try
 				{
@@ -200,10 +203,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 						drawTimeAndFPS(imgFrame, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
 						// Show the frame
 
-						//imshow(camSerial, frame);
+						//imshow("test", imgFrame);
 
 						// Save frame to file if recording is running
-						runRecordFeature(runRecord, imgFrame, imgWidth, imgHeight, frameRate, vOut, camSerial, ".mkv");
+						runRecordFeature(threadInfo->runRecord, imgFrame, imgWidth, imgHeight, frameRate, vOut, camSerial, ".avi");
 
 						//if (waitKey(1) >= 0)
 						//{
@@ -230,7 +233,6 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 					}
 					result = -1;
 				}
-
 			}
 
 			// --------------------- Drawing the GUI -----------------------------------
@@ -238,7 +240,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 			cvui::context(camSerial);
 			// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on to
-			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, acquireSignal, runSignal, runRecord, pCam, nodeMap, camSerial);
+			drawGUI(displayFrame, imgFrame, imgWidth, imgHeight, imgSize, frameRate, pCam, nodeMap, threadInfo);
 
 			// Draw the change to the window
 			cvui::imshow(camSerial, displayFrame);
@@ -283,9 +285,10 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
-int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus)
+int RunAcquisition(CamAcquireThreadInfo* threadInfo)
 {
 	int result;
+	CameraPtr pCam = *threadInfo->camPtr;
 
 	try
 	{
@@ -304,13 +307,7 @@ int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus
 		INodeMap& nodeMap = pCam->GetNodeMap();
 
 		// Acquire images, keep attempt to acquire until user turn off this camera
-		//while(*camStatus)
-		//{
-		if (*runAcquireSignal)
-		{
-			result = result | AcquireAndShowImages(pCam, nodeMap, nodeMapTLDevice, runAcquireSignal);
-		}
-		//}
+		result = result | AcquireAndShowImages(pCam, nodeMap, nodeMapTLDevice, threadInfo);
 
 		// Deinitialize camera
 		pCam->DeInit();					// DeInit() to make user open another Dialog next time he uses this camera
@@ -326,4 +323,83 @@ int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus
 	}
 
 	return result;
+}
+
+// Draw GUI components
+// This function is thread-safe as long as it is called between WaitForSingleObject and ReleaseMutex
+
+void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireThreadInfo* threadInfo)
+{
+
+	static char* BUTTON_START = "Start Acquisition";
+	static char* BUTTON_STOP = "Stop Acquisition";
+	static char* BUTTON_START_RECORD = "Start Recording";
+	static char* BUTTON_STOP_RECROD = "Stop Recording";
+	static char* BUTTON_STOP_CAMERA = "Detach Camera";
+
+	// Assigning alias
+	string camSerial = threadInfo->camSerial;
+	boolean& acquireSignal = threadInfo->acquireSignal;
+	boolean& runGUI = threadInfo->runGUI;
+	boolean& runRecord = threadInfo->runRecord;
+
+	//// Let get to work down here
+
+	// Alternating button label
+	static unordered_map<string, pair<char*, char*>> ButtonManager;	// pair<Start/Stop button label,Start/Stop Record button label>
+	if (!ButtonManager.count(camSerial))
+	{
+		// This is the first time the camera is used so 
+		// initilize the labels
+		ButtonManager[camSerial].first = BUTTON_START;
+		ButtonManager[camSerial].second = BUTTON_START_RECORD;
+	}
+
+	char*& SS_Button_label = ButtonManager[camSerial].first;
+	char*& SSRecord_Button_label = ButtonManager[camSerial].second;
+
+	Mat canvas(Size(imgWidth, 100), CV_8UC1, Scalar(30, 30, 30));
+
+	vconcat(canvas, imgFrame, frame);
+	//frame = imgFrame.clone();
+
+	// Draw the acquisition control button
+	if (cvui::button(frame, 0, 3, SS_Button_label))
+	{
+		acquireSignal = !acquireSignal;
+
+		// Temporarily pause the Acquisition 
+		if (!acquireSignal)
+		{
+			pCam->EndAcquisition();
+			SS_Button_label = BUTTON_START;
+		}
+		else
+		{
+			retriveImageInfo(nodeMap, imgFrame, imgWidth, imgHeight, imgSize, frameRate, pCam);
+			pCam->BeginAcquisition();
+			SS_Button_label = BUTTON_STOP;
+		}
+	}
+
+	// Draw the camera detachment control button
+	if (cvui::button(frame, 0, 40, BUTTON_STOP_CAMERA))
+	{
+		runGUI = false;
+		SS_Button_label = BUTTON_START;
+	}
+
+	// Draw recording control button
+	if (cvui::button(frame, 0, 80, SSRecord_Button_label))
+	{
+		runRecord = !runRecord;
+		if (runRecord)
+		{
+			SSRecord_Button_label = BUTTON_STOP_RECROD;
+		}
+		else
+		{
+			SSRecord_Button_label = BUTTON_START_RECORD;
+		}
+	}
 }

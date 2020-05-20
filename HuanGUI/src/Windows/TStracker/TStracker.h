@@ -99,9 +99,6 @@ void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgH
 // Processing recording feature
 void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight, int frameRate, VideoWriter& vOut, string file_prefix, string videoType);
 
-// Draw GUI components
-void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, bool& acquireSignal, bool& runSignal, bool& runRecord, CameraPtr& pCam, INodeMap& nodeMap, string camSerial);
-
 
 //int oldmain(int /*argc*/, char** /*argv*/);
 

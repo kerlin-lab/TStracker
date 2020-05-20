@@ -11,10 +11,15 @@ public:
 	string camSerial;
 	PropertyGridDlg* propDialog;
 	CameraPtr*	camPtr;
-	boolean runAcquisition;			// Controlling the image acquisition process of this camera, if false, the image acquiring loop will be terminated
+	boolean runGUI;					// true -> the GUI for the camera is displayed, false otherwise
+	boolean acquireSignal;			// Controlling the image acquisition process of this camera, if false, the image acquiring loop will be terminated
+	boolean runRecord;				// True means recording is running, flase means no recording in progress
 	boolean cameraInitStatus;		// Controlling the camera Init() status, if false, the camPtr->DeInit() will be called
 	boolean threadStatus;			// false means the thread associated with the object has been terminated
 	CWinThread* threadObjectPtr;	// pointer to the created thread object
+
+
+									// The state of the acquire loop, if true -> acquiring and 
 public:
 	/*
 	@Param run
@@ -22,28 +27,33 @@ public:
 	@Param cInitStatus: Controlling the camera Init() status, if false, the camPtr->DeInit() will be called
 	@Param threadStt: false means the thread associated with the object has been terminated, should be true when creating a new thread
 	*/
-	CamAcquireThreadInfo(string cSerial,
+	CamAcquireThreadInfo(
+		string cSerial,
 		CameraPtr* camPTR,
 		GUI::GUIFactory gui,
-		boolean runAcqui = true,			// Make it false to prevent OpenCV automatically run acquisition when user just click on the camera
+		boolean runGui = true,			// Make it true to start the gui loop, to show the initial GUI of the camera. No acquisition yet
+		boolean acsignal = false,		// Make it false to prevent OpenCV automatically run acquisition when user just click on the camera
+		boolean runRecord = false,		// No recording when starting
 		boolean cInitStatus = true,
-		boolean threadStt = true
-	);
+		boolean threadStt = true);		// True means thread is alive
 };
 
 
 // Using openCV to show image in a different thread
 UINT __cdecl openCVCamCapture(LPVOID camPtr);
 
+// Draw GUI components
+void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireThreadInfo* threadInfo);
+
 
 // This function acquires and saves 10 images from a device.
 // @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, boolean* runSignal);
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireThreadInfo* threadInfo);
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
 //int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
-int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
+int RunAcquisition(CamAcquireThreadInfo* threadInfo);
 
 
 #endif
