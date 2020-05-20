@@ -1,5 +1,8 @@
-#pragma once
+#ifndef TSTRACKERTHREAD_H
+#define TSTRACKERTHREAD_H
+
 #include "TStracker.h"
+#include "cvui.h"
 
 
 class CamAcquireThreadInfo
@@ -14,7 +17,8 @@ public:
 	CWinThread* threadObjectPtr;	// pointer to the created thread object
 public:
 	/*
-	@Param runAcqui: Controlling the image acquisition process of this camera, if false, the image acquiring loop will be terminated
+	@Param run
+	Acqui: Controlling the image acquisition process of this camera, if false, the image acquiring loop will be terminated
 	@Param cInitStatus: Controlling the camera Init() status, if false, the camPtr->DeInit() will be called
 	@Param threadStt: false means the thread associated with the object has been terminated, should be true when creating a new thread
 	*/
@@ -30,3 +34,16 @@ public:
 
 // Using openCV to show image in a different thread
 UINT __cdecl openCVCamCapture(LPVOID camPtr);
+
+
+// This function acquires and saves 10 images from a device.
+// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, boolean* runSignal);
+
+// This function acts as the body of the example; please see NodeMapInfo example
+// for more in-depth comments on setting up cameras.
+//int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
+int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
+
+
+#endif

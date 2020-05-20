@@ -1,7 +1,13 @@
-#pragma once
+#ifndef TSTRACKERMFC_H
+#define TSTRACKERMFC_H
+
 #include <afxwin.h>
 #include "TStracker.h"
 #include "TStrackerThread.h"
+
+#define CVUI_IMPLEMENTATION
+#include "cvui.h"
+
 #define CAM_SELECT_DIALOG_BUTTON_ID 1
 #define RECORD_ALL_CAMS_BUTTON_ID 2
 
@@ -11,7 +17,7 @@ extern unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the cam
 
 class TStrackerMain : public CWinApp
 {
-// Method
+	// Method
 public:
 	TStrackerMain();
 
@@ -28,13 +34,13 @@ public:
 		Spinnaker::SystemPtr* pSystem,
 		bool isSystem);
 
-// Fields
+	// Fields
 public:
 	// For GUI 
 	static GUI::GUIFactory gui;
 	static CameraSelectionDlg * camSelectDlg;		// Pointer to the camera selector dialog
 	static SystemPtr spinSys;						// Pointer to the kernel of Spinnaker SDK
-	//static unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
+													//static unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
 };
 
 
@@ -43,7 +49,7 @@ public:
 class TStrackerMainWnd : public CFrameWnd
 {
 public:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct); 
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	// These button handler function must be decleared inside TStrackerMainWnd so that they can be mentioned in the class's MESSAGE_BEGIN_MAP block
 	afx_msg void OpenCamSelectDialogButtonClickHandler();
 	afx_msg void RecordAllCamButtonClickHandler();
@@ -53,6 +59,7 @@ private:
 	DECLARE_MESSAGE_MAP()
 };
 
-
-
 // Button handlers
+#endif // !TSTRACKERMFC_H
+
+

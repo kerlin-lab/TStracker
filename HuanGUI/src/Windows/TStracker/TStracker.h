@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TSTRACKER_H
+#define TSTRACKER_H
+
 /*
 *  Program when run will acquire image from FLIR cam
 *  extract timestamp of each image
@@ -41,13 +43,17 @@ using namespace Spinnaker::GUI_WPF;
 
 using namespace cv;
 
-// Win32 lib
-#include <Windows.h>
+//// Win32 lib
+//#include <Windows.h>
 
+
+// Global variables
 extern HANDLE mtx;
 
 
 // OpenCV gui
+#include "cvui.h"
+
 #define APP_NAME "TStracker"
 
 #define TEXT_OFFSET 5
@@ -58,6 +64,8 @@ extern HANDLE mtx;
 uint64_t getReadableTimestamp(uint64_t timestamp);
 
 void drawTime(Mat& frame, double time);
+
+void drawTimeAndFPS(Mat& frame, double time, int fps);
 
 void dbhere(int a = 0);
 
@@ -84,14 +92,17 @@ void createMono8Mat(Mat& frame, int width, int height);
 */
 void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size);
 
-// This function acquires and saves 10 images from a device.
-// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, boolean* runSignal);
 
-// This function acts as the body of the example; please see NodeMapInfo example
-// for more in-depth comments on setting up cameras.
-int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
+// Get infor
+void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam);
 
+// Processing recording feature
+void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight, int frameRate, VideoWriter& vOut, string file_prefix, string videoType);
+
+// Draw GUI components
+void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, bool& acquireSignal, bool& runSignal, bool& runRecord, CameraPtr& pCam, INodeMap& nodeMap, string camSerial);
 
 
 //int oldmain(int /*argc*/, char** /*argv*/);
+
+#endif // !TStracker_H
