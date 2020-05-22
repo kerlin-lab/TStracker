@@ -210,4 +210,4 @@ dlg->Connect(*pCamera);									// Connect the dialog to the camera
 dlg->Open();											// show the dialog
 
 // Set up a thread uses OpenCV to acquire and save image
-AfxBeginThread(openCVCamCapture, pCamera);*/
+AfxBeginThread(openCVCamTuning, pCamera);*/

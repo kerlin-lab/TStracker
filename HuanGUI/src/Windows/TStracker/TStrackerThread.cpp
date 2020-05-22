@@ -1,6 +1,10 @@
 #include "TStrackerThread.h"
 
-CamAcquireThreadInfo::CamAcquireThreadInfo(
+extern string ALL_CAM_RECORD_WINDOWS_NAME = "All cameras";
+
+
+CamAcquireGUIThreadInfo::CamAcquireGUIThreadInfo(
+	AFX_THREADPROC threadProc,
 	string cSerial,
 	CameraPtr* camPTR,
 	GUI::GUIFactory gui,
@@ -29,29 +33,65 @@ CamAcquireThreadInfo::CamAcquireThreadInfo(
 	(this->propDialog)->Connect(*camPTR);									// Connect the dialog to the camera
 	(this->propDialog)->Open();												// show the dialog
 																			// Set up a thread uses OpenCV to acquire and save image
-	this->threadObjectPtr = AfxBeginThread(openCVCamCapture, this);
+	this->threadObjectPtr = AfxBeginThread(threadProc, this);
 }
 
-// @para: a pointer to a CamAcquireThreadInfo of this thread
-UINT __cdecl openCVCamCapture(LPVOID para)
+void CamAcquireGUIThreadInfo::CleanUpThreadInfo()
 {
-	// parameter is a pointer to a CamAcquireThreadInfo
-	CamAcquireThreadInfo* threadInfo = (CamAcquireThreadInfo*)para;
+	WaitForSingleObject(mtx, INFINITE);
+	this->threadStatus = false;
+	this->runGUI = false;
+	this->acquireSignal = false;
+	this->cameraInitStatus = false;
+	this->runRecord = false;
+	ReleaseMutex(mtx);
+}
+
+// @para: a pointer to a CamAcquireGUIThreadInfo of this thread
+UINT __cdecl openCVCamTuning(LPVOID para)
+{
+	// parameter is a pointer to a CamAcquireGUIThreadInfo
+	CamAcquireGUIThreadInfo* threadInfo = (CamAcquireGUIThreadInfo*)para;
 	CameraPtr pCam = *(threadInfo->camPtr);
 	
 	// Run acquisition
 	RunAcquisition(threadInfo);
 	
-	// Marking thread is terminated (using thread-safe operation)
-	WaitForSingleObject(mtx, INFINITE);
-	threadInfo->threadStatus = false;
-	ReleaseMutex(mtx);
+	// Marking thread terminated (using thread-safe operation)
+	threadInfo->CleanUpThreadInfo();
 	return 0;
+}
+
+// Run the all cameras record process
+UINT __cdecl openCVAllCamRecord(LPVOID para)
+{
+	// parameter is a pointer to a CamAcquireGUIThreadInfo
+	CamAcquireGUIThreadInfo* threadInfo = (CamAcquireGUIThreadInfo*)para;
+
+	RunRecordAll(threadInfo);
+
+	// Marking thread terminated (using thread-safe operation)
+	threadInfo->CleanUpThreadInfo();
+	return 0;
+}
+
+// Execute the camrecord all process
+void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
+{
+	// TODO 2: your code down here
+
+	//// Config all cameras for simultenous recording
+	
+	// Initialize all cameras
+	
+	// Enable IEEE1588
+
+	//// Run the GUI
 }
 
 // This function acquires and saves 10 images from a device.
 // @para runGUI: a boolean variable instrcuts the acquiring loop when to stop
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireThreadInfo* threadInfo)
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireGUIThreadInfo* threadInfo)
 {
 	int result = 0;
 	int imgWidth, imgHeight, imgSize, frameRate;
@@ -285,7 +325,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
-int RunAcquisition(CamAcquireThreadInfo* threadInfo)
+int RunAcquisition(CamAcquireGUIThreadInfo* threadInfo)
 {
 	int result;
 	CameraPtr pCam = *threadInfo->camPtr;
@@ -328,7 +368,7 @@ int RunAcquisition(CamAcquireThreadInfo* threadInfo)
 // Draw GUI components
 // This function is thread-safe as long as it is called between WaitForSingleObject and ReleaseMutex
 
-void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireThreadInfo* threadInfo)
+void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo)
 {
 
 	static char* BUTTON_START = "Start Acquisition";

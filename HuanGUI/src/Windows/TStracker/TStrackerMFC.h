@@ -12,7 +12,7 @@
 #define RECORD_ALL_CAMS_BUTTON_ID 2
 
 // Global variable
-extern unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
+extern unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
 
 
 class TStrackerMain : public CWinApp
@@ -40,7 +40,7 @@ public:
 	static GUI::GUIFactory gui;
 	static CameraSelectionDlg * camSelectDlg;		// Pointer to the camera selector dialog
 	static SystemPtr spinSys;						// Pointer to the kernel of Spinnaker SDK
-													//static unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
+													//static unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
 };
 
 

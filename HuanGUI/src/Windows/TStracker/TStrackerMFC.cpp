@@ -1,11 +1,11 @@
 #include "TStrackerMFC.h"
 
-unordered_map<string, CamAcquireThreadInfo*>	CamList;		// Mapping the camera to the object using its serial
+unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
 
 																// Static member initialization
 CameraSelectionDlg * TStrackerMain::camSelectDlg= nullptr;		// Pointer to the camera selector dialog
 SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker SDK
-//unordered_map<string, CamAcquireThreadInfo*> TStrackerMain::CamList;				
+//unordered_map<string, CamAcquireGUIThreadInfo*> TStrackerMain::ThreadList;				
 GUI::GUIFactory TStrackerMain::gui;
 
 TStrackerMain::TStrackerMain()
@@ -89,13 +89,13 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 			// Get the camera Serial number
 			string camSerial = (*pCamera)->DeviceSerialNumber();
 
-			// Check if there is already a connection to this camera in CamList
-			if (CamList.count(camSerial))
+			// Check if there is already a connection to this camera in ThreadList
+			if (ThreadList.count(camSerial))
 			{
 				//MessageBox(NULL, "OLD", "INFORM", MB_OK);
 				// There is one CameraPtr in the list to this camera
 
-				CamAcquireThreadInfo* threadInfo = CamList[camSerial];
+				CamAcquireGUIThreadInfo* threadInfo = ThreadList[camSerial];
 				// Check if thread has been terminated
 				if (!threadInfo->threadStatus)
 				{
@@ -104,7 +104,7 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 					// So delete the object of the old thread
 					delete threadInfo;
 					// create a new thread and get it running acquisition 
-					threadInfo = CamList[camSerial] = new CamAcquireThreadInfo(camSerial, pCamera, TStrackerMain::gui);
+					threadInfo = ThreadList[camSerial] = new CamAcquireGUIThreadInfo(openCVCamTuning,camSerial, pCamera, TStrackerMain::gui);
 				}
 				else
 				{
@@ -123,7 +123,7 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 				// This camera is new!
 
 				// Create a thread object to acquire the image from this camera
-				CamList[camSerial] = new CamAcquireThreadInfo(camSerial, pCamera, TStrackerMain::gui);
+				ThreadList[camSerial] = new CamAcquireGUIThreadInfo(openCVCamTuning, camSerial, pCamera, TStrackerMain::gui);
 			}
 		}
 	}
@@ -188,5 +188,43 @@ void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
 // Record all cameras button handler
 void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 {
+	//// Close all currently running single camera video windows
+	
+	for (auto thread: ThreadList)
+	{
+		// Terminate GUI thread of windows that is still alive
+		if (thread.second->threadStatus)
+		{
+			// This needs to be threadsafe, so
+			WaitForSingleObject(mtx, INFINITE);
+			thread.second->runGUI = false;		// Signal the thread to end
+			ReleaseMutex(mtx);
+			WaitForSingleObject(thread.second->threadObjectPtr, INFINITE);	// Wait for the thread actually ends
+		}
+	}
+
+	//// Create the thread that displays GUI and control panel
+	if (!ThreadList.count(ALL_CAM_RECORD_WINDOWS_NAME))
+	{
+		// If user has never run the thread before, so create a threadinfo object for this
+		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, ALL_CAM_RECORD_WINDOWS_NAME, nullptr, TStrackerMain::gui);
+	}
+	else
+	{
+		// There already exists a ThreadInfo object
+		// Check if the thread is still alive
+		if (ThreadList[ALL_CAM_RECORD_WINDOWS_NAME]->threadStatus)
+		{
+			// This thread is still running so may be user accidentally click record all again
+			// Inform them then
+			MessageBox("The all cameras recording process is still running!", "Notice", MB_OK);
+		}
+		else
+		{
+			// This thread has been terminated, so regenerate the thread
+			delete ThreadList[ALL_CAM_RECORD_WINDOWS_NAME];
+			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, ALL_CAM_RECORD_WINDOWS_NAME, nullptr, TStrackerMain::gui);
+		}
+	}
 	return;
 }

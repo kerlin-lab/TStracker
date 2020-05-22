@@ -1,11 +1,19 @@
 #ifndef TSTRACKERTHREAD_H
 #define TSTRACKERTHREAD_H
 
+// Include some functions
 #include "TStracker.h"
+
+// For OpenCV gui
 #include "cvui.h"
 
+// TODO 1: Fix the compiling error when uncomment this line, this will be needed to get CameraList
+//// For Spinnaker Cameras
+//#include <spinc\SpinnakerC.h>
 
-class CamAcquireThreadInfo
+extern string ALL_CAM_RECORD_WINDOWS_NAME;
+
+class CamAcquireGUIThreadInfo
 {
 public:
 	string camSerial;
@@ -27,7 +35,8 @@ public:
 	@Param cInitStatus: Controlling the camera Init() status, if false, the camPtr->DeInit() will be called
 	@Param threadStt: false means the thread associated with the object has been terminated, should be true when creating a new thread
 	*/
-	CamAcquireThreadInfo(
+	CamAcquireGUIThreadInfo(
+		AFX_THREADPROC threadProc,		// The function this thread will run
 		string cSerial,
 		CameraPtr* camPTR,
 		GUI::GUIFactory gui,
@@ -36,24 +45,31 @@ public:
 		boolean runRecord = false,		// No recording when starting
 		boolean cInitStatus = true,
 		boolean threadStt = true);		// True means thread is alive
+	
+	void CleanUpThreadInfo();
 };
 
 
 // Using openCV to show image in a different thread
-UINT __cdecl openCVCamCapture(LPVOID camPtr);
+UINT __cdecl openCVCamTuning(LPVOID camPtr);
+
+// Run the all cameras record process
+UINT __cdecl openCVAllCamRecord(LPVOID para);
 
 // Draw GUI components
-void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireThreadInfo* threadInfo);
+void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo);
 
+// Execute the camrecord all process
+void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo);
 
 // This function acquires and saves 10 images from a device.
 // @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
-int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireThreadInfo* threadInfo);
+int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireGUIThreadInfo* threadInfo);
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
 //int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
-int RunAcquisition(CamAcquireThreadInfo* threadInfo);
+int RunAcquisition(CamAcquireGUIThreadInfo* threadInfo);
 
 
 #endif
