@@ -8,7 +8,7 @@
 #include "cvui.h"
 
 //// For Spinnaker Cameras
-#include <spinc\SpinnakerC.h>
+#include "ImageInfo.h"
 
 extern string ALL_CAM_RECORD_WINDOWS_NAME;
 
@@ -82,4 +82,13 @@ void deinitAllCam(CameraList& camList);
 // It enables IEEE 1588
 bool ConfigureIEEE1588(const CameraList& camList);
 
+
+// Configure the external trigger to use when IEEE1588 is not available
+bool ConfigureExternalTrigger();
+
+// Activate acquisition on all camera
+bool runAcquisitionAllCams(CameraList& camList);
+
+// Running the OpenCV GUI of recording all
+void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList);
 #endif

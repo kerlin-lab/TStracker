@@ -86,7 +86,7 @@ UINT __cdecl openCVAllCamRecord(LPVOID para)
 // Execute the camrecord all process
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 {
-	// TODO 2: your code down here
+	// TODO 4: your code down here
 	CameraList camList;
 
 	//Config all cameras for simultenous recording
@@ -98,12 +98,32 @@ void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 	else
 	{
 		/// Run the GUI
+		runGUIRecordAllCams(threadInfo,camList);
 	}
 
-	// Deinit all cam
+	// De-init all cam
 	deinitAllCam(camList);
 }
 
+void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList)
+{
+	//// Some setting up before run GUI
+
+	// Activate running record right away
+	WaitForSingleObject(mtx, INFINITE);	// TODO N+1: Is this thread-safe wrapping needed here?
+	threadInfo->runRecord = true;	// Automatically run recording
+	ReleaseMutex(mtx);
+
+	// start acquisition on all cameras
+	runAcquisitionAllCams(camList);
+
+	//// Rendering the GUI
+
+	while (threadInfo->runGUI)
+	{
+		// TODO 2: Code to render GUI
+	}
+}
 
 
 void initAllCam(CameraList& camList)
@@ -126,6 +146,32 @@ void deinitAllCam(CameraList& camList)
 	}
 }
 
+// Configure the external trigger to use when IEEE1588 is not available
+bool ConfigureExternalTrigger()
+{
+	// TODO 3: implement configure the external trigger
+	return false;
+}
+// Activate acquisition on all camera
+// This function needs to be thread-safe because we want all cameras to start at the same time
+bool runAcquisitionAllCams(CameraList& camList)
+{
+	WaitForSingleObject(mtx, NULL);
+	for (unsigned i = 0; i < camList.GetSize(); i++)
+	{
+		try
+		{
+			camList.GetByIndex(i)->AcquisitionStart();
+		}
+		catch (Spinnaker::Exception e)
+		{
+			MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+			return false;
+		}
+	}
+	ReleaseMutex(mtx);
+	return true;
+}
 
 
 // Congifuring all available cameras
@@ -153,7 +199,15 @@ bool configAllCams4SimultenousRecording(CameraList& camList)
 		initAllCam(camList);
 
 		// Synchronize all camera timer by enabling IEE1588
-		if (!ConfigureIEEE1588(camList))
+		if (ConfigureIEEE1588(camList))
+		{
+			return true;
+		} // if IEEE1588 is not available, then try to use external trigger system
+		else if(ConfigureExternalTrigger())
+		{
+			return true;
+		}
+		else // TODO N: Maybe considering using software trigger here
 		{
 			return false;
 		}
@@ -178,14 +232,22 @@ bool ConfigureIEEE1588(const CameraList& camList)
 
 			// Enable IEEE 1588 settings
 			CBooleanPtr ptrIEEE1588 = pCam->GetNodeMap().GetNode("GevIEEE1588");
-			if (!IsAvailable(ptrIEEE1588) || !IsWritable(ptrIEEE1588))
+			if (!IsAvailable(ptrIEEE1588))
 			{
-				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to enable IEEE 1588 (node retrieval). Aborting")).c_str(), "Error", MB_OK);
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" IEEE 1588 is not available. Aborting")).c_str(), "Error", MB_OK);
 				return false;
 			}
-
-			// Enable IEEE 1588
-			ptrIEEE1588->SetValue(true);
+			else if(!IsWritable(ptrIEEE1588))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" IEEE1588 can not be configured")).c_str(), "Error", MB_OK);
+				return false;
+			}
+			else
+			{
+				// If no error then
+				// Enable IEEE 1588
+				ptrIEEE1588->SetValue(true);
+			}
 		}
 
 		// Needs at least 6 secconds for the IEEE1588 to be enabled fully throughout the network, so let wait
