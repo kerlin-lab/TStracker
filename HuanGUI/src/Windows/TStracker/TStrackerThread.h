@@ -7,9 +7,8 @@
 // For OpenCV gui
 #include "cvui.h"
 
-// TODO 1: Fix the compiling error when uncomment this line, this will be needed to get CameraList
 //// For Spinnaker Cameras
-//#include <spinc\SpinnakerC.h>
+#include <spinc\SpinnakerC.h>
 
 extern string ALL_CAM_RECORD_WINDOWS_NAME;
 
@@ -71,5 +70,16 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 //int RunAcquisition(CameraPtr pCam, boolean* runAcquireSignal, boolean* camStatus);
 int RunAcquisition(CamAcquireGUIThreadInfo* threadInfo);
 
+// Congifuring all available cameras
+// Return true if succesfully initializing all cameras
+bool configAllCams4SimultenousRecording(CameraList& camList);
+
+void initAllCam(CameraList& camList);
+
+void deinitAllCam(CameraList& camList);
+
+// This function configures IEEE 1588 settings on each camera
+// It enables IEEE 1588
+bool ConfigureIEEE1588(const CameraList& camList);
 
 #endif

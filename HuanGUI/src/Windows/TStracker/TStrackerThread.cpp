@@ -23,16 +23,23 @@ CamAcquireGUIThreadInfo::CamAcquireGUIThreadInfo(
 	this->cameraInitStatus = cInitStatus;
 	this->threadStatus = threadStt;
 
-	// Open Acquisition and the property dialog box for the clicked camera
+	if (camPTR != nullptr)
+	{
+		// if camPtr is not a null pointer, so this thread is to control a single camera
 
-	// Initialize the camera 
-	(*camPTR)->Init();														//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
-																			// Set up property dialog for this camera
-	gui.ConnectGUILib(*camPTR);												// This some how prevent the camera selection box from disapearing after choosing a camera
-	this->propDialog = new GUI::PropertyGridDlg();							// this can be replaced with new GUI::PropertyGridDlg();
-	(this->propDialog)->Connect(*camPTR);									// Connect the dialog to the camera
-	(this->propDialog)->Open();												// show the dialog
-																			// Set up a thread uses OpenCV to acquire and save image
+		// Open Acquisition and the property dialog box for the clicked camera
+
+		// Initialize the camera 
+		(*camPTR)->Init();														//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
+																				// Set up property dialog for this camera
+		gui.ConnectGUILib(*camPTR);												// This some how prevent the camera selection box from disapearing after choosing a camera
+		this->propDialog = new GUI::PropertyGridDlg();							// this can be replaced with new GUI::PropertyGridDlg();
+		(this->propDialog)->Connect(*camPTR);									// Connect the dialog to the camera
+		(this->propDialog)->Open();												// show the dialog
+																				// Set up a thread uses OpenCV to acquire and save image
+	}
+
+	// Run the thread
 	this->threadObjectPtr = AfxBeginThread(threadProc, this);
 }
 
@@ -67,6 +74,7 @@ UINT __cdecl openCVAllCamRecord(LPVOID para)
 {
 	// parameter is a pointer to a CamAcquireGUIThreadInfo
 	CamAcquireGUIThreadInfo* threadInfo = (CamAcquireGUIThreadInfo*)para;
+	//MessageBox(NULL, "Running", "OK", MB_OK);
 
 	RunRecordAll(threadInfo);
 
@@ -79,15 +87,173 @@ UINT __cdecl openCVAllCamRecord(LPVOID para)
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 {
 	// TODO 2: your code down here
+	CameraList camList;
 
-	//// Config all cameras for simultenous recording
-	
-	// Initialize all cameras
-	
-	// Enable IEEE1588
+	//Config all cameras for simultenous recording
+	if (!configAllCams4SimultenousRecording(camList))
+	{
+		// If cannot do this
+		MessageBox(NULL, "Attempt to config all cameras failed", "Error", MB_OK);
+	}
+	else
+	{
+		/// Run the GUI
+	}
 
-	//// Run the GUI
+	// Deinit all cam
+	deinitAllCam(camList);
 }
+
+
+
+void initAllCam(CameraList& camList)
+{
+	CameraPtr camPtr;
+	for (unsigned i = 0; i < camList.GetSize(); i++)
+	{
+		camPtr = camList.GetByIndex(i);
+		camPtr->Init();
+	}
+}
+
+void deinitAllCam(CameraList& camList)
+{
+	CameraPtr camPtr;
+	for (unsigned i = 0; i < camList.GetSize(); i++)
+	{
+		camPtr = camList.GetByIndex(i);
+		camPtr->DeInit();
+	}
+}
+
+
+
+// Congifuring all available cameras
+// Return true if succesfully initializing all cameras
+bool configAllCams4SimultenousRecording(CameraList& camList)
+{
+	SystemPtr system = System::GetInstance();
+	camList = system->GetCameras();
+
+	// Finish if there are no cameras
+	if (camList.GetSize() == 0)
+	{
+		// Clear camera list before releasing system
+		camList.Clear();
+
+		// Release system
+		system->ReleaseInstance();
+
+		MessageBox(NULL, "No camera detected", "Error", MB_OK);
+		return false;
+	}
+	else
+	{
+		// Init all camera
+		initAllCam(camList);
+
+		// Synchronize all camera timer by enabling IEE1588
+		if (!ConfigureIEEE1588(camList))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+// This function configures IEEE 1588 settings on each camera
+// It enables IEEE 1588
+bool ConfigureIEEE1588(const CameraList& camList)
+{
+	int result = 0;
+	CameraPtr pCam = nullptr;
+
+	try
+	{
+		// Enable IEEE 1588 settings for each camera
+		for (unsigned int i = 0; i < camList.GetSize(); i++)
+		{
+			// Select camera
+			pCam = camList.GetByIndex(i);
+
+			// Enable IEEE 1588 settings
+			CBooleanPtr ptrIEEE1588 = pCam->GetNodeMap().GetNode("GevIEEE1588");
+			if (!IsAvailable(ptrIEEE1588) || !IsWritable(ptrIEEE1588))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to enable IEEE 1588 (node retrieval). Aborting")).c_str(), "Error", MB_OK);
+				return false;
+			}
+
+			// Enable IEEE 1588
+			ptrIEEE1588->SetValue(true);
+		}
+
+		// Needs at least 6 secconds for the IEEE1588 to be enabled fully throughout the network, so let wait
+		MessageBox(NULL, "Waiting for IEEE1588 to be enabled", "Note", MB_OK);
+		Sleep(10000);
+		MessageBox(NULL, "Done wainting, move on to checking", "Note", MB_OK);
+		// Check if IEEE 1588 settings is enabled for each camera
+
+		for (unsigned int i = 0; i < camList.GetSize(); i++)
+		{
+			// Select camera
+			pCam = camList.GetByIndex(i);
+			CCommandPtr ptrGevIEEE1588DataSetLatch = pCam->GetNodeMap().GetNode("GevIEEE1588DataSetLatch");
+			if (!IsAvailable(ptrGevIEEE1588DataSetLatch))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to execute IEEE 1588 data set latch (node retrieval)")).c_str(), "Error", MB_OK);
+				return false;
+			}
+			ptrGevIEEE1588DataSetLatch->Execute();
+
+			// Check if 1588 status is not in intialization
+			CEnumerationPtr ptrGevIEEE1588StatusLatched = pCam->GetNodeMap().GetNode("GevIEEE1588StatusLatched");
+			if (!IsAvailable(ptrGevIEEE1588StatusLatched) || !IsReadable(ptrGevIEEE1588StatusLatched))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to read IEEE1588 status (node retrieval). Aborting...")).c_str(), "Error", MB_OK);
+				return false;
+			}
+
+			CEnumEntryPtr ptrGevIEEE1588StatusLatchedInitializing =
+				ptrGevIEEE1588StatusLatched->GetEntryByName("Initializing");
+			if (!IsAvailable(ptrGevIEEE1588StatusLatchedInitializing) ||
+				!IsReadable(ptrGevIEEE1588StatusLatchedInitializing))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to get IEEE1588 status (enum entry retrieval). Aborting")).c_str(), "Error", MB_OK);
+				return false;
+			}
+
+			if (ptrGevIEEE1588StatusLatched->GetIntValue() == ptrGevIEEE1588StatusLatchedInitializing->GetValue())
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" is in Initializing mode. It can't send action command.")).c_str(), "Error", MB_OK);
+				return false;
+			}
+
+			// Check if camera(s) is(are) synchronized to master camera
+			// Verify if camera offset from master is larger than 1000ns which means camera(s) is(are) not synchronized
+			CIntegerPtr ptrGevIEEE1588OffsetFromMasterLatched =
+				pCam->GetNodeMap().GetNode("GevIEEE1588OffsetFromMasterLatched");
+			if (!IsAvailable(ptrGevIEEE1588OffsetFromMasterLatched) ||
+				!IsReadable(ptrGevIEEE1588OffsetFromMasterLatched))
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" Unable to read IEEE1588 offset (node retrieval). Aborting")).c_str(), "Error", MB_OK);
+				return false;
+			}
+
+			if (ptrGevIEEE1588OffsetFromMasterLatched->GetValue() > 1000)
+			{
+				MessageBox(NULL, (string("Camera ") + to_string(i) + string(" has offset higher than 1000ns. Camera(s) is(are) not synchronized")).c_str(), "Error", MB_OK);
+				return false;
+			}
+		}
+	}
+	catch (Spinnaker::Exception& e)
+	{
+		MessageBox(NULL, e.what(), "Error note", MB_OK);
+	}
+	return false;
+}
+
 
 // This function acquires and saves 10 images from a device.
 // @para runGUI: a boolean variable instrcuts the acquiring loop when to stop
@@ -234,7 +400,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 					else
 					{
 
-						ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+						ImagePtr convertedImage = pResultImage->Convert(PixelFormatEnums::PixelFormat_Mono8, ColorProcessingAlgorithm::HQ_LINEAR);
 						// Converting to OpenCV Mat
 						ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
 						// Get timestamp
@@ -266,7 +432,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 				}
 				catch (Spinnaker::Exception& e)
 				{
-					if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+					if (e.GetError() != Spinnaker::Error::SPINNAKER_ERR_TIMEOUT)
 					{
 						MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 						break;
@@ -309,7 +475,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+		if (e.GetError() != Spinnaker::Error::SPINNAKER_ERR_TIMEOUT)
 		{
 			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 		}
@@ -354,7 +520,7 @@ int RunAcquisition(CamAcquireGUIThreadInfo* threadInfo)
 	}
 	catch (Spinnaker::Exception& e)
 	{
-		if (e.GetError() != SPINNAKER_ERR_TIMEOUT)
+		if (e.GetError() != Spinnaker::Error::SPINNAKER_ERR_TIMEOUT)
 		{
 			MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
 			waitKey(1000);

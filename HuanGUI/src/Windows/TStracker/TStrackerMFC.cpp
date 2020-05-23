@@ -193,24 +193,29 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	for (auto thread: ThreadList)
 	{
 		// Terminate GUI thread of windows that is still alive
+		//MessageBox("1", "1", MB_OK);
 		if (thread.second->threadStatus)
 		{
 			// This needs to be threadsafe, so
 			WaitForSingleObject(mtx, INFINITE);
 			thread.second->runGUI = false;		// Signal the thread to end
 			ReleaseMutex(mtx);
-			WaitForSingleObject(thread.second->threadObjectPtr, INFINITE);	// Wait for the thread actually ends
+			WaitForSingleObject(thread.second->threadObjectPtr, INFINITE);	// Wait for the thread actually 
+			// Turn off the property dialog if it is still openning
+			thread.second->propDialog->Close();
 		}
 	}
 
 	//// Create the thread that displays GUI and control panel
 	if (!ThreadList.count(ALL_CAM_RECORD_WINDOWS_NAME))
 	{
+		//MessageBox("2", "2", MB_OK);
 		// If user has never run the thread before, so create a threadinfo object for this
 		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, ALL_CAM_RECORD_WINDOWS_NAME, nullptr, TStrackerMain::gui);
 	}
 	else
 	{
+		//MessageBox("3", "3", MB_OK);
 		// There already exists a ThreadInfo object
 		// Check if the thread is still alive
 		if (ThreadList[ALL_CAM_RECORD_WINDOWS_NAME]->threadStatus)
