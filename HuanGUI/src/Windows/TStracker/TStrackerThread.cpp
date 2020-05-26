@@ -76,6 +76,8 @@ UINT __cdecl openCVAllCamRecord(LPVOID para)
 	CamAcquireGUIThreadInfo* threadInfo = (CamAcquireGUIThreadInfo*)para;
 	//MessageBox(NULL, "Running", "OK", MB_OK);
 
+	// Run the GUI
+
 	RunRecordAll(threadInfo);
 
 	// Marking thread terminated (using thread-safe operation)
@@ -108,21 +110,198 @@ void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList)
 {
 	//// Some setting up before run GUI
+	camPtr pCam;	// This is just middleman
 
 	// Activate running record right away
 	WaitForSingleObject(mtx, INFINITE);	// TODO N+1: Is this thread-safe wrapping needed here?
 	threadInfo->runRecord = true;	// Automatically run recording
+	// Setting up flags
+	threadInfo->runRecord = true;
+	threadInfo->acquireSignal = true;
 	ReleaseMutex(mtx);
+
+	// Creating map of image captured from each camera
+	int maxHeight, sumWidth;
+	maxHeight = sumWidth = 0;
+	vector<ImageInfo> camCapImg;
+	for(unsigned i=0;i<camList.GetSize();i++)
+	{
+		// Get the camera object
+		pCam = camList.GetByIndex(i);
+		// Create an image object obtained from the camera
+		camCapImg.emplace_back();
+		// Retrive information about the image represneted by this object from the camera
+		retriveImageInfo(pCam->GetTLDeviceNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,pCam);
+		// Save the camera Serial to each object too
+		camCapImg.back().camSerial = pCam->DeviceSerialNumber();
+		//// Do some calculation for the GUI mat
+		// Find max height
+		if(maxHeight < camCapImg[i].imgHeight)
+		{
+			maxHeight = camCapImg[i].imgHeight
+		}
+		// Find total width
+		sumWidth += camCapImg[i].imgWidth;
+	}
+
+	//// Rendering the GUI
+	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
+	ImageInfo GUIWindow(sumWidth+GENERAL_BUTTON_HEIGHT,maxHeight + GENERAL_BUTTON_HEIGHT);
 
 	// start acquisition on all cameras
 	runAcquisitionAllCams(camList);
 
-	//// Rendering the GUI
-
 	while (threadInfo->runGUI)
 	{
 		// TODO 2: Code to render GUI
+
+		// Check if the windows exists if not create one
+		// This also prevent stalled windows when user close windows by the x button not the detach camera button
+		// Solution proposed by https://medium.com/@mh_yip/opencv-detect-whether-a-window-is-closed-or-close-by-press-x-button-ee51616f7088
+		if (getWindowProperty(ALL_CAM_RECORD_WINDOWS_NAME, cv::WND_PROP_VISIBLE) <= 0.5)
+		{
+			//Windows is closed or does not exist
+			// Create a OpenCV window for displaying
+			namedWindow(ALL_CAM_RECORD_WINDOWS_NAME);
+			// Register with cvui
+			cvui::init(ALL_CAM_RECORD_WINDOWS_NAME);
+		}
+
+		// Draw image if is capturing
+		if (threadInfo->acquireSignal && threadInfo->runRecord)
+		{
+			try
+			{
+				// Get image from each camera
+				for(unsigned i;i<camList.GetSize();i++)
+				{
+					// Get camera pointer
+					pCam = camList.GetByIndex(i);
+
+					//
+					// Retrieve next received image
+					//
+					// *** NOTES ***
+					// Capturing an image houses images on the camera buffer. Trying
+					// to capture an image that does not exist will hang the camera.
+					//
+					// *** LATER ***
+					// Once an image from the buffer is saved and/or no longer
+					// needed, the image must be released in order to keep the
+					// buffer from filling up.
+					//
+					ImagePtr pResultImage = pCam->GetNextImage(3000);
+
+					//
+					// Ensure image completion
+					//
+					// *** NOTES ***
+					// Images can easily be checked for completion. This should be
+					// done whenever a complete image is expected or required.
+					// Further, check image status for a little more insight into
+					// why an image is incomplete.
+					//
+					if (pResultImage->IsIncomplete())
+					{
+						// Retrieve and print the image status description
+						//cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
+						//	<< "..." << endl
+						//	<< endl;
+						MessageBox(NULL, (string("Image incomplete in acquisition of camera") + to_string(i)).c_str(), "Error", MB_OK);
+						waitKey(500);
+					}
+					else
+					{
+
+						ImagePtr convertedImage = pResultImage->Convert(PixelFormatEnums::PixelFormat_Mono8, ColorProcessingAlgorithm::HQ_LINEAR);
+						// Converting to OpenCV Mat
+						// ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
+						camCapImg[i].getFromImgPtr(convertedImage);
+						// Get timestamp
+						timestamp = convertedImage->GetTimeStamp();
+						// Draw timestamp
+						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
+						// Show the frame
+
+						//imshow("test", imgFrame);
+
+						// Save frame to file if recording is running
+
+						// TODO 5: implement this runRecordFeature but for multiple cameras
+						// runRecordFeature(threadInfo->runRecord, imgFrame, imgWidth, imgHeight, frameRate, vOut, camSerial, ".avi");
+
+						//if (waitKey(1) >= 0)
+						//{
+						//	break;
+						//}
+					}
+
+					//
+					// Release image
+					//
+					// *** NOTES ***
+					// Images retrieved directly from the camera (i.e. non-converted
+					// images) need to be released in order to keep from filling the
+					// buffer.
+					//
+					pResultImage->Release();
+				}
+			}
+			catch (Spinnaker::Exception& e)
+			{
+				if (e.GetError() != Spinnaker::Error::SPINNAKER_ERR_TIMEOUT)
+				{
+					MessageBox(NULL, e.GetFullErrorMessage(), "Error", MB_OK);
+					break;
+				}
+				result = -1;
+			}
+		}
+
+		// --------------------- Drawing the GUI -----------------------------------
+		WaitForSingleObject(mtx, INFINITE);
+
+		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
+
+		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
+		drawGUIAllCam(GUIWindow.img, camCapImg,threadInfo, camList);
+
+		// Draw the change to the window
+		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow.img);
+		//cvui::imshow(camSerial, imgFrame);
+
+		// Update the window
+		waitKey(1);
+		ReleaseMutex(mtx);
 	}
+}
+
+
+void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
+{
+	//// Draw frame of two windows and one button
+	cvui::beginColumn(displayFrame);
+
+	// Render the button
+	if(cvui::button("Stop Recording"))
+	{
+		// Stop the recording
+		threadInfo->runRecord = false;
+	}
+
+	// Render the an images captured from each camera
+	cvui::beginRow();
+	for(unsigned i = 0; i < camCapImg.size();i++)
+	{
+		// Draw an image with a caption beneath
+		cvui::beginColumn();
+		cvui:image(camCapImg[i].img);
+		cvui:text(camCapImg[i].camSerial);
+		cvui::endColumn();
+	}
+	cvui::endRow();	
+
+	cvui::endColumn();
 }
 
 
@@ -626,7 +805,7 @@ void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgS
 	char*& SS_Button_label = ButtonManager[camSerial].first;
 	char*& SSRecord_Button_label = ButtonManager[camSerial].second;
 
-	Mat canvas(Size(imgWidth, 100), CV_8UC1, Scalar(30, 30, 30));
+	Mat canvas(Size(imgWidth, GENERAL_BUTTON_HEIGHT * 3), CV_8UC1, Scalar(30, 30, 30));
 
 	vconcat(canvas, imgFrame, frame);
 	//frame = imgFrame.clone();

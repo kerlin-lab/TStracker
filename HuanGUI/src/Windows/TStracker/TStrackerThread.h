@@ -10,6 +10,8 @@
 //// For Spinnaker Cameras
 #include "ImageInfo.h"
 
+#define GENERAL_BUTTON_HEIGHT 33
+
 extern string ALL_CAM_RECORD_WINDOWS_NAME;
 
 class CamAcquireGUIThreadInfo

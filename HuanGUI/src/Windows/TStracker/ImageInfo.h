@@ -18,7 +18,12 @@ using namespace cv;
 #include "Spinnaker.h"
 #include "SpinGenApi\SpinnakerGenApi.h"
 
-using namespace Spinnaker;
+using namespace Spinnaker;	
+
+// standard lib
+#include <string>
+
+using namespace std;
 
 class ImageInfo
 {
@@ -27,11 +32,33 @@ public:
 	int imgWidth;	// Width of the image
 	int imgHeight;	// Height of the image
 	int imgSize;	// Size = Width * Height
+	string camSerial;	// The serial of the camera from which the object img of this is obtained
 
-	ImageInfo(int imgWidth, int imgHeight);
+	ImageInfo():imgWidth(0),imgHeight(0),imgSize(0),camSerial(""){};
 
-	// TODO 1: Implement this function
+
+	ImageInfo(int imgWidth, int imgHeight, string camSerial = "");
+
+	/*
+	* The function convert a mono 8-bit gray scale image
+	* from Spinview ImagePtr to OpenCV Mat img in this class
+	* for the sake of performance
+	*
+	* NO type checking
+	* NO size checking
+	* the Input cv_con must be a continuous Mat (use the function createMono8Mat to get one)
+	* the size is width * height
+	*
+	* User need to do the task before calling the function
+	* ideally, the check should be done before acquisition takes place
+	* Copy the image saved in ImagePtr spin_con to the Mat of this object
+	*/
 	void getFromImgPtr(ImagePtr& spin_con);
+
+	/*
+	* Changing the size of the Mat member of this class
+	*/
+	void changeImgSize(int width, int height);
 };
 
 #endif // !_IMAGE_INFO_H_
