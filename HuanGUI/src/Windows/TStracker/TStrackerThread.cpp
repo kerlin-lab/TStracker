@@ -88,7 +88,7 @@ UINT __cdecl openCVAllCamRecord(LPVOID para)
 // Execute the camrecord all process
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 {
-	// TODO 4: your code down here
+	// TODO N: Check the Code down here
 	CameraList camList;
 
 	//Config all cameras for simultenous recording
@@ -123,7 +123,10 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	// Creating map of image captured from each camera
 	int maxHeight, sumWidth;
 	maxHeight = sumWidth = 0;
+	
+	vector<ImageSaver> saverThreads;
 	vector<ImageInfo> camCapImg;
+
 	for(unsigned i=0;i<camList.GetSize();i++)
 	{
 		// Get the camera object
@@ -142,6 +145,10 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		}
 		// Find total width
 		sumWidth += camCapImg[i].imgWidth;
+		
+		// TODO : may be you want to have a mechanism to name the output file
+		// Creating saving thread for each camera
+		saverThreads.emplace_back();
 	}
 
 	//// Rendering the GUI
@@ -153,7 +160,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 
 	while (threadInfo->runGUI)
 	{
-		// TODO 2: Code to render GUI
+		// TODO N: Check if the GUI rendering code below is correct
 
 		// Check if the windows exists if not create one
 		// This also prevent stalled windows when user close windows by the x button not the detach camera button
@@ -227,13 +234,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 
 						// Save frame to file if recording is running
 
-						// TODO 5: implement this runRecordFeature but for multiple cameras
-						// runRecordFeature(threadInfo->runRecord, imgFrame, imgWidth, imgHeight, frameRate, vOut, camSerial, ".avi");
-
-						//if (waitKey(1) >= 0)
-						//{
-						//	break;
-						//}
+						// TODO N: check this implementation of image saving is correct
+						saverThreads[i].addToSave(new ImageInfo(camCapImg[i]))
 					}
 
 					//
@@ -273,6 +275,16 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		// Update the window
 		waitKey(1);
 		ReleaseMutex(mtx);
+	}
+
+	// Signaling the saverThreads to terminate
+	for(unsigned i = 0 ;i<saverThreads.size();i++)
+	{
+		WaitForSingleObject(saverThreads[i].getThreadMutex());
+		saverThreads[i].signalTermination();
+		ReleaseMutex(saverThreads[i].getThreadMutex());
+		// Wait for the thread to terminate
+		WaitForSingleObject(saverThreads[i].threadObject,INFINITE);
 	}
 }
 
@@ -328,8 +340,8 @@ void deinitAllCam(CameraList& camList)
 // Configure the external trigger to use when IEEE1588 is not available
 bool ConfigureExternalTrigger()
 {
-	// TODO 3: implement configure the external trigger
-	return false;
+	// TODO 5: implement configure the external trigger
+	return true;
 }
 // Activate acquisition on all camera
 // This function needs to be thread-safe because we want all cameras to start at the same time

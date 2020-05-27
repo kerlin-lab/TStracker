@@ -11,7 +11,8 @@ set(SOURCE_FILE
 	./TStracker.cpp 
 	./TStrackerMFC.cpp
 	./TStrackerThread.cpp
-	./ImageInfo.cpp)
+	./ImageInfo.cpp
+	./ImageSaver.cpp)
 
 set(HEADER_FILE
 	./cvui.h
@@ -20,7 +21,8 @@ set(HEADER_FILE
 	./TStrackerMFC.h
 	./TStrackerThread.h
 	./stdafx.h
-	./ImageInfo.h)
+	./ImageInfo.h
+	./ImageSaver.h)
 
 # Open CV setting
 find_package(OpenCV REQUIRED)					# Link OpenCV

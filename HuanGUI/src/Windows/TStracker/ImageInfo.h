@@ -36,8 +36,12 @@ public:
 
 	ImageInfo():imgWidth(0),imgHeight(0),imgSize(0),camSerial(""){};
 
-
 	ImageInfo(int imgWidth, int imgHeight, string camSerial = "");
+
+	// Copy constructor
+	ImageInfo(const ImageInfo &obj) ;
+	
+	~ImageInfo();
 
 	/*
 	* The function convert a mono 8-bit gray scale image
