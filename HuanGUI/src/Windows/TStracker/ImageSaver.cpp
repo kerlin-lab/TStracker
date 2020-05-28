@@ -9,6 +9,7 @@ ImageSaver::ImageSaver()
     this->threadController = new SavingThreadController<ContainerType>(random_string() + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
+	tf::TIFF* tif = tf::TIFFOpen("foo.tif", "r");
 }
 
 ImageSaver::ImageSaver(std::string fileName)

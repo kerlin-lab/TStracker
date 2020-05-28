@@ -28,6 +28,12 @@ using namespace std;
 #include <opencv2/videoio/videoio_c.h>
 #include <opencv2/highgui/highgui_c.h>
 
+namespace tf
+{
+	#include <tiffio.h>
+}
+
+
 using namespace cv;
 
 
