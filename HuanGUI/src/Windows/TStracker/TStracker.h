@@ -90,7 +90,7 @@ void createMono8Mat(Mat& frame, int width, int height);
 * User need to do the task before calling the function
 * ideally, the check should be done before acquisition takes place
 */
-void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size);
+void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, unsigned size);
 
 
 // Get infor

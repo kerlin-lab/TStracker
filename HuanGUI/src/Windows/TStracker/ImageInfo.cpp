@@ -19,13 +19,16 @@ ImageInfo::~ImageInfo() {}
 // This function is based on the ImagePtr2CVMat_CV_8UC1 function in TStracker.h
 void ImageInfo::getFromImgPtr(ImagePtr& spin_con)
 {
-	uchar* rawData = (uchar*)spin_con->GetData();
-	uchar* p = this->img.ptr<uchar>(0);
-	int size = this->imgSize;
-	while (size--)
-	{
-		*(p++) = *(rawData++);
-	}
+	uchar* rawDataFromCam = (uchar*)spin_con->GetData();
+	uchar* Dest = this->img.ptr<uchar>(0);
+	unsigned size = this->imgSize;
+	memcpy(Dest, rawDataFromCam, size);
+	
+	// Old style copy, assume to be slower than memcpy
+	//while (size--)
+	//{
+	//	*(Dest++) = *(rawDataFromCam++);
+	//}
 }
 
 /*

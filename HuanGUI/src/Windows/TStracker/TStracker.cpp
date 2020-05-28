@@ -59,14 +59,17 @@ void createMono8Mat(Mat& frame, int width, int height)
 * User need to do the task before calling the function
 * ideally, the check should be done before acquisition takes place
 */
-void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, int size)
+void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, unsigned size)
 {
-	uchar* rawData = (uchar*)spin_con->GetData();
-	uchar* p = cv_con.ptr<uchar>(0);
-	while (size--)
-	{
-		*(p++) = *(rawData++);
-	}
+	uchar* rawDataFromCam = (uchar*)spin_con->GetData();
+	uchar* Dest = cv_con.ptr<uchar>(0);
+	memcpy(Dest, rawDataFromCam, size);
+
+	// Old style copy, assume to be slower than memcpy
+	//while (size--)
+	//{
+	//	*(Dest++) = *(rawDataFromCam++);
+	//}
 }
 
 
