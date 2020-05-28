@@ -9,6 +9,7 @@
 
 //// For Spinnaker Cameras
 #include "ImageInfo.h"
+#include "ImageSaver.h"
 
 #define GENERAL_BUTTON_HEIGHT 33
 
@@ -59,6 +60,9 @@ UINT __cdecl openCVAllCamRecord(LPVOID para);
 
 // Draw GUI components
 void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo);
+
+// Drawing the GUI for all cam capture
+void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList);
 
 // Execute the camrecord all process
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo);

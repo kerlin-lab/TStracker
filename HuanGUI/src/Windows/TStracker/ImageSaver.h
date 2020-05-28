@@ -1,6 +1,25 @@
 #ifndef _IMAGE_SAVER_H_
 #define _IMAGE_SAVER_H_
 
+	
+
+// For multi threadding
+#include <afxwin.h>
+
+// Spinview lib
+// General API
+#include "Spinnaker.h"
+#include "SpinGenApi\SpinnakerGenApi.h"
+
+using namespace Spinnaker;
+
+// standard lib
+#include <queue>
+#include <string>
+#include <random>
+
+using namespace std;
+
 // OpenCv lib
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -12,34 +31,16 @@
 using namespace cv;
 
 
-// Spinview lib
-// General API
-#include "Spinnaker.h"
-#include "SpinGenApi\SpinnakerGenApi.h"
-
-using namespace Spinnaker;	
-
-// For multi threadding
-#include <afxwin.h>
-
-// standard lib
-#include <queue>
-#include <string>
-#include <random>
-
-using namespace std;
-
-
 #include "ImageInfo.h"
 
 #define DEFAULT_FILENAME_LENGTH 5
 
-string DEFAULT_EXTENSION = ".avi";
+extern std::string DEFAULT_EXTENSION;
 
 typedef ImageInfo* ItemType;
 typedef queue<ItemType> ContainerType;
 
-template <typename T>;
+template <typename T>
 class SavingThreadController
 {
     public:
@@ -50,7 +51,7 @@ class SavingThreadController
     
 
     SavingThreadController(string fileName,T* container, bool fileIsOpen=false);
-}
+};
 
 class ImageSaver
 {
@@ -62,7 +63,7 @@ class ImageSaver
 
     ImageSaver();
     
-    ImageSaver(string fileName);
+	ImageSaver(std::string fileName);
 
     ~ImageSaver();
 

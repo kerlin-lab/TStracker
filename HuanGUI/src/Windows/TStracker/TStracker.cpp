@@ -82,6 +82,7 @@ void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgH
 		return;
 	}
 
+
 	frameRate = (int)ptrAcquisitionFrameRate->GetValue();
 	// Get image width and height in the setting
 	CIntegerPtr width = nodeMap.GetNode("Width");

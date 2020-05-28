@@ -2,6 +2,13 @@
 
 #define _IMAGE_INFO_H_
 
+// Spinview lib
+// General API
+#include "Spinnaker.h"
+#include "SpinGenApi\SpinnakerGenApi.h"
+
+using namespace Spinnaker;	
+
 // OpenCv lib
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -12,18 +19,13 @@
 
 using namespace cv;
 
-
-// Spinview lib
-// General API
-#include "Spinnaker.h"
-#include "SpinGenApi\SpinnakerGenApi.h"
-
-using namespace Spinnaker;	
-
 // standard lib
 #include <string>
 
 using namespace std;
+
+
+#define DEFAULT_BACKGROUND cv::Scalar(49, 52, 49)
 
 class ImageInfo
 {
@@ -32,9 +34,9 @@ public:
 	int imgWidth;	// Width of the image
 	int imgHeight;	// Height of the image
 	int imgSize;	// Size = Width * Height
-	string camSerial;	// The serial of the camera from which the object img of this is obtained
+	std::string camSerial;	// The serial of the camera from which the object img of this is obtained
 
-	ImageInfo():imgWidth(0),imgHeight(0),imgSize(0),camSerial(""){};
+	ImageInfo();
 
 	ImageInfo(int imgWidth, int imgHeight, string camSerial = "");
 

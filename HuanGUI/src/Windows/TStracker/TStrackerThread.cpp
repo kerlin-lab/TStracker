@@ -110,13 +110,13 @@ void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList)
 {
 	//// Some setting up before run GUI
-	camPtr pCam;	// This is just middleman
+	CameraPtr pCam;	// This is just middleman
+	int result = 0;
 
 	// Activate running record right away
 	WaitForSingleObject(mtx, INFINITE);	// TODO N+1: Is this thread-safe wrapping needed here?
-	threadInfo->runRecord = true;	// Automatically run recording
 	// Setting up flags
-	threadInfo->runRecord = true;
+	threadInfo->runRecord = true;		// Automatically run recording
 	threadInfo->acquireSignal = true;
 	ReleaseMutex(mtx);
 
@@ -126,6 +126,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	
 	vector<ImageSaver> saverThreads;
 	vector<ImageInfo> camCapImg;
+	int frameRate;
+	uint64_t timestamp;
 
 	for(unsigned i=0;i<camList.GetSize();i++)
 	{
@@ -134,14 +136,14 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		// Create an image object obtained from the camera
 		camCapImg.emplace_back();
 		// Retrive information about the image represneted by this object from the camera
-		retriveImageInfo(pCam->GetTLDeviceNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,pCam);
+		retriveImageInfo(pCam->GetNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,frameRate,pCam);
 		// Save the camera Serial to each object too
 		camCapImg.back().camSerial = pCam->DeviceSerialNumber();
 		//// Do some calculation for the GUI mat
 		// Find max height
 		if(maxHeight < camCapImg[i].imgHeight)
 		{
-			maxHeight = camCapImg[i].imgHeight
+			maxHeight = camCapImg[i].imgHeight;
 		}
 		// Find total width
 		sumWidth += camCapImg[i].imgWidth;
@@ -175,12 +177,13 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		}
 
 		// Draw image if is capturing
+
 		if (threadInfo->acquireSignal && threadInfo->runRecord)
 		{
 			try
 			{
 				// Get image from each camera
-				for(unsigned i;i<camList.GetSize();i++)
+				for(unsigned i=0;i<camList.GetSize();i++)
 				{
 					// Get camera pointer
 					pCam = camList.GetByIndex(i);
@@ -198,7 +201,6 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 					// buffer from filling up.
 					//
 					ImagePtr pResultImage = pCam->GetNextImage(3000);
-
 					//
 					// Ensure image completion
 					//
@@ -235,7 +237,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						// Save frame to file if recording is running
 
 						// TODO N: check this implementation of image saving is correct
-						saverThreads[i].addToSave(new ImageInfo(camCapImg[i]))
+						saverThreads[i].addToSave(new ImageInfo(camCapImg[i]));
 					}
 
 					//
@@ -266,21 +268,34 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
+
 		drawGUIAllCam(GUIWindow.img, camCapImg,threadInfo, camList);
 
 		// Draw the change to the window
 		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow.img);
-		//cvui::imshow(camSerial, imgFrame);
 
 		// Update the window
 		waitKey(1);
 		ReleaseMutex(mtx);
 	}
 
+	// Destroy OpenCV window
+	destroyWindow(ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
+
+	// End Streaming
+	for (unsigned i = 0; i < camList.GetSize(); i++)
+	{
+		pCam = camList.GetByIndex(i);
+		if (pCam->IsStreaming())
+		{
+			pCam->EndAcquisition();
+		}
+	}
+
 	// Signaling the saverThreads to terminate
 	for(unsigned i = 0 ;i<saverThreads.size();i++)
 	{
-		WaitForSingleObject(saverThreads[i].getThreadMutex());
+		WaitForSingleObject(saverThreads[i].getThreadMutex(),INFINITE);
 		saverThreads[i].signalTermination();
 		ReleaseMutex(saverThreads[i].getThreadMutex());
 		// Wait for the thread to terminate
@@ -292,13 +307,13 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
 {
 	//// Draw frame of two windows and one button
-	cvui::beginColumn(displayFrame);
+	cvui::beginColumn(displayFrame,5,5);
 
 	// Render the button
 	if(cvui::button("Stop Recording"))
 	{
 		// Stop the recording
-		threadInfo->runRecord = false;
+		threadInfo->runGUI = false;
 	}
 
 	// Render the an images captured from each camera
@@ -307,8 +322,8 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg,CamAcquireGUIT
 	{
 		// Draw an image with a caption beneath
 		cvui::beginColumn();
-		cvui:image(camCapImg[i].img);
-		cvui:text(camCapImg[i].camSerial);
+		cvui::image(camCapImg[i].img);
+		cvui::text(camCapImg[i].camSerial);
 		cvui::endColumn();
 	}
 	cvui::endRow();	
@@ -345,6 +360,7 @@ bool ConfigureExternalTrigger()
 }
 // Activate acquisition on all camera
 // This function needs to be thread-safe because we want all cameras to start at the same time
+
 bool runAcquisitionAllCams(CameraList& camList)
 {
 	WaitForSingleObject(mtx, NULL);
@@ -352,7 +368,7 @@ bool runAcquisitionAllCams(CameraList& camList)
 	{
 		try
 		{
-			camList.GetByIndex(i)->AcquisitionStart();
+			camList.GetByIndex(i)->BeginAcquisition();
 		}
 		catch (Spinnaker::Exception e)
 		{
@@ -389,19 +405,20 @@ bool configAllCams4SimultenousRecording(CameraList& camList)
 		// Init all camera
 		initAllCam(camList);
 
-		// Synchronize all camera timer by enabling IEE1588
-		if (ConfigureIEEE1588(camList))
-		{
-			return true;
-		} // if IEEE1588 is not available, then try to use external trigger system
-		else if(ConfigureExternalTrigger())
-		{
-			return true;
-		}
-		else // TODO N: Maybe considering using software trigger here
-		{
-			return false;
-		}
+		//// TODO 6: Uncomment this
+		//// Synchronize all camera timer by enabling IEE1588
+		//if (ConfigureIEEE1588(camList))
+		//{
+		//	return true;
+		//} // if IEEE1588 is not available, then try to use external trigger system
+		//else if(ConfigureExternalTrigger())
+		//{
+		//	return true;
+		//}
+		//else // TODO N: Maybe considering using software trigger here
+		//{
+		//	return false;
+		//}
 	}
 	return true;
 }
@@ -508,7 +525,6 @@ bool ConfigureIEEE1588(const CameraList& camList)
 }
 
 
-// This function acquires and saves 10 images from a device.
 // @para runGUI: a boolean variable instrcuts the acquiring loop when to stop
 int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireGUIThreadInfo* threadInfo)
 {
@@ -786,7 +802,6 @@ int RunAcquisition(CamAcquireGUIThreadInfo* threadInfo)
 
 // Draw GUI components
 // This function is thread-safe as long as it is called between WaitForSingleObject and ReleaseMutex
-
 void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo)
 {
 

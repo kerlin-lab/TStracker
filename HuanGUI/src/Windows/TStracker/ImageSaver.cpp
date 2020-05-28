@@ -1,23 +1,26 @@
 #include "ImageSaver.h"
 
-ImageSaver()
+// Don't put this in header file otherwise you will get LNK2005
+std::string DEFAULT_EXTENSION = ".avi";
+
+ImageSaver::ImageSaver()
 {
     this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController( random_string + DEFAULT_EXTENSION,this->saveQueue);
+    this->threadController = new SavingThreadController<ContainerType>(random_string() + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
 
-ImageSaver(string fileName)
+ImageSaver::ImageSaver(std::string fileName)
 {
     this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController( fileName,this->saveQueue);
+    this->threadController = new SavingThreadController<ContainerType>(fileName,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
 
 // Copy constructor
-ImageInfo(const ImageInfo &obj)
+ImageInfo::ImageInfo(const ImageInfo &obj)
 {
     this->img= obj.img.clone();
     this->imgWidth = obj.imgWidth;
@@ -26,7 +29,7 @@ ImageInfo(const ImageInfo &obj)
 }
 
 
-~ImageSaver()
+ImageSaver::~ImageSaver()
 {
     delete saveQueue;
     delete threadController;
@@ -34,10 +37,11 @@ ImageInfo(const ImageInfo &obj)
 
 HANDLE ImageSaver::getThreadMutex()
 {
-    this->threadController->mtx;
+    return this->threadController->mtx;
 }
 
-SavingThreadController(string fileName,T* container, bool fileIsOpen=false);
+template <typename T>
+SavingThreadController<T>::SavingThreadController(string fileName, T* container, bool fileIsOpen)
 {
     this->fileName =  fileName;
     this->container = container;
@@ -58,7 +62,9 @@ bool ImageSaver::isOpen()
 // Check if the saving thread is still running
 bool ImageSaver::isThreadRunning()
 {
-    return GetExitCodeThread(this->m_hThread) == STILL_ACTIVE;
+	DWORD exitCode;
+	GetExitCodeThread(this->threadObject->m_hThread, &exitCode);
+    return exitCode == STILL_ACTIVE;
 }
 
 // Adding the item to to-be-saved list
@@ -66,7 +72,7 @@ void ImageSaver::addToSave(ItemType item)
 {
     WaitForSingleObject(this->getThreadMutex(),INFINITE);
     this->saveQueue->push(item);
-    ReleaseMutex(this->getThreadMutex(),INFINITE);
+    ReleaseMutex(this->getThreadMutex());
 }
 
 
@@ -75,29 +81,30 @@ void ImageSaver::signalTermination()
 {
     WaitForSingleObject(this->getThreadMutex(),INFINITE);
     this->threadController->fileIsOpen = false;
-    ReleaseMutex(this->getThreadMutex(),INFINITE);
+    ReleaseMutex(this->getThreadMutex());
 }
 
 // Processor of the the saving thread
 // Parameter is a pointer pointing to an SavingThreadController object 
 UINT __cdecl savingThreadProcessor(LPVOID para)
 {
-    SavingThreadController* threadController = (SavingThreadController*) para;
+    SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
     
     // TODO N: Check the saving procedure below
     WaitForSingleObject(threadController->mtx,INFINITE);
     // TODO 1: Implement the OpenFIleToWirte function
-    threadController->fileIsOpen = OpenStorage();
+    //threadController->fileIsOpen = OpenStorage();
     ReleaseMutex(threadController->mtx);
 
     // Running the loop to save everything in the container down to file
     // TODO 4: implement IsExternalSignalDone()
-    while(threadController->fileIsOpen || threadController->size() || IsExternalSignalDone())
+	while(threadController->fileIsOpen || threadController->container->size())
+    //while(threadController->fileIsOpen || threadController->size() || IsExternalSignalDone())
     {
         // Thread-safe sake
         WaitForSingleObject(threadController->mtx,INFINITE);
         // TODO 2: Implement the saving function
-        SavetoStore(threadController->container->back());
+        //SavetoStore(threadController->container->back());
         // Remove image from container
         threadController->container->pop();
         ReleaseMutex(threadController->mtx);
@@ -106,7 +113,8 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 
     // TODO 3: implement the storage close function
     // Closing and flush everything to the file
-    CloseStorage();
+    //CloseStorage();
+	return 0;
 }
 
 // Generate a random string with given size
