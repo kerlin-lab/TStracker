@@ -231,9 +231,6 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						timestamp = convertedImage->GetTimeStamp();
 						// Draw timestamp
 						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
-						// Show the frame
-
-						//imshow("test", imgFrame);
 
 						// Save frame to file if recording is running
 
@@ -291,16 +288,17 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 			pCam->EndAcquisition();
 		}
 	}
-
 	// Signaling the saverThreads to terminate
 	for(unsigned i = 0 ;i<saverThreads.size();i++)
 	{
-		WaitForSingleObject(saverThreads[i].getThreadMutex(),INFINITE);
-		saverThreads[i].signalTermination();
-		ReleaseMutex(saverThreads[i].getThreadMutex());
+		saverThreads[i].signalTermination();		// This function is thread-safe
 		// Wait for the thread to terminate
-		WaitForSingleObject(saverThreads[i].threadObject,INFINITE);
+		//WaitForSingleObject(saverThreads[i].threadObject,INFINITE);		// Do not use WaitForSingleObject, some how this does not work with CWinThreadObject, it stop waiting before the thread ends
+		while (saverThreads[i].isThreadRunning());
 	}
+
+	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
+	//MessageBox(NULL, "here1", "Error", MB_OK);
 }
 
 

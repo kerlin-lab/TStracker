@@ -14,7 +14,7 @@ ImageSaver::ImageSaver()
 ImageSaver::ImageSaver(std::string fileName)
 {
     this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController<ContainerType>(fileName,this->saveQueue);
+    this->threadController = new SavingThreadController<ContainerType>(fileName + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
@@ -29,10 +29,30 @@ ImageInfo::ImageInfo(const ImageInfo &obj)
 	this->camSerial = obj.camSerial;
 }
 
+// Assignment = operator
+ImageInfo& ImageInfo::operator= (const ImageInfo& obj)
+{
+	this->img = obj.img.clone();
+	this->imgWidth = obj.imgWidth;
+	this->imgHeight = obj.imgHeight;
+	this->imgSize = obj.imgSize;
+	this->camSerial = obj.camSerial;
+	return *this;
+}
+
+
 
 ImageSaver::~ImageSaver()
 {
-    delete saveQueue;
+	// Release Mat object in queue
+	while (saveQueue->size())
+	{
+		saveQueue->front()->img.release();
+		saveQueue->pop();
+	}
+	// Delete the queue
+	delete saveQueue;
+	// Delete the controller object
     delete threadController;
 }
 
@@ -72,12 +92,28 @@ bool ImageSaver::isThreadRunning()
 void ImageSaver::addToSave(ItemType item)
 {
     WaitForSingleObject(this->getThreadMutex(),INFINITE);
-    this->saveQueue->push(item);
+	this->saveQueue->push(item);
     ReleaseMutex(this->getThreadMutex());
+}
+
+// Taken the last item off the to-be-saved list
+// NOTE: This function DOES NOT RELEASE the memory contained by the removed item 
+// So make sure you implement memory releasing by yourself to prevent memmory leak
+template <typename T>
+void SavingThreadController<T>::removeFromToSave()
+{
+	WaitForSingleObject(this->mtx, INFINITE);
+	if (this->container->size())
+	{
+		// Only pop if there is something in the list
+		this->container->pop();
+	}
+	ReleaseMutex(this->mtx);
 }
 
 
 // Signal thread to terminate
+// This function is thread-safe
 void ImageSaver::signalTermination()
 {
     WaitForSingleObject(this->getThreadMutex(),INFINITE);
@@ -89,7 +125,9 @@ void ImageSaver::signalTermination()
 // Parameter is a pointer pointing to an SavingThreadController object 
 UINT __cdecl savingThreadProcessor(LPVOID para)
 {
-    SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
+	ImageInfo* image;
+	unsigned listSize;
+	SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
     
     // TODO N: Check the saving procedure below
     WaitForSingleObject(threadController->mtx,INFINITE);
@@ -99,22 +137,45 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 
     // Running the loop to save everything in the container down to file
     // TODO 4: implement IsExternalSignalDone()
-	while(threadController->fileIsOpen || threadController->container->size())
+	while(threadController->fileIsOpen)
     //while(threadController->fileIsOpen || threadController->size() || IsExternalSignalDone())
     {
-        // Thread-safe sake
-        WaitForSingleObject(threadController->mtx,INFINITE);
-        // TODO 2: Implement the saving function
-        //SavetoStore(threadController->container->back());
-        // Remove image from container
-        threadController->container->pop();
-        ReleaseMutex(threadController->mtx);
+		WaitForSingleObject(threadController->mtx, INFINITE);
+		listSize = threadController->container->size();
+		ReleaseMutex(threadController->mtx);
+
+		while (listSize--)
+		{
+			// Thread-safe sake, also, make sure the run time between WaitForSingleObject and ReleaseMutex is as short as possible since the GUI is blocked between these functions
+			WaitForSingleObject(threadController->mtx, INFINITE);
+			// Save pointer to the image
+			image = threadController->container->front();
+			// Remove image from container
+			threadController->removeFromToSave();
+			// This release must be as close as possible to WaitForSingleObject to reduce the processing time since the GUI window is blocked between these 2 functions
+			ReleaseMutex(threadController->mtx);
+			// TODO 2: Implement the saving function
+			//SavetoStore(image);
+			// Release the memory
+			//if (getWindowProperty("Image received", cv::WND_PROP_VISIBLE) <= 0.5)
+			//{
+			//	//Windows is closed or does not exist
+			//	// Create a OpenCV window for displaying
+			//	namedWindow("Image received");
+			//}
+			//cv::imshow("Image received", image->img);
+			//waitKey(1);
+			//Sleep(100);
+			delete image;
+		}
     }
+	//cv::destroyWindow("Image received");
 
 
     // TODO 3: implement the storage close function
     // Closing and flush everything to the file
     //CloseStorage();
+	//MessageBox(NULL, "here2", "Error", MB_OK); 
 	return 0;
 }
 

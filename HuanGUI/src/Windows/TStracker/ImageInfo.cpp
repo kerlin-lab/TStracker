@@ -13,10 +13,7 @@ ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial)
 	this->camSerial = camSerial;
 }
 
-ImageInfo::~ImageInfo()
-{
-	this->img.release();
-}
+ImageInfo::~ImageInfo() {}
 
 // Copy the image saved in ImagePtr spin_con to the Mat of this object
 // This function is based on the ImagePtr2CVMat_CV_8UC1 function in TStracker.h

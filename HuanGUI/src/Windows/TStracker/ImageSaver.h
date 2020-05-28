@@ -49,8 +49,11 @@ class SavingThreadController
     bool fileIsOpen;                    // Is there a file openning and ready to be written to
     HANDLE mtx;                         // Pointer to Mutex object used for making the thread multi-threading safe
     
+	// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
+    SavingThreadController(string fileName,T* container, bool fileIsOpen=true);
 
-    SavingThreadController(string fileName,T* container, bool fileIsOpen=false);
+	// Taken the last item off the to-be-saved list
+	void removeFromToSave();
 };
 
 class ImageSaver

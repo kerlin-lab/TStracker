@@ -42,6 +42,9 @@ public:
 
 	// Copy constructor
 	ImageInfo(const ImageInfo &obj) ;
+
+	// Assignment = operator
+	ImageInfo& operator= (const ImageInfo&);
 	
 	~ImageInfo();
 
