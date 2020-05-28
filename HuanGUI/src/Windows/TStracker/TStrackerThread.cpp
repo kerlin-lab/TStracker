@@ -155,7 +155,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 
 	//// Rendering the GUI
 	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
-	ImageInfo GUIWindow(sumWidth+ (2 + 2 * (camList.GetSize()) ) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+	//ImageInfo GUIWindow(15 * sumWidth + (15+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+	ImageInfo GUIWindow(sumWidth + (camList.GetSize()+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 
 	// start acquisition on all cameras
 	runAcquisitionAllCams(camList);
@@ -317,8 +318,9 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUI
 		threadInfo->runGUI = false;
 	}
 
-	// Render the an images captured from each camera
+	// Render the an images captured from each camera.
 	cvui::beginRow(-1,-1, WINDOW_PADDING);
+	// Draw images
 	for(unsigned i = 0; i < camCapImg.size();i++)
 	{
 		// Draw an image with a caption beneath
@@ -326,20 +328,22 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUI
 		cvui::image(camCapImg[i].img);
 		if (!textDrawn)
 		{
-			cvui::text(string("     Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+			cvui::text(string("  Serial: ") + camCapImg[0].camSerial, 0.5, 0);
 		}
 		cvui::endColumn();
 	}
 
-	// Test 2 windows but with 1 camera
-	//for(unsigned i = 0; i < 2;i++)
+	// Test 3 windows but with 1 camera.  Remember to multiply the GUIWindow's sumWidth 
+	// by N  and change the camList.getSize() to N to run this test
+	//unsigned N = 15;
+	//for(unsigned i = 0; i < N;i++)
 	//{
 	//	// Draw an image with a caption beneath
 	//	cvui::beginColumn(-1,-1, WINDOW_PADDING);
 	//	cvui::image(camCapImg[0].img);
 	//	if (!textDrawn)
 	//	{
-	//		cvui::text(string("     Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+	//		cvui::text(string("   Serial: ") + camCapImg[0].camSerial, 0.5, 0);
 	//	}
 	//	cvui::endColumn();
 	//}
