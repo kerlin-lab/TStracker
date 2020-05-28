@@ -12,6 +12,8 @@
 #include "ImageSaver.h"
 
 #define GENERAL_BUTTON_HEIGHT 33
+#define CAPTION_HEIGHT 30
+#define WINDOW_PADDING 10
 
 extern string ALL_CAM_RECORD_WINDOWS_NAME;
 
@@ -62,7 +64,7 @@ UINT __cdecl openCVAllCamRecord(LPVOID para);
 void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo);
 
 // Drawing the GUI for all cam capture
-void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList);
+void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList);
 
 // Execute the camrecord all process
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo);

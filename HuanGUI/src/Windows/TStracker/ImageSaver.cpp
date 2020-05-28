@@ -26,6 +26,7 @@ ImageInfo::ImageInfo(const ImageInfo &obj)
     this->imgWidth = obj.imgWidth;
     this->imgHeight = obj.imgHeight;
     this->imgSize = obj.imgSize;
+	this->camSerial = obj.camSerial;
 }
 
 

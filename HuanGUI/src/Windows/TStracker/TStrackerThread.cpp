@@ -155,7 +155,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 
 	//// Rendering the GUI
 	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
-	ImageInfo GUIWindow(sumWidth+GENERAL_BUTTON_HEIGHT,maxHeight + GENERAL_BUTTON_HEIGHT);
+	ImageInfo GUIWindow(sumWidth+ (2 + 2 * (camList.GetSize()) ) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 
 	// start acquisition on all cameras
 	runAcquisitionAllCams(camList);
@@ -268,7 +268,6 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
-
 		drawGUIAllCam(GUIWindow.img, camCapImg,threadInfo, camList);
 
 		// Draw the change to the window
@@ -304,10 +303,12 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 }
 
 
-void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
+void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
 {
+	static bool textDrawn = false;			// This prevent text caption from being drawn many times
+
 	//// Draw frame of two windows and one button
-	cvui::beginColumn(displayFrame,5,5);
+	cvui::beginColumn(displayFrame, WINDOW_PADDING, WINDOW_PADDING,-1,-1,WINDOW_PADDING);
 
 	// Render the button
 	if(cvui::button("Stop Recording"))
@@ -317,15 +318,35 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo> camCapImg,CamAcquireGUIT
 	}
 
 	// Render the an images captured from each camera
-	cvui::beginRow();
+	cvui::beginRow(-1,-1, WINDOW_PADDING);
 	for(unsigned i = 0; i < camCapImg.size();i++)
 	{
 		// Draw an image with a caption beneath
-		cvui::beginColumn();
+		cvui::beginColumn(-1, -1, WINDOW_PADDING);
 		cvui::image(camCapImg[i].img);
-		cvui::text(camCapImg[i].camSerial);
+		if (!textDrawn)
+		{
+			cvui::text(string("     Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+		}
 		cvui::endColumn();
 	}
+
+	// Test 2 windows but with 1 camera
+	//for(unsigned i = 0; i < 2;i++)
+	//{
+	//	// Draw an image with a caption beneath
+	//	cvui::beginColumn(-1,-1, WINDOW_PADDING);
+	//	cvui::image(camCapImg[0].img);
+	//	if (!textDrawn)
+	//	{
+	//		cvui::text(string("     Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+	//	}
+	//	cvui::endColumn();
+	//}
+
+	// Prevent the images' captions from being drawn next time
+	textDrawn = true;
+
 	cvui::endRow();	
 
 	cvui::endColumn();

@@ -25,7 +25,7 @@ using namespace cv;
 using namespace std;
 
 
-#define DEFAULT_BACKGROUND cv::Scalar(49, 52, 49)
+#define DEFAULT_BACKGROUND cv::Scalar(200, 200, 200)
 
 class ImageInfo
 {
