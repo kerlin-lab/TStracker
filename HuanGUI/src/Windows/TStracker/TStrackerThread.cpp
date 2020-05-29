@@ -298,7 +298,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	}
 
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
-	//MessageBox(NULL, "here1", "Error", MB_OK);
+	MessageBox(NULL, "here1", "Error", MB_OK);
 }
 
 

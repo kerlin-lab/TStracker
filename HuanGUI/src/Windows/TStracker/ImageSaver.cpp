@@ -1,7 +1,7 @@
 #include "ImageSaver.h"
 
 // Don't put this in header file otherwise you will get LNK2005
-std::string DEFAULT_EXTENSION = ".avi";
+std::string DEFAULT_EXTENSION = ".tiff";
 
 ImageSaver::ImageSaver()
 {
@@ -9,7 +9,6 @@ ImageSaver::ImageSaver()
     this->threadController = new SavingThreadController<ContainerType>(random_string() + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
-	tf::TIFF* tif = tf::TIFFOpen("foo.tif", "r");
 }
 
 ImageSaver::ImageSaver(std::string fileName)
@@ -127,24 +126,34 @@ void ImageSaver::signalTermination()
 UINT __cdecl savingThreadProcessor(LPVOID para)
 {
 	ImageInfo* image;
+	TiffWriter* tfWriter;
 	unsigned listSize;
 	SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
     
     // TODO N: Check the saving procedure below
     WaitForSingleObject(threadController->mtx,INFINITE);
-    // TODO 1: Implement the OpenFIleToWirte function
-    //threadController->fileIsOpen = OpenStorage();
+	try
+	{
+		// Attempting to create a TIFF file handle to write to
+		tfWriter = TiffWriter::OpenNewTIFFtoWrite(threadController->fileName);
+		threadController->fileIsOpen = true;
+	}
+	catch (unsigned e)
+	{
+		MessageBox(NULL, "Error openning tiff file to write", "Error", MB_OK);
+		threadController->fileIsOpen = false;
+		ReleaseMutex(threadController->mtx);
+		return -1;
+	}
     ReleaseMutex(threadController->mtx);
 
     // Running the loop to save everything in the container down to file
     // TODO 4: implement IsExternalSignalDone()
-	while(threadController->fileIsOpen)
+	
+	listSize = 0;
+	while(true)
     //while(threadController->fileIsOpen || threadController->size() || IsExternalSignalDone())
     {
-		WaitForSingleObject(threadController->mtx, INFINITE);
-		listSize = threadController->container->size();
-		ReleaseMutex(threadController->mtx);
-
 		while (listSize--)
 		{
 			// Thread-safe sake, also, make sure the run time between WaitForSingleObject and ReleaseMutex is as short as possible since the GUI is blocked between these functions
@@ -155,9 +164,11 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 			threadController->removeFromToSave();
 			// This release must be as close as possible to WaitForSingleObject to reduce the processing time since the GUI window is blocked between these 2 functions
 			ReleaseMutex(threadController->mtx);
-			// TODO 2: Implement the saving function
-			//SavetoStore(image);
-			// Release the memory
+			
+			// Save the obtained image to the tiff file
+			tfWriter->SavetoTIFFFile(image);
+
+			//// The commented snippet is to test how does the received image look like, just to make sure the queue does not give us trash
 			//if (getWindowProperty("Image received", cv::WND_PROP_VISIBLE) <= 0.5)
 			//{
 			//	//Windows is closed or does not exist
@@ -167,16 +178,33 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 			//cv::imshow("Image received", image->img);
 			//waitKey(1);
 			//Sleep(100);
+
+			// Release the memory
 			delete image;
+		}
+
+		// Check the number of images in the queue
+		WaitForSingleObject(threadController->mtx, INFINITE);
+		listSize = threadController->container->size();
+		ReleaseMutex(threadController->mtx);
+		
+		if (listSize)
+		{
+			continue;
+		}
+
+		if (!threadController->fileIsOpen)
+		{
+			break;
 		}
     }
 	//cv::destroyWindow("Image received");
 
 
-    // TODO 3: implement the storage close function
-    // Closing and flush everything to the file
-    //CloseStorage();
-	//MessageBox(NULL, "here2", "Error", MB_OK); 
+    // Closing and save everything to the file
+    TiffWriter::CloseTIFFFile(tfWriter);
+
+	MessageBox(NULL, "here2", "Error", MB_OK); 
 	return 0;
 }
 

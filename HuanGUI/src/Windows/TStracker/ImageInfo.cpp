@@ -1,5 +1,7 @@
 #include "ImageInfo.h"
 
+using namespace Spinnaker;
+
 // Put this in the header and you will get LNK2005 when compiling
 ImageInfo::ImageInfo() :imgWidth(0), imgHeight(0), imgSize(0), camSerial("") 
 {

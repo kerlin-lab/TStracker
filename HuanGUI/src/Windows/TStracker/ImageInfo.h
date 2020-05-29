@@ -7,8 +7,6 @@
 #include "Spinnaker.h"
 #include "SpinGenApi\SpinnakerGenApi.h"
 
-using namespace Spinnaker;	
-
 // OpenCv lib
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -62,7 +60,7 @@ public:
 	* ideally, the check should be done before acquisition takes place
 	* Copy the image saved in ImagePtr spin_con to the Mat of this object
 	*/
-	void getFromImgPtr(ImagePtr& spin_con);
+	void getFromImgPtr(Spinnaker::ImagePtr& spin_con);
 
 	/*
 	* Changing the size of the Mat member of this class
