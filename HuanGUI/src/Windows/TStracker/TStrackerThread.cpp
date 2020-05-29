@@ -294,6 +294,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		saverThreads[i].signalTermination();		// This function is thread-safe
 		// Wait for the thread to terminate
 		//WaitForSingleObject(saverThreads[i].threadObject,INFINITE);		// Do not use WaitForSingleObject, some how this does not work with CWinThreadObject, it stop waiting before the thread ends
+		MessageBox(NULL, "here3", "Error", MB_OK);
 		while (saverThreads[i].isThreadRunning());
 	}
 

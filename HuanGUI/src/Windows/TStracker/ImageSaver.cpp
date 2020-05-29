@@ -84,7 +84,7 @@ bool ImageSaver::isOpen()
 bool ImageSaver::isThreadRunning()
 {
 	DWORD exitCode;
-	GetExitCodeThread(this->threadObject->m_hThread, &exitCode);
+	GetExitCodeThread(HANDLE(this->threadObject), &exitCode);
     return exitCode == STILL_ACTIVE;
 }
 
@@ -199,7 +199,6 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 		}
     }
 	//cv::destroyWindow("Image received");
-
 
     // Closing and save everything to the file
     TiffWriter::CloseTIFFFile(tfWriter);
