@@ -28,6 +28,7 @@ void TiffWriter::write(const unsigned char* buffer, int width, int height)
 	TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, height);
 	TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
 	TIFFSetField(tiff, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(tiff, (unsigned int)-1));
+	TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, 1);		// Gray scale image with black is zero
 
 	unsigned int samples_per_pixel = 1;
 	unsigned int bits_per_sample = 8;
@@ -62,7 +63,6 @@ TiffWriter* TiffWriter::OpenNewTIFFtoWrite(std::string filename, bool isMultipag
 // Close the handle to the TIFF file and save the images
 void TiffWriter::CloseTIFFFile(TiffWriter * tiff)
 {
-
 	// release memmory
 	delete tiff;
 }

@@ -32,6 +32,7 @@ public:
 	int imgWidth;	// Width of the image
 	int imgHeight;	// Height of the image
 	int imgSize;	// Size = Width * Height
+	unsigned timestamp;
 	std::string camSerial;	// The serial of the camera from which the object img of this is obtained
 
 	ImageInfo();

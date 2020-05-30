@@ -146,7 +146,7 @@ int TStrackerMainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CFrameWnd::OnCreate(lpCreateStruct);
 
 	// Camera select dialog button
-	ShowCamSelectDialog.Create(_T("Select Camera"),
+	CamTuning.Create(_T("Tune Camera"),
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 		CRect(20, 20, 160, 40),
 		this, CAM_SELECT_DIALOG_BUTTON_ID);

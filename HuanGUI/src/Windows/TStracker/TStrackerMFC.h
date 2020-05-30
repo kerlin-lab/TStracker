@@ -54,7 +54,7 @@ public:
 	afx_msg void OpenCamSelectDialogButtonClickHandler();
 	afx_msg void RecordAllCamButtonClickHandler();
 private:
-	CButton ShowCamSelectDialog;
+	CButton CamTuning;
 	CButton RecordAllCam;
 	DECLARE_MESSAGE_MAP()
 };
