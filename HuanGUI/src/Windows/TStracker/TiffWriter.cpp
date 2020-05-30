@@ -9,10 +9,17 @@
 
 #include "TiffWriter.h"
 
+// Don't put this in header file otherwise you will get LNK2005
+std::string DEFAULT_EXTENSION = ".tiff";
+
 using namespace tf;
 
-TiffWriter::TiffWriter(std::string filename, bool multiPage) : page(0), multiPage(multiPage)
+TiffWriter::TiffWriter(std::string filename, bool multiPage, bool addingExtension) : page(0), multiPage(multiPage)
 {
+	if (addingExtension)
+	{
+		filename += DEFAULT_EXTENSION;
+	}
 	tiff = TIFFOpen(filename.c_str(), "w");
 }
 

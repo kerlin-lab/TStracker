@@ -37,7 +37,7 @@ using namespace cv;
 
 #define DEFAULT_FILENAME_LENGTH 5
 
-extern std::string DEFAULT_EXTENSION;
+#define MAX_TIFF_STACK_SIZE 2000
 
 typedef ImageInfo* ItemType;
 typedef queue<ItemType> ContainerType;

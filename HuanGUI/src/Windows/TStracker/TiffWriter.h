@@ -24,10 +24,12 @@ namespace tf
 #define TIMESTAMP_TAG_INDEX_LOW 67000
 #define TIMESTAMP_TAX_INDEX_HIGH 67001
 
+extern std::string DEFAULT_EXTENSION;
+
 class TiffWriter
 {
 public:
-	TiffWriter(std::string filename, bool multiPage=true);
+	TiffWriter(std::string filename, bool multiPage=true, bool addingExtension=true);
 	TiffWriter(const TiffWriter&) = delete;
 	TiffWriter& operator=(const TiffWriter&) = delete;
 	~TiffWriter();

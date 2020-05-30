@@ -126,7 +126,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	
 	vector<ImageSaver*> saverThreads;
 	vector<ImageInfo> camCapImg;
-	int frameRate;
+	vector<int> frameRate;
 	uint64_t timestamp;
 
 	for(unsigned i=0;i<camList.GetSize();i++)
@@ -135,8 +135,10 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		pCam = camList.GetByIndex(i);
 		// Create an image object obtained from the camera
 		camCapImg.emplace_back();
+		// Reverse space to save framerate
+		frameRate.push_back(0);
 		// Retrive information about the image represneted by this object from the camera
-		retriveImageInfo(pCam->GetNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,frameRate,pCam);
+		retriveImageInfo(pCam->GetNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,frameRate[i],pCam);
 		// Save the camera Serial to each object too
 		camCapImg.back().camSerial = pCam->DeviceSerialNumber();
 		//// Do some calculation for the GUI mat
@@ -257,7 +259,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						// Get timestamp
 						timestamp = convertedImage->GetTimeStamp();
 						// Draw timestamp
-						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
+						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate[i]);
 
 						// Save frame to file if recording is running
 
