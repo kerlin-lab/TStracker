@@ -37,7 +37,7 @@ public:
 
 	ImageInfo();
 
-	ImageInfo(int imgWidth, int imgHeight, string camSerial = "");
+	ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial="", uint64_t timestamp=0);
 
 	// Copy constructor
 	ImageInfo(const ImageInfo &obj) ;

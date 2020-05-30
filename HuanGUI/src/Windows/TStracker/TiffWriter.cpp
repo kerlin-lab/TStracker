@@ -1,6 +1,10 @@
 /*
 * This class is a solution from
 * https://schneide.blog/2015/11/16/multi-page-tiffs-with-cpp/
+* 
+* Tiff image created by this module 
+* will have timestamp as a string of time in NANOsecond
+* saved in the TIFF_DATETIME tag (index 306)
 */
 
 #include "TiffWriter.h"
@@ -20,7 +24,7 @@ void TiffWriter::write(const unsigned char* buffer, int width, int height)
 		* but it's the only we way can write the page number without knowing the
 		* final number of pages in advance.
 		*/
-		TIFFSetField(tiff, TIFFTAG_PAGENUMBER, page, page);
+		TIFFSetField(tiff, TIFFTAG_PAGENUMBER, page, 0);
 		TIFFSetField(tiff, TIFFTAG_SUBFILETYPE, FILETYPE_PAGE);
 	}
 	TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
@@ -50,6 +54,20 @@ void TiffWriter::write(const cv::Mat& img, int width, int height)
 	this->write(Dest, width, height);
 }
 
+// Write the cv::Mat to file with timestamp
+void TiffWriter::write(const cv::Mat& img, int width, int height, uint64_t timestamp)
+{
+	//TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, to_string(timestamp).c_str());
+	
+	// Save timestamp as a string of time in NANOsecond
+	TIFFSetField(tiff, TIFFTAG_DATETIME, to_string(timestamp).c_str());
+	// Save the image data	
+	this->write(img, width, height);
+
+	//MessageBox(NULL, to_string(timestamp).c_str(), "Time", MB_OK);
+}
+
+
 TiffWriter::~TiffWriter()
 {
 	TIFFClose(tiff);
@@ -70,5 +88,5 @@ void TiffWriter::CloseTIFFFile(TiffWriter * tiff)
 // Save the image contained in img to file
 void TiffWriter::SavetoTIFFFile(ImageInfo* img)
 {
-	this->write(img->img, img->imgWidth, img->imgHeight);
+	this->write(img->img, img->imgWidth, img->imgHeight,img->timestamp);
 }

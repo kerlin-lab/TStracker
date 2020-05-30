@@ -2,8 +2,12 @@
 #define _TIFF_WRITER_H
 
 /*
-* This solution is provided by
+* This class is a solution from
 * https://schneide.blog/2015/11/16/multi-page-tiffs-with-cpp/
+*
+* Tiff image created by this module
+* will have timestamp as a string of time in NANOsecond
+* saved in the TIFF_DATETIME tag (index 306)
 */
 
 #include <string>
@@ -17,6 +21,8 @@ namespace tf
 	#include <tiffio.h>
 }
 
+#define TIMESTAMP_TAG_INDEX_LOW 67000
+#define TIMESTAMP_TAX_INDEX_HIGH 67001
 
 class TiffWriter
 {
@@ -30,6 +36,9 @@ public:
 	
 	// Write the cv::Mat to file
 	void write(const cv::Mat& img, int width, int height);
+
+	// Write the cv::Mat to file with timestamp
+	void write(const cv::Mat& img, int width, int height,uint64_t timestamp);
 
 	// Getting a handle to a new and writable TIFF file
 	static TiffWriter* OpenNewTIFFtoWrite(std::string filename, bool isMultipage = true);
@@ -45,6 +54,5 @@ private:
 	bool multiPage;
 	unsigned int page;
 };
-
 
 #endif // !_TIFF_WRITER_H

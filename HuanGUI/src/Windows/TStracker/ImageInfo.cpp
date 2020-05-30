@@ -3,16 +3,17 @@
 using namespace Spinnaker;
 
 // Put this in the header and you will get LNK2005 when compiling
-ImageInfo::ImageInfo() :imgWidth(0), imgHeight(0), imgSize(0), camSerial("") 
+ImageInfo::ImageInfo() :imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), timestamp(0)
 {
 	// Fill the background with a nice color
 	this->img = DEFAULT_BACKGROUND;
 }
 
-ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial)
+ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial, uint64_t timestamp)
 {
 	this->changeImgSize(imgWidth,imgHeight);
 	this->camSerial = camSerial;
+	this->timestamp = timestamp;
 }
 
 ImageInfo::~ImageInfo() {}
@@ -31,6 +32,9 @@ void ImageInfo::getFromImgPtr(ImagePtr& spin_con)
 	//{
 	//	*(Dest++) = *(rawDataFromCam++);
 	//}
+	
+	// Save timestamp
+	this->timestamp = spin_con->GetTimeStamp();
 }
 
 /*
@@ -55,6 +59,7 @@ ImageInfo::ImageInfo(const ImageInfo &obj)
 	this->imgHeight = obj.imgHeight;
 	this->imgSize = obj.imgSize;
 	this->camSerial = obj.camSerial;
+	this->timestamp = obj.timestamp;
 }
 
 // Assignment = operator
@@ -65,5 +70,6 @@ ImageInfo& ImageInfo::operator= (const ImageInfo& obj)
 	this->imgHeight = obj.imgHeight;
 	this->imgSize = obj.imgSize;
 	this->camSerial = obj.camSerial;
+	this->timestamp = obj.timestamp;
 	return *this;
 }

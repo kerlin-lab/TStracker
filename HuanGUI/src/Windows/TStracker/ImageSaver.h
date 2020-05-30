@@ -18,6 +18,7 @@ using namespace Spinnaker;
 #include <queue>
 #include <string>
 #include <random>
+#include <fstream>
 
 using namespace std;
 
@@ -98,5 +99,13 @@ string random_string(size_t length=DEFAULT_FILENAME_LENGTH);
 UINT __cdecl savingThreadProcessor(LPVOID para);
 
 
+// Check if a file is already exist
+inline bool exists_test(const std::string& name) {
+	ifstream f(name.c_str());
+	return f.good();
+}
+
+// Get name of a provided file with no duplication
+string getNoNExistFileName(string fileName);
 
 #endif

@@ -150,7 +150,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		
 		// TODO : may be you want to have a mechanism to name the output file
 		// Creating saving thread for each camera
-		saverThreads.push_back(new ImageSaver());
+		saverThreads.push_back(new ImageSaver(pCam->DeviceSerialNumber().c_str()));
 	}
 
 	//// Multiple screen with 1 cameras test

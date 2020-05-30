@@ -6,7 +6,7 @@ std::string DEFAULT_EXTENSION = ".tiff";
 ImageSaver::ImageSaver()
 {
     this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController<ContainerType>(random_string() + DEFAULT_EXTENSION,this->saveQueue);
+    this->threadController = new SavingThreadController<ContainerType>(getNoNExistFileName(random_string()) + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
@@ -14,7 +14,7 @@ ImageSaver::ImageSaver()
 ImageSaver::ImageSaver(std::string fileName)
 {
     this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController<ContainerType>(fileName + DEFAULT_EXTENSION,this->saveQueue);
+    this->threadController = new SavingThreadController<ContainerType>(getNoNExistFileName(fileName) + DEFAULT_EXTENSION,this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
@@ -209,3 +209,20 @@ string random_string(size_t length)
     return random_string;
 }
 
+
+// Get name of a provided file with no duplication
+string getNoNExistFileName(string fileName)
+{
+	if (exists_test(fileName + DEFAULT_EXTENSION))
+	{
+		// Already exist
+		int counter = -1;
+		while (exists_test(fileName + string("_") + to_string(++counter) + DEFAULT_EXTENSION));
+		return fileName + string("_") + to_string(counter);
+	}
+	else
+	{
+		// Not exist
+		return fileName;
+	}
+}
