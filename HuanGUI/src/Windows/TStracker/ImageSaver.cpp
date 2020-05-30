@@ -19,41 +19,15 @@ ImageSaver::ImageSaver(std::string fileName)
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
 
-// Copy constructor
-ImageInfo::ImageInfo(const ImageInfo &obj)
-{
-    this->img= obj.img.clone();
-    this->imgWidth = obj.imgWidth;
-    this->imgHeight = obj.imgHeight;
-    this->imgSize = obj.imgSize;
-	this->camSerial = obj.camSerial;
-}
-
-// Assignment = operator
-ImageInfo& ImageInfo::operator= (const ImageInfo& obj)
-{
-	this->img = obj.img.clone();
-	this->imgWidth = obj.imgWidth;
-	this->imgHeight = obj.imgHeight;
-	this->imgSize = obj.imgSize;
-	this->camSerial = obj.camSerial;
-	return *this;
-}
-
-
 
 ImageSaver::~ImageSaver()
 {
 	// Release Mat object in queue
-	while (saveQueue->size())
-	{
-		saveQueue->front()->img.release();
-		saveQueue->pop();
-	}
-	// Delete the queue
-	delete saveQueue;
-	// Delete the controller object
-    delete threadController;
+	//while (saveQueue->size())
+	//{
+	//	saveQueue->front()->img.release();
+	//	saveQueue->pop();
+	//}
 }
 
 HANDLE ImageSaver::getThreadMutex()
@@ -127,7 +101,7 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 {
 	ImageInfo* image;
 	TiffWriter* tfWriter;
-	unsigned listSize;
+	int listSize;
 	SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
     
     // TODO N: Check the saving procedure below
@@ -154,17 +128,20 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 	while(true)
     //while(threadController->fileIsOpen || threadController->size() || IsExternalSignalDone())
     {
+		//MessageBox(NULL, "here1", threadController->fileName.c_str(), MB_OK);
 		while (listSize--)
 		{
+			//MessageBox(NULL, "here2", threadController->fileName.c_str(), MB_OK);
+
 			// Thread-safe sake, also, make sure the run time between WaitForSingleObject and ReleaseMutex is as short as possible since the GUI is blocked between these functions
 			WaitForSingleObject(threadController->mtx, INFINITE);
 			// Save pointer to the image
 			image = threadController->container->front();
 			// Remove image from container
-			threadController->removeFromToSave();
+			threadController->container->pop();
 			// This release must be as close as possible to WaitForSingleObject to reduce the processing time since the GUI window is blocked between these 2 functions
 			ReleaseMutex(threadController->mtx);
-			
+
 			// Save the obtained image to the tiff file
 			tfWriter->SavetoTIFFFile(image);
 
@@ -183,18 +160,18 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 			delete image;
 		}
 
+		//MessageBox(NULL, "here3", threadController->fileName.c_str(), MB_OK);
+
 		// Check the number of images in the queue
 		WaitForSingleObject(threadController->mtx, INFINITE);
 		listSize = threadController->container->size();
 		ReleaseMutex(threadController->mtx);
-		
-		if (listSize)
-		{
-			continue;
-		}
 
-		if (!threadController->fileIsOpen)
+		//MessageBox(NULL, "here4", threadController->fileName.c_str(), MB_OK);
+
+		if (!(threadController->fileIsOpen || listSize))
 		{
+			//MessageBox(NULL, "break", threadController->fileName.c_str(), MB_OK);
 			break;
 		}
     }
@@ -203,7 +180,13 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
     // Closing and save everything to the file
     TiffWriter::CloseTIFFFile(tfWriter);
 
-	MessageBox(NULL, "here2", "Error", MB_OK); 
+	//// Cleaning up all allocated memory used for this thread
+	// Free the memory of the list associating with this thread
+	delete threadController->container;
+	// Free memory of the SavingThreadController object of this thread
+	delete threadController;
+
+	//MessageBox(NULL, "Saving thread terminating", "Error", MB_OK); 
 	return 0;
 }
 

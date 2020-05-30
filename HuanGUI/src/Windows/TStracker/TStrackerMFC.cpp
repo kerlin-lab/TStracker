@@ -192,9 +192,9 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	
 	for (auto thread: ThreadList)
 	{
-		// Terminate GUI thread of windows that is still alive
+		// Terminate GUI thread of windows that is still alive (only single-camera windows)
 		//MessageBox("1", "1", MB_OK);
-		if (thread.second->threadStatus)
+		if (thread.second->threadStatus && thread.first.compare(ALL_CAM_RECORD_WINDOWS_NAME)!=0)
 		{
 			// This needs to be threadsafe, so
 			WaitForSingleObject(mtx, INFINITE);

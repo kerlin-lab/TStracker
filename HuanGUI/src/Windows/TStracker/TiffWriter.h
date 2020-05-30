@@ -21,7 +21,7 @@ namespace tf
 class TiffWriter
 {
 public:
-	TiffWriter(std::string filename, bool multiPage);
+	TiffWriter(std::string filename, bool multiPage=true);
 	TiffWriter(const TiffWriter&) = delete;
 	TiffWriter& operator=(const TiffWriter&) = delete;
 	~TiffWriter();

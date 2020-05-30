@@ -46,3 +46,24 @@ void ImageInfo::changeImgSize(int imgWidth, int imgHeight)
 	// Fill the background with a nice color
 	this->img = DEFAULT_BACKGROUND;
 }
+
+// Copy constructor
+ImageInfo::ImageInfo(const ImageInfo &obj)
+{
+	this->img = obj.img.clone();
+	this->imgWidth = obj.imgWidth;
+	this->imgHeight = obj.imgHeight;
+	this->imgSize = obj.imgSize;
+	this->camSerial = obj.camSerial;
+}
+
+// Assignment = operator
+ImageInfo& ImageInfo::operator= (const ImageInfo& obj)
+{
+	this->img = obj.img.clone();
+	this->imgWidth = obj.imgWidth;
+	this->imgHeight = obj.imgHeight;
+	this->imgSize = obj.imgSize;
+	this->camSerial = obj.camSerial;
+	return *this;
+}

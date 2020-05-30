@@ -124,7 +124,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	int maxHeight, sumWidth;
 	maxHeight = sumWidth = 0;
 	
-	vector<ImageSaver> saverThreads;
+	vector<ImageSaver*> saverThreads;
 	vector<ImageInfo> camCapImg;
 	int frameRate;
 	uint64_t timestamp;
@@ -150,12 +150,39 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		
 		// TODO : may be you want to have a mechanism to name the output file
 		// Creating saving thread for each camera
-		saverThreads.emplace_back();
+		saverThreads.push_back(new ImageSaver());
 	}
 
+	//// Multiple screen with 1 cameras test
+	//int N = 2;
+	//for (unsigned i = 0; i<N; i++)
+	//{
+	//	// Get the camera object
+	//	pCam = camList.GetByIndex(0);
+	//	// Create an image object obtained from the camera
+	//	camCapImg.emplace_back();
+	//	// Retrive information about the image represneted by this object from the camera
+	//	retriveImageInfo(pCam->GetNodeMap(), camCapImg[0].img, camCapImg[0].imgWidth, camCapImg[0].imgHeight, camCapImg[0].imgSize, frameRate, pCam);
+	//	// Save the camera Serial to each object too
+	//	camCapImg.back().camSerial = pCam->DeviceSerialNumber();
+	//	//// Do some calculation for the GUI mat
+	//	// Find max height
+	//	if (maxHeight < camCapImg[0].imgHeight)
+	//	{
+	//		maxHeight = camCapImg[0].imgHeight;
+	//	}
+	//	// Find total width
+	//	sumWidth += camCapImg[0].imgWidth;
+
+	//	// TODO : may be you want to have a mechanism to name the output file
+	//	// Creating saving thread for each camera
+	//	saverThreads.emplace_back();
+	//}
+
 	//// Rendering the GUI
+
 	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
-	//ImageInfo GUIWindow(15 * sumWidth + (15+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+	//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 	ImageInfo GUIWindow(sumWidth + (camList.GetSize()+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 
 	// start acquisition on all cameras
@@ -210,7 +237,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 					// done whenever a complete image is expected or required.
 					// Further, check image status for a little more insight into
 					// why an image is incomplete.
-					//
+
 					if (pResultImage->IsIncomplete())
 					{
 						// Retrieve and print the image status description
@@ -235,7 +262,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						// Save frame to file if recording is running
 
 						// TODO N: check this implementation of image saving is correct
-						saverThreads[i].addToSave(new ImageInfo(camCapImg[i]));
+						saverThreads[i]->addToSave(new ImageInfo(camCapImg[i]));
 					}
 
 					//
@@ -291,15 +318,17 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	// Signaling the saverThreads to terminate
 	for(unsigned i = 0 ;i<saverThreads.size();i++)
 	{
-		saverThreads[i].signalTermination();		// This function is thread-safe
-		// Wait for the thread to terminate
-		//WaitForSingleObject(saverThreads[i].threadObject,INFINITE);		// Do not use WaitForSingleObject, some how this does not work with CWinThreadObject, it stop waiting before the thread ends
-		MessageBox(NULL, "here3", "Error", MB_OK);
-		while (saverThreads[i].isThreadRunning());
+		saverThreads[i]->signalTermination();		// This function is thread-safe
+		// Free the ImageSaver object
+		// Note: freeing ImageSaver object won't affect the operationg of the saving thread
+		// ie: the thread will continue to run until it saves all the images in its queue down to file
+		// this behavior allows the user to continue running another recording session without waiting for the last session to be saved
+		delete saverThreads[i];
 	}
 
+
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
-	MessageBox(NULL, "here1", "Error", MB_OK);
+	MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
 }
 
 
@@ -332,9 +361,9 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUI
 		cvui::endColumn();
 	}
 
-	// Test 3 windows but with 1 camera.  Remember to multiply the GUIWindow's sumWidth 
-	// by N  and change the camList.getSize() to N to run this test
-	//unsigned N = 15;
+	// Test N windows using 1 camera.  Remember to multiply the GUIWindow's sumWidth 
+	// by N, comment the code snippet below "Draw images" above and change the camList.getSize() to N to run this test
+	//unsigned N = 2;
 	//for(unsigned i = 0; i < N;i++)
 	//{
 	//	// Draw an image with a caption beneath
