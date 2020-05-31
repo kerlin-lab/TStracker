@@ -2,6 +2,8 @@
 #define TSTRACKERMFC_H
 
 #include <afxwin.h>
+#include <afxdlgs.h>
+
 #include "TStracker.h"
 #include "TStrackerThread.h"
 

@@ -72,7 +72,9 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 // Run the all cameras record process
 UINT __cdecl openCVAllCamRecord(LPVOID para)
 {
+
 	// parameter is a pointer to a CamAcquireGUIThreadInfo
+	// Path to the folder is sent thru cSerial camSerial parameter
 	CamAcquireGUIThreadInfo* threadInfo = (CamAcquireGUIThreadInfo*)para;
 	//MessageBox(NULL, "Running", "OK", MB_OK);
 
@@ -152,7 +154,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		
 		// TODO : may be you want to have a mechanism to name the output file
 		// Creating saving thread for each camera
-		saverThreads.push_back(new ImageSaver(pCam->DeviceSerialNumber().c_str()));
+		// Path to the folder is sent thru camSerial parameter
+		saverThreads.push_back(new ImageSaver(threadInfo->camSerial+string("\\")+ pCam->DeviceSerialNumber().c_str()));
 	}
 
 	//// Multiple screen with 1 cameras test
@@ -330,7 +333,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 
 
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
-	MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
+	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
 }
 
 

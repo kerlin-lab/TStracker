@@ -188,6 +188,7 @@ void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
 // Record all cameras button handler
 void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 {
+
 	//// Close all currently running single camera video windows
 	
 	for (auto thread: ThreadList)
@@ -205,13 +206,33 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 			thread.second->propDialog->Close();
 		}
 	}
+	
+	//// Ask user where to save the images file 
+
+	//CFileDialog dlg(TRUE, "bmp", "*.bmp");
+	//if (dlg.DoModal() == IDOK) {
+	//	CFile file;
+	//	VERIFY(file.Open(dlg.GetPathName(), CFile::modeRead));
+	//}
+
+	MessageBox("Please pick an EMPTY folder to save the images", "Note", MB_OK);
+
+	CFolderPickerDialog dlg;
+	
+	if (dlg.DoModal() != IDOK)
+	{
+		// The user did not pick a folder
+		MessageBox("No folder picked, aborting all cameraca recording", "Note", MB_OK);
+		return;
+	}
 
 	//// Create the thread that displays GUI and control panel
 	if (!ThreadList.count(ALL_CAM_RECORD_WINDOWS_NAME))
 	{
 		//MessageBox("2", "2", MB_OK);
 		// If user has never run the thread before, so create a threadinfo object for this
-		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, ALL_CAM_RECORD_WINDOWS_NAME, nullptr, TStrackerMain::gui);
+		// Path to the folder is sent thr cSerial camSerial parameter
+		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui);
 	}
 	else
 	{
@@ -228,7 +249,8 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		{
 			// This thread has been terminated, so regenerate the thread
 			delete ThreadList[ALL_CAM_RECORD_WINDOWS_NAME];
-			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, ALL_CAM_RECORD_WINDOWS_NAME, nullptr, TStrackerMain::gui);
+			// Path to the folder is sent thr cSerial camSerial parameter
+			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui);
 		}
 	}
 	return;
