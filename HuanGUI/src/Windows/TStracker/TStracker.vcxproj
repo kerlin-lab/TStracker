@@ -169,6 +169,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\rc\resource.h" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\main.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStracker.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerMFC.cpp" />
@@ -176,8 +177,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\ImageInfo.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\ImageSaver.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TiffWriter.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\InputDialog.cpp" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\cvui.h" />
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\resource.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStracker.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerMFC.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStrackerThread.h" />
@@ -185,6 +186,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\ImageInfo.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\ImageSaver.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TiffWriter.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\InputDialog.h" />
     <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\rc\TStracker.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +197,15 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="rc\TStracker.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="rc\TStracker.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

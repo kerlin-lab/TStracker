@@ -206,7 +206,24 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 			thread.second->propDialog->Close();
 		}
 	}
+	// Ask for how long the user wants to record
+	int duration;
+	InputDialog DurationAsk;
 	
+	DurationAsk.setPrompt("Enter recording duration in second(s) (0 or blank mean no limit)");
+	
+	if (DurationAsk.DoModal() != IDOK)
+	{
+		MessageBox("No dutation given, aborting recording", "Note", MB_OK);
+		return;
+	}
+	else
+	{
+		// Get user input value
+		duration = readDuration(string(DurationAsk.UserResponse));
+		//MessageBox(to_string(duration).c_str(), "Duration", MB_OK);
+	}
+
 	//// Ask user where to save the images file 
 
 	//CFileDialog dlg(TRUE, "bmp", "*.bmp");
@@ -232,7 +249,7 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		//MessageBox("2", "2", MB_OK);
 		// If user has never run the thread before, so create a threadinfo object for this
 		// Path to the folder is sent thr cSerial camSerial parameter
-		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui);
+		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui,duration);
 	}
 	else
 	{
@@ -250,8 +267,63 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 			// This thread has been terminated, so regenerate the thread
 			delete ThreadList[ALL_CAM_RECORD_WINDOWS_NAME];
 			// Path to the folder is sent thr cSerial camSerial parameter
-			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui);
+			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui,duration);
 		}
 	}
 	return;
+}
+
+////// Customized Dialog
+////template <class T>
+////TStrackerDialog<T>::TStrackerDialog()
+////{	
+////}
+//
+//template <class T>
+//BOOL TStrackerDialog<T>::InitInstance()
+//{
+//	CWinApp::InitInstance();
+//
+//	T Dlg(NULL);
+//	this->m_pMainWnd = &Dlg;
+//	Dlg.DoModal();
+//	return TRUE;
+//}
+//
+//
+//CInputDialog::CInputDialog(CWnd* pr)
+//{
+//	this->Create(IDD_PROPPAGE_SMALL, pr);
+//}
+//
+//CInputDialog::~CInputDialog()
+//{
+//
+//}
+//
+//BOOL CInputDialog::OnInitDialog()
+//{
+//	CDialog::OnInitDialog();
+//
+//	CRect rect(0,0, 10, 20);
+//
+//	m_edit.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |
+//		ES_AUTOHSCROLL | WS_BORDER,
+//		rect, this, 12);
+//	m_edit.SetFocus();
+//	return FALSE;
+//}
+
+int readDuration(string duration)
+{
+	int value;
+	try
+	{
+		value = stoi(duration);
+	}
+	catch (exception e)
+	{
+		value = 0;
+	}
+	return value;
 }

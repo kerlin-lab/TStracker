@@ -22,12 +22,15 @@
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TiffWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\InputDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\cvui.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\rc\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\resource.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\cvui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TStracker.h">
@@ -51,6 +54,9 @@
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\TiffWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\InputDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\HuanGUI\src\Windows\TStracker\CMakeLists.txt" />
@@ -67,5 +73,8 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{9E9E8CB7-C9DF-3BD9-8CFB-AE9D00094EA2}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="rc\TStracker.ico" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ CamAcquireGUIThreadInfo::CamAcquireGUIThreadInfo(
 	string cSerial,
 	CameraPtr* camPTR,
 	GUI::GUIFactory gui,
+	int duration,
 	boolean runGui,
 	boolean acsignal,
 	boolean runRecord,
@@ -18,6 +19,7 @@ CamAcquireGUIThreadInfo::CamAcquireGUIThreadInfo(
 	this->camSerial = cSerial;
 	this->camPtr = camPTR;
 	this->runGUI = runGui;
+	this->duration = duration;
 	this->acquireSignal = acsignal;
 	this->runRecord = runRecord;
 	this->cameraInitStatus = cInitStatus;
@@ -129,7 +131,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	vector<ImageSaver*> saverThreads;
 	vector<ImageInfo> camCapImg;
 	vector<int> frameRate;
-	uint64_t timestamp, intialTimestamp = UINT64_MAX;
+	uint64_t timestamp, duration , recordDuration = threadInfo->duration * 1e9 , intialTimestamp = UINT64_MAX;
 	
 
 	for(unsigned i=0;i<camList.GetSize();i++)
@@ -210,6 +212,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 			cvui::init(ALL_CAM_RECORD_WINDOWS_NAME);
 		}
 
+
 		// Draw image if is capturing
 
 		if (threadInfo->acquireSignal && threadInfo->runRecord)
@@ -267,6 +270,9 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 							intialTimestamp = timestamp;
 						}
 						timestamp -= intialTimestamp;
+
+						duration = timestamp;	// This is to get the timestamp of the last camera since it will probabily the one with the smallest timestamp because its acquisition was started last
+
 						// Draw timestamp
 						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate[i]);
 
@@ -295,6 +301,16 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 					break;
 				}
 				result = -1;
+			}
+			
+			// Checking recording duration
+			if (recordDuration != 0 && duration >= recordDuration)
+			{
+				// Stop acquiring when duration reaches limit
+				WaitForSingleObject(mtx, INFINITE);
+				threadInfo->runGUI = false;
+				ReleaseMutex(mtx);
+				continue;
 			}
 		}
 

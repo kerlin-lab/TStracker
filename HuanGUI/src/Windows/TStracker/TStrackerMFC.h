@@ -1,3 +1,11 @@
+/*
+	Very good 
+	example of how to create Dialog
+	https://www.tenouk.com/visualcplusmfc/visualcplusmfc5.html
+	And this for how to set static text
+	https://groups.google.com/forum/#!topic/microsoft.public.vc.mfc/OoKIkvj34bA
+*/
+
 #ifndef TSTRACKERMFC_H
 #define TSTRACKERMFC_H
 
@@ -7,6 +15,8 @@
 
 #include "TStracker.h"
 #include "TStrackerThread.h"
+#include "rc\resource.h"
+#include "InputDialog.h"
 
 #define CVUI_IMPLEMENTATION
 #include "cvui.h"
@@ -62,7 +72,28 @@ private:
 	DECLARE_MESSAGE_MAP()
 };
 
-// Button handlers
+int readDuration(string duration);
+
+// Customized Dialog
+//template <class T>
+//class TStrackerDialog : public CWinApp
+//{
+//public:
+//	//TStrackerDialog();
+//	BOOL InitInstance();
+//};
+//
+//class CInputDialog : public CDialog
+//{
+//	CEdit m_edit;
+//	TStrackerDialog<CInputDialog> core;
+//
+//public:
+//	CInputDialog(CWnd* dlg);
+//	~CInputDialog();
+//	virtual BOOL OnInitDialog();
+//};
+
 #endif // !TSTRACKERMFC_H
 
 

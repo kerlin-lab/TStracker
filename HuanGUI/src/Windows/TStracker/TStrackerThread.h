@@ -29,7 +29,7 @@ public:
 	boolean cameraInitStatus;		// Controlling the camera Init() status, if false, the camPtr->DeInit() will be called
 	boolean threadStatus;			// false means the thread associated with the object has been terminated
 	CWinThread* threadObjectPtr;	// pointer to the created thread object
-
+	int duration;					// How long will the thread capture (this looks at timestamp, not timer)
 
 									// The state of the acquire loop, if true -> acquiring and 
 public:
@@ -44,6 +44,7 @@ public:
 		string cSerial,
 		CameraPtr* camPTR,
 		GUI::GUIFactory gui,
+		int duration = 0,				// Run infinitely
 		boolean runGui = true,			// Make it true to start the gui loop, to show the initial GUI of the camera. No acquisition yet
 		boolean acsignal = false,		// Make it false to prevent OpenCV automatically run acquisition when user just click on the camera
 		boolean runRecord = false,		// No recording when starting

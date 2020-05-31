@@ -28,24 +28,27 @@ cmake_minimum_required(VERSION 2.8)
 
 # TStracker Source code
 set(SOURCE_FILE
+	./rc/resource.h
 	./main.cpp  
 	./TStracker.cpp 
 	./TStrackerMFC.cpp
 	./TStrackerThread.cpp
 	./ImageInfo.cpp
 	./ImageSaver.cpp
-	./TiffWriter.cpp)
+	./TiffWriter.cpp
+	./InputDialog.cpp)
 
 set(HEADER_FILE
 	./cvui.h
-	./resource.h
+	./rc/resource.h
 	./TStracker.h
 	./TStrackerMFC.h
 	./TStrackerThread.h
 	./stdafx.h
 	./ImageInfo.h
 	./ImageSaver.h
-	./TiffWriter.h)
+	./TiffWriter.h
+	./InputDialog.h)
 
 # Open CV setting
 find_package(OpenCV REQUIRED)					# Link OpenCV
