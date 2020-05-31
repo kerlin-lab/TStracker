@@ -3,6 +3,7 @@
 
 #include <afxwin.h>
 #include <afxdlgs.h>
+#include <afxcmn.h>
 
 #include "TStracker.h"
 #include "TStrackerThread.h"

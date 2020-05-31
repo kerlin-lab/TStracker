@@ -129,7 +129,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	vector<ImageSaver*> saverThreads;
 	vector<ImageInfo> camCapImg;
 	vector<int> frameRate;
-	uint64_t timestamp;
+	uint64_t timestamp, intialTimestamp = UINT64_MAX;
+	
 
 	for(unsigned i=0;i<camList.GetSize();i++)
 	{
@@ -261,6 +262,11 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						camCapImg[i].getFromImgPtr(convertedImage);
 						// Get timestamp
 						timestamp = convertedImage->GetTimeStamp();
+						if (intialTimestamp == UINT64_MAX)
+						{
+							intialTimestamp = timestamp;
+						}
+						timestamp -= intialTimestamp;
 						// Draw timestamp
 						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate[i]);
 
@@ -588,6 +594,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 {
 	int result = 0;
 	int imgWidth, imgHeight, imgSize, frameRate;
+	uint64_t intialTimestamp = UINT64_MAX;
 
 	Mat imgFrame;						// imageFrame is to hold the captured image
 	Mat displayFrame;					// displayFrame is to hold the captured image and the GUI components to be displayed
@@ -601,6 +608,7 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 
 	// Getting camera serial
 	camSerial = pCam->DeviceSerialNumber();
+	// Getting timestamp offset
 	try
 	{
 
@@ -732,6 +740,11 @@ int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLD
 						ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
 						// Get timestamp
 						timestamp = convertedImage->GetTimeStamp();
+						if (intialTimestamp == UINT64_MAX)
+						{
+							intialTimestamp = timestamp;
+						}
+						timestamp -= intialTimestamp;
 						// Draw timestamp
 						drawTimeAndFPS(imgFrame, getReadableTimestamp(timestamp) / 1000000.0, frameRate);
 						// Show the frame
