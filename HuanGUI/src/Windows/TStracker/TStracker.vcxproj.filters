@@ -74,7 +74,4 @@
       <UniqueIdentifier>{9E9E8CB7-C9DF-3BD9-8CFB-AE9D00094EA2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="rc\TStracker.ico" />
-  </ItemGroup>
 </Project>

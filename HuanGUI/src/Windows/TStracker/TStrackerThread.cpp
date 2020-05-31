@@ -131,7 +131,8 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 	vector<ImageSaver*> saverThreads;
 	vector<ImageInfo> camCapImg;
 	vector<int> frameRate;
-	uint64_t timestamp, duration , recordDuration = threadInfo->duration * 1e9 , intialTimestamp = UINT64_MAX;
+	vector<uint64_t> duration, intialTimestamp;
+	uint64_t timestamp , recordDuration = threadInfo->duration * 1e9 ;
 	
 
 	for(unsigned i=0;i<camList.GetSize();i++)
@@ -142,6 +143,10 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		camCapImg.emplace_back();
 		// Reverse space to save framerate
 		frameRate.push_back(0);
+		// Reserve space to save duration
+		duration.push_back(0);
+		// Reserve space to save initial timestamp
+		intialTimestamp.push_back(UINT64_MAX);
 		// Retrive information about the image represneted by this object from the camera
 		retriveImageInfo(pCam->GetNodeMap(),camCapImg[i].img,camCapImg[i].imgWidth,camCapImg[i].imgHeight,camCapImg[i].imgSize,frameRate[i],pCam);
 		// Save the camera Serial to each object too
@@ -219,9 +224,16 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 		{
 			try
 			{
+
 				// Get image from each camera
 				for(unsigned i=0;i<camList.GetSize();i++)
 				{
+					// Do not acquire image from cameras that have run long enough
+					if (recordDuration != 0 && duration[i] >= recordDuration)
+					{
+						continue;
+					}
+
 					// Get camera pointer
 					pCam = camList.GetByIndex(i);
 
@@ -265,16 +277,16 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						camCapImg[i].getFromImgPtr(convertedImage);
 						// Get timestamp
 						timestamp = convertedImage->GetTimeStamp();
-						if (intialTimestamp == UINT64_MAX)
+						if (intialTimestamp[i] == UINT64_MAX)
 						{
-							intialTimestamp = timestamp;
+							intialTimestamp[i] = timestamp;
 						}
-						timestamp -= intialTimestamp;
-
-						duration = timestamp;	// This is to get the timestamp of the last camera since it will probabily the one with the smallest timestamp because its acquisition was started last
+						timestamp -= intialTimestamp[i];
+						
+						duration[i] = timestamp;
 
 						// Draw timestamp
-						drawTimeAndFPS(camCapImg[i].img, getReadableTimestamp(timestamp) / 1000000.0, frameRate[i]);
+						drawTimeAndFPS(camCapImg[i].img, timestamp / 1000000000.0, frameRate[i]);
 
 						// Save frame to file if recording is running
 
@@ -304,7 +316,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 			}
 			
 			// Checking recording duration
-			if (recordDuration != 0 && duration >= recordDuration)
+			if (recordDuration != 0 && *min_element(duration.begin(),duration.end()) >= recordDuration)
 			{
 				// Stop acquiring when duration reaches limit
 				WaitForSingleObject(mtx, INFINITE);
