@@ -9,11 +9,13 @@ ImageInfo::ImageInfo() :imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), ti
 	this->img = DEFAULT_BACKGROUND;
 }
 
-ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial, uint64_t timestamp)
+ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial, uint64_t timestamp, uint64_t frameID, uint64_t streamID)
 {
 	this->changeImgSize(imgWidth,imgHeight);
 	this->camSerial = camSerial;
 	this->timestamp = timestamp;
+	this->frameID = frameID;
+	this->streamID = streamID;
 }
 
 ImageInfo::~ImageInfo() {}
@@ -35,6 +37,11 @@ void ImageInfo::getFromImgPtr(ImagePtr& spin_con)
 	
 	// Save timestamp
 	this->timestamp = spin_con->GetTimeStamp();
+	this->frameID = spin_con->GetFrameID();
+	this->streamID = spin_con->GetID();
+
+	//MessageBox(NULL, to_string(spin_con->GetID()).c_str(), "streamID", MB_OK);
+	//MessageBox(NULL, to_string(spin_con->GetFrameID()).c_str(), "FrameID", MB_OK);
 }
 
 /*
@@ -60,6 +67,8 @@ ImageInfo::ImageInfo(const ImageInfo &obj)
 	this->imgSize = obj.imgSize;
 	this->camSerial = obj.camSerial;
 	this->timestamp = obj.timestamp;
+	this->frameID = obj.frameID;
+	this->streamID = obj.streamID;
 }
 
 // Assignment = operator
@@ -71,5 +80,7 @@ ImageInfo& ImageInfo::operator= (const ImageInfo& obj)
 	this->imgSize = obj.imgSize;
 	this->camSerial = obj.camSerial;
 	this->timestamp = obj.timestamp;
+	this->frameID = obj.frameID;
+	this->streamID = obj.streamID;
 	return *this;
 }

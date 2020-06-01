@@ -272,9 +272,7 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 					{
 
 						ImagePtr convertedImage = pResultImage->Convert(PixelFormatEnums::PixelFormat_Mono8, ColorProcessingAlgorithm::HQ_LINEAR);
-						// Converting to OpenCV Mat
-						// ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
-						camCapImg[i].getFromImgPtr(convertedImage);
+
 						// Get timestamp
 						timestamp = convertedImage->GetTimeStamp();
 						if (intialTimestamp[i] == UINT64_MAX)
@@ -284,6 +282,12 @@ void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camLis
 						timestamp -= intialTimestamp[i];
 						
 						duration[i] = timestamp;
+
+						// Converting to OpenCV Mat
+						// ImagePtr2CVMat_CV_8UC1(convertedImage, imgFrame, imgSize);
+						camCapImg[i].getFromImgPtr(convertedImage);
+						// Save the adjusted timestamp not the original timestmap since the original timestamp does not get reseted before each run
+						camCapImg[i].timestamp = timestamp;
 
 						// Draw timestamp
 						drawTimeAndFPS(camCapImg[i].img, timestamp / 1000000000.0, frameRate[i]);

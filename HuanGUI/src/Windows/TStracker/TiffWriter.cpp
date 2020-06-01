@@ -5,12 +5,15 @@
 * Tiff image created by this module 
 * will have timestamp as a string of time in NANOsecond
 * saved in the TIFF_DATETIME tag (index 306)
+* the FrameID and StreamID of the image will be saved
+* in ImageDescription tag in JSON format
 */
 
 #include "TiffWriter.h"
 
 // Don't put this in header file otherwise you will get LNK2005
 std::string DEFAULT_EXTENSION = ".tiff";
+const std::string JSON_IMAGE_DESCRIPTION_SKELETON = "{\n\"frameID\": <FRAME_ID>,\n\"streamId\" : <STREAM_ID>\n}";
 
 using namespace tf;
 
@@ -61,18 +64,18 @@ void TiffWriter::write(const cv::Mat& img, int width, int height)
 	this->write(Dest, width, height);
 }
 
-// Write the cv::Mat to file with timestamp
-void TiffWriter::write(const cv::Mat& img, int width, int height, uint64_t timestamp)
-{
-	//TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, to_string(timestamp).c_str());
-	
-	// Save timestamp as a string of time in NANOsecond
-	TIFFSetField(tiff, TIFFTAG_DATETIME, to_string(timestamp).c_str());
-	// Save the image data	
-	this->write(img, width, height);
-
-	//MessageBox(NULL, to_string(timestamp).c_str(), "Time", MB_OK);
-}
+//// Write the cv::Mat to file with timestamp
+//void TiffWriter::write(const cv::Mat& img, int width, int height, uint64_t timestamp)
+//{
+//	//TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, to_string(timestamp).c_str());
+//	
+//	// Save timestamp as a string of time in NANOsecond to the DateTime field
+//	TIFFSetField(tiff, TIFFTAG_DATETIME, to_string(timestamp).c_str());
+//	// Save the image data	
+//	this->write(img, width, height);
+//
+//	//MessageBox(NULL, to_string(timestamp).c_str(), "Time", MB_OK);
+//}
 
 
 TiffWriter::~TiffWriter()
@@ -95,5 +98,29 @@ void TiffWriter::CloseTIFFFile(TiffWriter * tiff)
 // Save the image contained in img to file
 void TiffWriter::SavetoTIFFFile(ImageInfo* img)
 {
-	this->write(img->img, img->imgWidth, img->imgHeight,img->timestamp);
+	// Savign the image frameID and streamID to ImageDescription tag
+	TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, GenJSONImageDesp(img->frameID,img->streamID).c_str());
+	//MessageBox(NULL, GenJSONImageDesp(img->frameID, img->streamID).c_str(), "FrameID and Stream ID inserted Confirmed", MB_OK);
+	//TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, string("Test"));
+
+	// Save timestamp as a string of time in NANOsecond to the DateTime field
+	TIFFSetField(tiff, TIFFTAG_DATETIME, to_string(img->timestamp).c_str());
+	// Save the image data	
+	//MessageBox(NULL, to_string(timestamp).c_str(), "Time", MB_OK);
+	this->write(img->img, img->imgWidth, img->imgHeight);
+}
+
+string GenJSONImageDesp(uint64_t frameID, uint64_t streamID)
+{
+	string JSON = JSON_IMAGE_DESCRIPTION_SKELETON;
+	//MessageBox(NULL, JSON.c_str(), "Test", MB_OK);
+	regex frameID_m("(<FRAME_ID>)");
+	regex streamID_m("(<STREAM_ID>)");
+	// write frameID
+	JSON = regex_replace(JSON, frameID_m, to_string(frameID));
+	// write streamID
+	JSON = regex_replace(JSON, streamID_m, to_string(streamID));
+
+	//MessageBox(NULL, JSON.c_str(), "FrameID and Stream ID inserted", MB_OK);
+	return JSON;
 }

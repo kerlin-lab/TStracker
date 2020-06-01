@@ -32,12 +32,14 @@ public:
 	int imgWidth;	// Width of the image
 	int imgHeight;	// Height of the image
 	int imgSize;	// Size = Width * Height
-	unsigned timestamp;
+	uint64_t timestamp;	// Timestamp of the image
+	uint64_t frameID;	// Frame ID of the image, this is used to detect missed frame
+	uint64_t streamID;	// ID of the image in the stream, not sure if can be used to detect missed frame or missing image during transmission
 	std::string camSerial;	// The serial of the camera from which the object img of this is obtained
 
 	ImageInfo();
 
-	ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial="", uint64_t timestamp=0);
+	ImageInfo::ImageInfo(int imgWidth, int imgHeight, std::string camSerial="", uint64_t timestamp=0, uint64_t frameID= 0, uint64_t streamID= 0);
 
 	// Copy constructor
 	ImageInfo(const ImageInfo &obj) ;

@@ -11,6 +11,7 @@
 */
 
 #include <string>
+#include <regex>
 
 #include <opencv2/core.hpp>
 
@@ -39,8 +40,8 @@ public:
 	// Write the cv::Mat to file
 	void write(const cv::Mat& img, int width, int height);
 
-	// Write the cv::Mat to file with timestamp
-	void write(const cv::Mat& img, int width, int height,uint64_t timestamp);
+	//// Write the cv::Mat to file with timestamp
+	//void write(const cv::Mat& img, int width, int height,uint64_t timestamp);
 
 	// Getting a handle to a new and writable TIFF file
 	static TiffWriter* OpenNewTIFFtoWrite(std::string filename, bool isMultipage = true);
@@ -56,5 +57,7 @@ private:
 	bool multiPage;
 	unsigned int page;
 };
+
+string GenJSONImageDesp(uint64_t frameID, uint64_t streamID);
 
 #endif // !_TIFF_WRITER_H
