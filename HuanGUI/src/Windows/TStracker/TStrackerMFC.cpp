@@ -37,6 +37,9 @@ CameraSelectionDlg* camSelectInitializer()
 
 BOOL TStrackerMain::InitInstance()
 {
+	// Making this process a Real-time process so that it receives the highest priority
+	SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+
 	// *** NOTES ***
 	// Dialog based MFC applications may incorrectly initialize the threading model to MTA.
 	// To prevent this, initialize the threading model to STA with the following code block.
