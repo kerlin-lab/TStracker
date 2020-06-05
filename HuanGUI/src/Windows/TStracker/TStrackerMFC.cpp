@@ -37,6 +37,7 @@ CameraSelectionDlg* camSelectInitializer()
 
 BOOL TStrackerMain::InitInstance()
 {
+	// TODO 1: This setting real-time does not work in win10, is there  is way to fix?
 	// Making this process a Real-time process so that it receives the highest priority
 	SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
 
