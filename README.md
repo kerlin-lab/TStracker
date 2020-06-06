@@ -6,9 +6,7 @@
 - Contributor: Harishankar Jayakumar, Tien Dinh
 
 ## About
--  
--  TStracker This program was created to overcome limits of SpinView software provided by FLIR along with their Blackfly S camera
-- Feature of TStracker that
+- The goal of TStracker project was to create a recording software that overcomes limits of SpinView software (provided by FLIR along with their Blackfly S camera) and provides better features that more aligned to the tongue-tracking experiment at Kerlin Lab 
 
 ## Features
 - Simultaneous acquiring from multiple cameras at high speed (up to 1 Khz)
