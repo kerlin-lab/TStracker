@@ -23,7 +23,7 @@ Root<br/>
 |-- lib 	: this folder contains libraries used in this project<br/>
 |<br/>
 |-- src 	: this is where the source code lies<br/>
-|   |<br/>
+|   |<br/>
 |   |-- DevelopmentSuite 	: This contains example source code use to test a specific features<br/>
 |   |<br/>
 |       |-- PythonUtilities 	: Utilities that helps with pleminary tasks like concatinating multipile tiff stack to one file, etc<br/>
