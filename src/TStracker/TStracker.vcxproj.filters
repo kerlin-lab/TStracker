@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerMFC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageSaver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TiffWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\InputDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\rc\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\cvui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerMFC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageSaver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TiffWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\InputDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\rc\TStracker.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{FB97D2E6-CC88-30CC-B26F-3C705103F3AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5BF9CB52-0120-321E-9036-8F2309DDB057}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

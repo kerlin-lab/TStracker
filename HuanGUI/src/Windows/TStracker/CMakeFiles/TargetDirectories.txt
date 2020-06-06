@@ -1,4 +1,0 @@
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/CMakeFiles/TStracker.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/CMakeFiles/INSTALL.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/CMakeFiles/ALL_BUILD.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/TStracker/CMakeFiles/ZERO_CHECK.dir
