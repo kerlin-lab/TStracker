@@ -20,3 +20,4 @@
 - Make sure the solution is in **Release** build. You can check this looking at the area close by the menu bar (FILE|EDIT|VIEW|PROJECT, etc), you should see a drop down box with either **Debug** or **Release** inside. If it is in **Debug** click and change to release. Another way to config this is to go to **Build->Configuration Manager** and change **Active solution configuration** to **Release**
 - Hit **Build->Build Solution**
 - When building finishes, the folder **x64/Release** should contain the program **TStracker.exe**
+
