@@ -17,6 +17,7 @@
 - Timer recording allow user to preset recording duration
 
 ## Project structure
+```
 .
 +-- doc 	: this folder contains additional documents to help build the project
 +-- lib 	: this folder contains libraries used in this project
@@ -24,3 +25,4 @@
 |	+-- DevelopmentSuite 	: This contains example source code use to test a specific features<br/>
 |	+-- PythonUtilities 	: Utilities that helps with pleminary tasks like concatinating multipile tiff stack to one file, etc
 |	+-- TStracker 		: this is where you should go to and build TStracker
+```
