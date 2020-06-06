@@ -13,9 +13,10 @@
 - Hit **Configure**
 - If the configuration window pops up, in the first box, select the Visual Studio version that is currently installed in your machine
 - The second box should be x64. Then hit OK
-- After configuring finishes, run **Generate**
+- After configuring finishes, hit **Generate**
 ## Build the solution
 - After genrating finishes, you should **TStracker.sln** in the TStracker project folder
 - Open the **TStracker.sln**  with the visual studio installed in you machine
+- Make sure the solution is in **Release** build. You can check this looking at the area close by the menu bar (FILE|EDIT|VIEW|PROJECT, etc), you should see a drop down box with either **Debug** or **Release** inside. If it is in **Debug** click and change to release. Another way to config this is to go to **Build->Configuration Manager** and change **Active solution configuration** to **Release**
 - Hit **Build->Build Solution**
-- When building finishes, the folder x64/Release should contain the program **TStracker.exe**
+- When building finishes, the folder **x64/Release** should contain the program **TStracker.exe**
