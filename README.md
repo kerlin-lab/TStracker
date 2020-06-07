@@ -27,7 +27,7 @@ Root
 |   |
 |   |-- DevelopmentSuite 	: This contains example source code use to test a specific features
 |   |
-|       |-- PythonUtilities 	: Utilities that helps with pleminary tasks like concatinating multipile tiff stack to one file, etc
-|       |
-|       |-- TStracker 		: this is where you should go to and build TStracker
+|   |-- PythonUtilities 	: Utilities that helps with pleminary tasks like concatinating multipile tiff stack to one file, etc
+|   |
+|   |-- TStracker 		: this is where you should go to and build TStracker
 ```
