@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\CMakeFiles\a18e106a294e7ed06c8aa617962e43db\INSTALL_force.rule">
+    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CMakeFiles\008711ed9f90138995d861de7c90014a\INSTALL_force.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{BC8B1F61-1B1D-38B9-9C02-EA7B379D1D38}</UniqueIdentifier>
+      <UniqueIdentifier>{10165CAB-E5A0-3AB2-92BA-08311BDA7796}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

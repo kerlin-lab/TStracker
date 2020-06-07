@@ -1,77 +1,83 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\main.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStracker.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerMFC.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStrackerMFC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerThread.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStrackerThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageInfo.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageSaver.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageSaver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TiffWriter.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TiffWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\InputDialog.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAcquirer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\rc\resource.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\cvui.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\cvui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStracker.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerMFC.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStrackerMFC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TStrackerThread.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStrackerThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\stdafx.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageInfo.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\ImageSaver.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageSaver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\TiffWriter.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TiffWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\InputDialog.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAcquirer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\Flir_Blackfly_S_USB3_GUITimestamp\src\TStracker\rc\TStracker.rc">
+    <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\TStracker.rc">
       <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{FB97D2E6-CC88-30CC-B26F-3C705103F3AF}</UniqueIdentifier>
+      <UniqueIdentifier>{2A85514B-B85D-31F9-844C-2F0D3CC7B2F3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{5BF9CB52-0120-321E-9036-8F2309DDB057}</UniqueIdentifier>
+      <UniqueIdentifier>{3DB0C1F5-4152-3352-992B-9E83B260A195}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

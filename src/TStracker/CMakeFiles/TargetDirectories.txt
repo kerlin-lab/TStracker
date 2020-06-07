@@ -1,4 +1,4 @@
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/src/TStracker/CMakeFiles/TStracker.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/src/TStracker/CMakeFiles/INSTALL.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/src/TStracker/CMakeFiles/ALL_BUILD.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/src/TStracker/CMakeFiles/ZERO_CHECK.dir
+C:/Users/TranKim/Desktop/Working/TStracker/src/TStracker/CMakeFiles/TStracker.dir
+C:/Users/TranKim/Desktop/Working/TStracker/src/TStracker/CMakeFiles/INSTALL.dir
+C:/Users/TranKim/Desktop/Working/TStracker/src/TStracker/CMakeFiles/ALL_BUILD.dir
+C:/Users/TranKim/Desktop/Working/TStracker/src/TStracker/CMakeFiles/ZERO_CHECK.dir

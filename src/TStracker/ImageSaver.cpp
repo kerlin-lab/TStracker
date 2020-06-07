@@ -125,7 +125,7 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
     ReleaseMutex(threadController->mtx);
 
     // Running the loop to save everything in the container down to file
-    // TODO 4: implement IsExternalSignalDone()
+    // TODO N: implement IsExternalSignalDone()
 
 	try
 	{
