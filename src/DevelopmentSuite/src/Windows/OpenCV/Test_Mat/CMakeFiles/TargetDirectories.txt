@@ -1,3 +1,0 @@
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeFiles/TestMat.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeFiles/ALL_BUILD.dir
-C:/Users/TranKim/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Windows/OpenCV/Test_Mat/CMakeFiles/ZERO_CHECK.dir

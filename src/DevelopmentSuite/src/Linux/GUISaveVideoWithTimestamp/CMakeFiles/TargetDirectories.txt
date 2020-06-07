@@ -1,7 +1,0 @@
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/edit_cache.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/install/strip.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/GUISaveVideoWithTimestamp.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/rebuild_cache.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/list_install_components.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/install/local.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/GUISaveVideoWithTimestamp/CMakeFiles/install.dir

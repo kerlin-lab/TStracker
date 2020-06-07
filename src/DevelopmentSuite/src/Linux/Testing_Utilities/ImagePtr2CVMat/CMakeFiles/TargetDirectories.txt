@@ -1,7 +1,0 @@
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/install/strip.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/edit_cache.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/install.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/ImagePtr2CVMat.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/rebuild_cache.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/list_install_components.dir
-/home/trankimhuan/Desktop/Working/Flir_Blackfly_S_USB3_GUITimestamp/HuanGUI/src/Testing_Utilities/ImagePtr2CVMat/CMakeFiles/install/local.dir
