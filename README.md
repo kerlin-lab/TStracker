@@ -9,11 +9,11 @@
 - The goal of TStracker project was to create a recording software that overcomes limits of SpinView software (provided by FLIR along with their Blackfly S camera) and provides better features that more aligned to the tongue-tracking experiment at Kerlin Lab 
 
 ## Features
-- Simultaneous acquiring from multiple cameras at high speed (up to 1 Khz)
+- Simultaneous acquiring from multiple cameras at high speed (up to 1 Khz or may be more if FLIR camera allows)
 - Guarantee no delay between recording sessions due to data downloading from cameras (User can start recording a new session right after he/she finishes the last one)
 - Auto save images to multi-image TIFF files (tiff stack)
 - Retrieve and save images' timestamps and imageIDs to the metatags of each image in the tiff stacks
-- Provide high multi-image TIFF writing speed with auto tiff stack partitioning feature that overcomes the diminishing-write-speed prblem of LibTiff when operating on multi-image TIFF files
+- Provide high multi-image TIFF writing speed with auto tiff stack partitioning feature that overcomes the diminishing-write-speed problem of LibTiff when operating on multi-image TIFF files (performance varies from 3Mb/s to 20Mb/s or more depends on the quality of storage device (HDD, SSD, etc))
 - Timer recording allow user to preset recording duration
 
 ## Project structure
