@@ -65,11 +65,13 @@ public:
 
 };
 
+typedef vector<ImageAcquirerController *> ImageAcquirerList;
+
 class ImageAcquirer
 {
 public:
 	ImageAcquirerController * controller;
-	ImageAQList * imgQueueList;
+	ImageAcquirerList * imgQueueList;
 
 public:
 	ImageAcquirer();

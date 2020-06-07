@@ -28,6 +28,9 @@
     <ClCompile Include="ImageAcquirer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadSafeQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\resource.h">
@@ -61,6 +64,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageAcquirer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

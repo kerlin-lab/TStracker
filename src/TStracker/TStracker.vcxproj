@@ -313,6 +313,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageAcquirer.cpp" />
+    <ClCompile Include="ThreadSafeQueue.cpp" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\resource.h" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\main.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStracker.cpp" />
@@ -332,6 +333,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TiffWriter.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.h" />
     <ClInclude Include="ImageAcquirer.h" />
+    <ClInclude Include="ThreadSafeQueue.h" />
     <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\TStracker.rc" />
   </ItemGroup>
   <ItemGroup>

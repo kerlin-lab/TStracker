@@ -6,7 +6,7 @@ ImageAcquirer::ImageAcquirer()
 	CameraList tmpCamlist;
 	this->imgQueueList = new ImageAQList(tmpCamlist.GetSize());
 	this->controller = new ImageAcquirerController(this->imgQueueList);
-	// Create and run the thread
+	// Create and run Image acquirer thread for each camera
 	AfxBeginThread(runImageAcquiringLoop, this->controller);
 }
 
@@ -41,7 +41,7 @@ UINT __cdecl runImageAcquiringLoop(LPVOID para)
 
 	// parameter is a pointer to a ImageAcquirerController
 	// Path to the folder is sent thru cSerial camSerial parameter
-	ImageAcquirerController* controller = (ImageAcquirerController*)para;
+	ImageAcquirerController * controller = (ImageAcquirerController*)para;
 
 	// Setting before run acquisition all camera
 	CameraList camList;		// List of camera
@@ -56,3 +56,4 @@ UINT __cdecl runImageAcquiringLoop(LPVOID para)
 	}
 	return 0;
 }
+
