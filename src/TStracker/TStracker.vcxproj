@@ -312,8 +312,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImageAcquirer.cpp" />
-    <ClCompile Include="ThreadSafeQueue.cpp" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\resource.h" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\main.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStracker.cpp" />
@@ -323,6 +321,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageSaver.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TiffWriter.cpp" />
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ThreadSafeQueue.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TSImage.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CamRecorder.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\RunOperator.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageMiner.cpp" />
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageDistributor.cpp" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\cvui.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStracker.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TStrackerMFC.h" />
@@ -332,8 +336,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageSaver.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TiffWriter.h" />
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.h" />
-    <ClInclude Include="ImageAcquirer.h" />
-    <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ThreadSafeQueue.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TSImage.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CamRecorder.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\RunOperator.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageMiner.h" />
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageDistributor.h" />
     <ResourceCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\rc\TStracker.rc" />
   </ItemGroup>
   <ItemGroup>

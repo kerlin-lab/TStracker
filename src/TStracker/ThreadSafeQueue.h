@@ -1,8 +1,11 @@
 #ifndef _THREAD_SAFE_QUEUE_H_
 #define _THREAD_SAFE_QUEUE_H_
 
+#include "windows.h"
+
 #include <queue>
-#include "synchapi.h"
+
+using namespace std;
 
 template <typename T>
 class ThreadSafeQueue

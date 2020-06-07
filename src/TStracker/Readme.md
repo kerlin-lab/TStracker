@@ -9,6 +9,7 @@
 - Compiling OpenCV library by following instructions in file "Building OpenCV for Windows.pdf" in the doc folder of this repository, or thru [Huan's blog](http://huanktran.com/blog/index.php/2020/05/16/building-opencv-for-windows/)
 ## Generating the project Visual Studio Solution
 - Run CMake GUI
+- Delete Cache by click on File -> Delete Cache on the top right corner
 - Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \HuanGUI\src\Windows\TStracker in this repository
 - Hit **Configure**
 - If the configuration window pops up, in the first box, select the Visual Studio version that is currently installed in your machine

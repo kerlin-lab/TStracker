@@ -42,7 +42,13 @@ set(SOURCE_FILE
 	./ImageInfo.cpp
 	./ImageSaver.cpp
 	./TiffWriter.cpp
-	./InputDialog.cpp)
+	./InputDialog.cpp
+	./ThreadSafeQueue.cpp
+	./TSImage.cpp
+	./CamRecorder.cpp
+	./RunOperator.cpp
+	./ImageMiner.cpp
+	./ImageDistributor.cpp)
 
 set(HEADER_FILE
 	./cvui.h
@@ -54,7 +60,13 @@ set(HEADER_FILE
 	./ImageInfo.h
 	./ImageSaver.h
 	./TiffWriter.h
-	./InputDialog.h)
+	./InputDialog.h
+	./ThreadSafeQueue.h
+	./TSImage.h
+	./CamRecorder.h
+	./RunOperator.h
+	./ImageMiner.h
+	./ImageDistributor.h)
 
 # Open CV setting
 find_package(OpenCV PATHS ${OpenCV_DIR})					# Link OpenCV

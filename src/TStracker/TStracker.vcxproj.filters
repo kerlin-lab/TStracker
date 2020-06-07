@@ -25,10 +25,22 @@
     <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImageAcquirer.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ThreadSafeQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadSafeQueue.cpp">
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TSImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CamRecorder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\RunOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageMiner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageDistributor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,10 +75,22 @@
     <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\InputDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImageAcquirer.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadSafeQueue.h">
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\TSImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\CamRecorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\RunOperator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageMiner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\TranKim\Desktop\Working\TStracker\src\TStracker\ImageDistributor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
