@@ -39,7 +39,5 @@ public:
 	void Detach();
 };
 
-UINT __cdecl spawnImageMiner(LPVOID);
-
 
 #endif // _CAM_RECORDER_H_

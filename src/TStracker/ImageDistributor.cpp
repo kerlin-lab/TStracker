@@ -28,6 +28,15 @@ void ImageDistributor::Distribute()
 	for (int i = 0; i < size; i++)
 	{
 		WaitForSingleObject(this->saveQueue[i]->mtx, INFINITE);
-		if (this->saveQueue[i]->size())
+		if (this->saveQueue[i]->size() < this->maxSize) {
+			this->saveQueue[i]->enqueue(ts2);
+			ReleaseMutex(this->saveQueue[i]->mtx);
+			break;
+		}
+		if (i == size - 1) {
+			// reached the end of the queue without finding an appropriate position for the image
+			this->saveQueue.push_back(new SaveQueue());
+			size++;
+		}
 	}
 }
