@@ -14,6 +14,8 @@ using namespace Spinnaker;
 #include "ThreadSafeQueue.h"
 #include "TSImage.h"
 
+#define QUEUE_THRES 2000
+
 typedef ThreadSafeQueue<ImagePtr> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;
 
@@ -32,8 +34,10 @@ public:
 	~CamRecorder();
 
 	// A way for RunOperator to signal termination
-	Detach();
+	void Detach();
 };
+
+UINT __cdecl spawnImageMiner(LPVOID);
 
 
 #endif // _CAM_RECORDER_H_

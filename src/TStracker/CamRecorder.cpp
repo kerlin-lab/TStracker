@@ -5,10 +5,9 @@ CamRecorder::CamRecorder(int index)
 	this->camIndex = index;
 	this->rawQueue = new RAWQueue();
 	this->guiQueue = new GUIQueue();
-	// TODO 3: Adding this constructor to ImageMiner
-	this->imgMiner = new ImageMiner(index,this->rawQueue);
+	this->imgMiner = new ImageMiner(index, this->rawQueue);
 	// TODO 3: Adding this constructor to ImageDistributor
-	this->imgDist = new ImageDistributor(this->rawQueue,this->guiQueue);
+	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue, QUEUE_THRES);
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
 }
 
@@ -24,7 +23,17 @@ CamRecorder::~CamRecorder()
 	CloseHandle(this->mtx);
 }
 
-CamRecorder::Detach()
+void CamRecorder::Detach()
 {
 	this->imgMiner->Terminate();		// Terminate Image miner to stop adding more image to the rawQueue
+}
+
+UINT __cdecl spawnImageMiner(LPVOID params)
+{
+	ImageMiner* miner = (ImageMiner*)params;
+	while (!miner->stop) {
+		ImagePtr img = miner->cam->GetNextImage(3000);
+		miner->rawQueue->enqueue(img);
+	}
+	delete miner;
 }
