@@ -28,6 +28,6 @@ void ImageDistributor::Distribute()
 	for (int i = 0; i < size; i++)
 	{
 		WaitForSingleObject(this->saveQueue[i]->mtx, INFINITE);
-		if (this->saveQueue[i]->)
+		if (this->saveQueue[i]->size())
 	}
 }
