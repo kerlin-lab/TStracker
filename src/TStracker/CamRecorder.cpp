@@ -27,13 +27,3 @@ void CamRecorder::Detach()
 {
 	this->imgMiner->Terminate();		// Terminate Image miner to stop adding more image to the rawQueue
 }
-
-UINT __cdecl spawnImageMiner(LPVOID params)
-{
-	ImageMiner* miner = (ImageMiner*)params;
-	while (!miner->stop) {
-		ImagePtr img = miner->cam->GetNextImage(3000);
-		miner->rawQueue->enqueue(img);
-	}
-	delete miner;
-}

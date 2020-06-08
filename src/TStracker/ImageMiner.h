@@ -1,6 +1,7 @@
 #ifndef _IMAGEMINER_H_
 #define _IMAGEMINER_H_
 
+#include <afxwin.h>
 #include "ThreadSafeQueue.h"
 // Spinview lib
 // General API
@@ -21,6 +22,9 @@ public:
 	CameraPtr cam;
 	RAWQueue* rawQueue;
 	bool stop = false;
+	CWinThread* handler;
 };
+
+UINT __cdecl spawnImageMiner(LPVOID);
 
 #endif // !_IMAGEMINER_H_
