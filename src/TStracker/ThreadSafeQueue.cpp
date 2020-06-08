@@ -33,12 +33,27 @@ void ThreadSafeQueue<T>::pop()
 template<typename T>
 T& ThreadSafeQueue<T>::dequeue()
 {
+	WaitForSingleObject(this->mtx);
 	T * item = &this->Queue->front();
+	this->Queue->pop();
+	ReleaseMutex(this->mtx);
 	return *item;
 }
 
 template<typename T>
 T& ThreadSafeQueue<T>::front()
 {
-	return this->Queue->front();
+	WaitForSingleObject(this->mtx);
+	T * item = &this->Queue->front();
+	ReleaseMutex(this->mtx);
+	return *item;
+}
+
+template<typename T>
+size_type ThreadSafeQueue<T>::size() const
+{
+	WaitForSingleObject(this->mtx);
+	size_type size = this->Queue->size();
+	ReleaseMutex(this->mtx);
+	return size;
 }

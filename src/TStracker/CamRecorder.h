@@ -8,11 +8,13 @@
 
 using namespace Spinnaker;
 
-//  
+// TStracker libs
+
 #include "ImageMiner.h"
 #include "ImageDistributor.h"
 #include "ThreadSafeQueue.h"
 #include "TSImage.h"
+#include "TStrackerType.h"
 
 #define QUEUE_THRES 2000
 

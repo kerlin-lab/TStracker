@@ -48,7 +48,8 @@ set(SOURCE_FILE
 	./CamRecorder.cpp
 	./RunOperator.cpp
 	./ImageMiner.cpp
-	./ImageDistributor.cpp)
+	./ImageDistributor.cpp
+	./CVDisplay.cpp)
 
 set(HEADER_FILE
 	./cvui.h
@@ -66,7 +67,9 @@ set(HEADER_FILE
 	./CamRecorder.h
 	./RunOperator.h
 	./ImageMiner.h
-	./ImageDistributor.h)
+	./ImageDistributor.h
+	./CVDisplay.h
+	./TStrackerType.h)
 
 # Open CV setting
 find_package(OpenCV PATHS ${OpenCV_DIR})					# Link OpenCV
