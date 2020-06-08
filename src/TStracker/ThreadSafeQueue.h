@@ -26,5 +26,6 @@ public:
 
 	T& front();				// The object at the front of the queue
 
+	size_type size() const;
 };
 #endif // !_THREAD_SAFE_QUEUE_H_

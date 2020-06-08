@@ -5,6 +5,8 @@
 
 // For multi threadding
 #include <afxwin.h>
+
+// TStracker lib
 #include "TiffWriter.h"
 
 // Spinview lib

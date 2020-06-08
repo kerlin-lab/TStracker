@@ -8,14 +8,15 @@
 
 using namespace Spinnaker;
 
-//  
+// TStracker libs
+
 #include "ImageMiner.h"
 #include "ImageDistributor.h"
 #include "ThreadSafeQueue.h"
 #include "TSImage.h"
+#include "TStrackerType.h"
 
-typedef ThreadSafeQueue<ImagePtr> RAWQueue;
-typedef ThreadSafeQueue<TSImage*> GUIQueue;
+
 
 class CamRecorder
 {
