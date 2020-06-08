@@ -66,4 +66,7 @@ public:
 	*/
 	void changeImgSize(int width, int height);
 };
+
+typedef TSImage * TSImagePtr;
+
 #endif // !_TS_IMAGE_H_

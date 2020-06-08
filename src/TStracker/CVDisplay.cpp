@@ -2,6 +2,10 @@
 
 string ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
 
+#define GENERAL_BUTTON_HEIGHT 33
+#define CAPTION_HEIGHT 30
+#define WINDOW_PADDING 10
+
 CVDisplay::CVDisplay()
 {
 	this->guiIsRunning = false;		// Initially the GUI does not run until launchGUI() is called
@@ -122,7 +126,7 @@ void runGUI(GUIQueueListPtr guiQueue)
 			// Initialize the Mat that will be used as the frame of the displayed window
 			// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
 			//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
-			GUIWindow(sumWidth + (camList.GetSize() + 1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+			GUIWindow = new TSImage(sumWidth + (imgList.size() + 1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 		}
 
 		firstIteration = false;			// Set flag so that iteration after the first one will be marked not first iteration
@@ -173,10 +177,10 @@ void runGUI(GUIQueueListPtr guiQueue)
 		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
-		drawGUIAllCam(GUIWindow.img, camCapImg, threadInfo, camList);
+		drawGUIAllCam(GUIWindow->img, imgList);
 
 		// Draw the change to the window
-		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow.img);
+		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
 
 		// Update the window
 		waitKey(1);
@@ -198,7 +202,7 @@ void runGUI(GUIQueueListPtr guiQueue)
 }
 
 
-void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
+void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList)
 {
 	static bool textDrawn = false;			// This prevent text caption from being drawn many times
 
@@ -208,6 +212,7 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGU
 	// Render the button
 	if (cvui::button("Stop Recording"))
 	{
+		// TODO 6: fix this
 		// Stop the recording
 		threadInfo->runGUI = false;
 	}
@@ -215,14 +220,14 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGU
 	// Render the an images captured from each camera.
 	cvui::beginRow(-1, -1, WINDOW_PADDING);
 	// Draw images
-	for (unsigned i = 0; i < camCapImg.size(); i++)
+	for (unsigned i = 0; i < imgList.size(); i++)
 	{
 		// Draw an image with a caption beneath
 		cvui::beginColumn(-1, -1, WINDOW_PADDING);
-		cvui::image(camCapImg[i].img);
+		cvui::image(imgList[i]->img);
 		if (!textDrawn)
 		{
-			cvui::text(string("  Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+			cvui::text(string("  Serial: ") + imgList[0]->camSerial, 0.5, 0);
 		}
 		cvui::endColumn();
 	}
@@ -234,10 +239,10 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGU
 	//{
 	//	// Draw an image with a caption beneath
 	//	cvui::beginColumn(-1,-1, WINDOW_PADDING);
-	//	cvui::image(camCapImg[0].img);
+	//	cvui::image(imgList[0].img);
 	//	if (!textDrawn)
 	//	{
-	//		cvui::text(string("   Serial: ") + camCapImg[0].camSerial, 0.5, 0);
+	//		cvui::text(string("   Serial: ") + imgList[0].camSerial, 0.5, 0);
 	//	}
 	//	cvui::endColumn();
 	//}

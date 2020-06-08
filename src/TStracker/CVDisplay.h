@@ -52,6 +52,6 @@ UINT __cdecl cvGUIRunProc(LPVOID para);
 
 void runGUI(GUIQueueListPtr guiQueue);
 
-void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList);
+void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList);
 
 #endif  // CV_DISPLAY_H
