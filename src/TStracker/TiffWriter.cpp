@@ -96,7 +96,7 @@ void TiffWriter::CloseTIFFFile(TiffWriter * tiff)
 }
 
 // Save the image contained in img to file
-void TiffWriter::SavetoTIFFFile(ImageInfo* img)
+void TiffWriter::SavetoTIFFFile(ImageType* img)
 {
 	// Savign the image frameID and streamID to ImageDescription tag
 	TIFFSetField(tiff, TIFFTAG_IMAGEDESCRIPTION, GenJSONImageDesp(img->frameID,img->streamID).c_str());
