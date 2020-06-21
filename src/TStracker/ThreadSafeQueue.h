@@ -18,7 +18,7 @@ public:
 
 	~ThreadSafeQueue();
 
-	void enqueue(T item);	// Enqueue the item to the queue
+	void enqueue(T& item);	// Enqueue the item to the queue
 
 	void pop();				// Dequeue the the item at front of the queue
 
@@ -44,7 +44,7 @@ ThreadSafeQueue<T>::~ThreadSafeQueue()
 }
 
 template<typename T>
-void ThreadSafeQueue<T>::enqueue(T item)
+void ThreadSafeQueue<T>::enqueue(T& item)
 {
 	WaitForSingleObject(this->mtx, INFINITE);
 	this->Queue->push(item);
@@ -69,7 +69,7 @@ T& ThreadSafeQueue<T>::dequeue()
 	WaitForSingleObject(this->mtx, INFINITE);
 	if (this->Queue->size())
 	{
-		item = &this->Queue->front();
+		item = &(this->Queue->front());
 		this->Queue->pop();
 	}
 	ReleaseMutex(this->mtx);

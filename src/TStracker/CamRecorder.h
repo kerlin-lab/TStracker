@@ -15,13 +15,14 @@
 
 using namespace Spinnaker;
 
-typedef ThreadSafeQueue<ImagePtr> RAWQueue;
+typedef ThreadSafeQueue<TSImage*> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;
 
 class CamRecorder
 {
 public:
 	int camIndex;
+	string camSerial;
 	RAWQueue * rawQueue;			// Queue to save spinaker image obtained from camera
 	GUIQueue * guiQueue;			// Queue used to save TSimage will be displayed by CVDisplay
 	ImageMiner * imgMiner;			// Image mineer thread
@@ -29,7 +30,7 @@ public:
 	HANDLE mtx;						// This is for thread-safe access
 
 public:
-	CamRecorder(int index);
+	CamRecorder(int index, string camSerial);
 	~CamRecorder();
 
 	// A way for RunOperator to signal termination

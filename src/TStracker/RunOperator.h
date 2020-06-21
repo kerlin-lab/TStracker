@@ -23,7 +23,6 @@ public:
 
 public:
 	CamRecorderPtrListPtr camRecs;
-	CameraList camList;
 	CVDisplay *cvDisplay;
 	HANDLE mtx;
 	ThreadSafeVariable<bool> * running;				// Remember to release running

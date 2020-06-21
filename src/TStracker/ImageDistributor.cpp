@@ -27,19 +27,24 @@ ImageDistributor::~ImageDistributor()
 void ImageDistributor::Distribute()
 {
 	// Distribute one image from raw to the according save
-
 	// Get the image
-	if (!this->rawQueue->size())
+	if (this->rawQueue->size())
 	{
+		MessageBox(NULL, "1", "Error", MB_OK);
 		// if there is image in the queue
-		ImagePtr img = this->rawQueue->dequeue();
+		TSImage * img = this->rawQueue->dequeue();
 		// Duplicating the image
-		TSImage* ts1 = new TSImage();
-		ts1->getFromImgPtr(img);
-		TSImage* ts2 = new TSImage();
-		ts2->getFromImgPtr(img);
+		MessageBox(NULL, "2", "Errorasd", MB_OK);
+		MessageBox(NULL, to_string(img->timestamp).c_str(), "Errorasd", MB_OK);
+		TSImage* ts1 = img;
+		//MessageBox(NULL, "3", "Error", MB_OK);
+		//ts1->getFromImgPtr(img);
+		//MessageBox(NULL, "4", "Error", MB_OK);
+		TSImage* ts2 = img;
+		//MessageBox(NULL, "5", "Error", MB_OK);
+		//ts2->getFromImgPtr(img);
 		// Release the memeory of the Raw image
-		img->Release();
+		//img->Release();
 
 		// Distribute one copy to be displayed
 		this->guiQueue->enqueue(ts1);
@@ -86,6 +91,7 @@ UINT __cdecl runDistribution(LPVOID para)
 		}
 		else
 		{
+			MessageBox(NULL, "Get Here", "Error", MB_OK);
 			controller->Distribute();
 		}
 	}

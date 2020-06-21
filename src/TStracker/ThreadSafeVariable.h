@@ -16,7 +16,7 @@ public:
 };
 
 template<typename T>
-inline ThreadSafeVariable<T>::ThreadSafeVariable(T initalValue)
+ThreadSafeVariable<T>::ThreadSafeVariable(T initalValue)
 {
 	mtx = CreateMutex(NULL, FALSE, NULL);
 	var = initalValue;

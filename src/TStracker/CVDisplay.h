@@ -20,7 +20,7 @@
 
 
 
-typedef ThreadSafeQueue<ImagePtr> RAWQueue;
+typedef ThreadSafeQueue<TSImage*> RAWQueue;
 typedef RAWQueue* RAWQueuePtr;
 
 

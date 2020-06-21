@@ -12,8 +12,9 @@
 #include "SpinGenApi\SpinnakerGenApi.h"
 
 using namespace Spinnaker;
+#include "TSImage.h"
 
-typedef ThreadSafeQueue<ImagePtr> RAWQueue;
+typedef ThreadSafeQueue<TSImage*> RAWQueue;
 
 class ImageMiner
 {
@@ -22,12 +23,11 @@ public:
 	~ImageMiner();
 	void Terminate();
 public:
-	CameraList camList;
-	CameraPtr cam;
 	RAWQueue* rawQueue;
 	ThreadSafeVariable<bool> * imageMiningStopped;
 	ThreadSafeVariable<bool> * loopRunning;
 	CWinThread* handler;
+	unsigned camIndex;
 };
 
 UINT __cdecl spawnImageMiner(LPVOID);

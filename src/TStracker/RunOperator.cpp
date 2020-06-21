@@ -6,11 +6,25 @@ RunOperator::RunOperator()
 	this->camRecs = new CamRecorderPtrList();
 	this->running = new ThreadSafeVariable<bool>(true);
 	// Filling
-	for (int i = 0; i < camList.GetSize(); i++) {
-		CamRecorder * camRec = new CamRecorder(i);
-		camRecs->push_back(camRec);
+	SystemPtr sys = System::GetInstance();
+	CameraList camList = sys->GetCameras();
+	CameraPtr cam;
+	for (unsigned i = 0; i < camList.GetSize(); i++) {
+		try
+		{
+			cam = camList.GetByIndex(i);
+			cam->Init();
+			CamRecorder * camRec = new CamRecorder(i, string(cam->DeviceSerialNumber()));
+			cam->DeInit();
+			camRecs->push_back(camRec);
+		}
+		catch (Spinnaker::Exception e)
+		{
+			MessageBox(NULL, (string("HereUnable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+		}
 	}
-	this->cvDisplay = new CVDisplay(this->camRecs,this->running);
+	sys->ReleaseInstance();
+	//this->cvDisplay = new CVDisplay(this->camRecs,this->running);
 }
 
 RunOperator::~RunOperator()

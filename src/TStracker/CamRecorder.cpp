@@ -1,14 +1,13 @@
 #include "CamRecorder.h"
 
-CamRecorder::CamRecorder(int index)
+CamRecorder::CamRecorder(int index, string camSerial)
 {
 	this->camIndex = index;
+	this->camSerial = camSerial;
 	this->rawQueue = new RAWQueue();
 	this->guiQueue = new GUIQueue();
 	this->imgMiner = new ImageMiner(index, this->rawQueue);
-	// TODO 3: Adding this constructor to ImageDistributor
-	CameraList camList;
-	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue,string(camList.GetByIndex(index)->DeviceSerialNumber()),this->imgMiner->imageMiningStopped);
+	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue, camSerial , this->imgMiner->imageMiningStopped);
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
 }
 

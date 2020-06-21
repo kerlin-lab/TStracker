@@ -11,7 +11,7 @@
 
 using namespace Spinnaker;
 
-typedef ThreadSafeQueue<ImagePtr> RAWQueue;
+typedef ThreadSafeQueue<TSImage*> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;
 
 class ImageDistributor
