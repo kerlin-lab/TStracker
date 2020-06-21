@@ -39,7 +39,6 @@ set(SOURCE_FILE				# This is what appears in the File manager when sort the TStr
 	./ImageDistributor.cpp
 	./ImageInfo.cpp
 	./ImageMiner.cpp
-	./ImageSaver.cpp
 	./ImageSaverTSQ.cpp
 	./InputDialog.cpp
 	./main.cpp  
@@ -50,7 +49,8 @@ set(SOURCE_FILE				# This is what appears in the File manager when sort the TStr
 	./TSImage.cpp
 	./TStracker.cpp 
 	./TStrackerMFC.cpp
-	./TStrackerThread.cpp)
+	./TStrackerThread.cpp
+	./utils.cpp)
 
 set(HEADER_FILE				# This is what appears in the File manager when sort the TStracker folder by type
 	./rc/resource.h
@@ -60,7 +60,6 @@ set(HEADER_FILE				# This is what appears in the File manager when sort the TStr
 	./ImageDistributor.h
 	./ImageInfo.h
 	./ImageMiner.h
-	./ImageSaver.h
 	./ImageSaverTSQ.h
 	./InputDialog.h
 	./RunOperator.h
@@ -72,7 +71,8 @@ set(HEADER_FILE				# This is what appears in the File manager when sort the TStr
 	./TStrackerMFC.h
 	./TStrackerThread.h
 	./stdafx.h
-	./TStrackerType.h)
+	./TStrackerType.h
+	./utils.h)
 
 # Open CV setting
 find_package(OpenCV PATHS ${OpenCV_DIR})					# Link OpenCV

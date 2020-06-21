@@ -1,6 +1,6 @@
 #include "CVDisplay.h"
 
-string ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
+string CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
 
 #define GENERAL_BUTTON_HEIGHT 33
 #define CAPTION_HEIGHT 30
@@ -90,6 +90,7 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	delete controller;
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
 	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
+	return 0;
 }
 
 void runGUI(CVDisplay * controller)
@@ -116,11 +117,12 @@ void runGUI(CVDisplay * controller)
 
 	while(true)
 	{
+		//MessageBox(NULL,"GUI running", "Notice", MB_OK);
 		// Pull the next image to be displayed from each camera queue and place them to the display list to be displayed
 		notAllQueueEmpty = false;
 		for (unsigned i = 0; i < controller->size(); i++)
 		{
-			if (controller->at(i)->size)
+			if (controller->at(i)->size())
 			{
 				// There is something in the queue
 				notAllQueueEmpty = true;		// set flag not empty to prevent this while loop gets broken
@@ -182,13 +184,13 @@ void runGUI(CVDisplay * controller)
 		// Check if the windows exists if not create one
 		// This also prevent stalled windows when user close windows by the x button not the detach camera button
 		// Solution proposed by https://medium.com/@mh_yip/opencv-detect-whether-a-window-is-closed-or-close-by-press-x-button-ee51616f7088
-		if (getWindowProperty(ALL_CAM_RECORD_WINDOWS_NAME, cv::WND_PROP_VISIBLE) <= 0.5)
+		if (getWindowProperty(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, cv::WND_PROP_VISIBLE) <= 0.5)
 		{
 			//Windows is closed or does not exist
 			// Create a OpenCV window for displaying
-			namedWindow(ALL_CAM_RECORD_WINDOWS_NAME);
+			namedWindow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);
 			// Register with cvui
-			cvui::init(ALL_CAM_RECORD_WINDOWS_NAME);
+			cvui::init(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);
 		}
 
 
@@ -213,13 +215,14 @@ void runGUI(CVDisplay * controller)
 		// --------------------- Drawing the GUI -----------------------------------
 		WaitForSingleObject(mtx, INFINITE);
 
-		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
+		cvui::context(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
 		drawGUIAllCam(GUIWindow->img, imgList,controller);
 
 		// Draw the change to the window
-		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
+		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
+		MessageBox(NULL,"Should show something", "Notice", MB_OK);
 
 		// Update the window
 		waitKey(1);
@@ -234,7 +237,7 @@ void runGUI(CVDisplay * controller)
 	}
 
 	// Destroy OpenCV window
-	destroyWindow(ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
+	destroyWindow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
 }
 
 

@@ -38,25 +38,26 @@ using namespace cv;
 
 #include "TSImage.h"
 #include "ThreadSafeQueue.h"
+#include "utils.h"
 
 #define DEFAULT_FILENAME_LENGTH 5
 
 #define MAX_TIFF_STACK_SIZE 2000
 
-typedef TSImage* ItemType;
-typedef ThreadSafeQueue<ItemType> ContainerType;
-typedef ThreadSafeQueue<ItemType>* ContainerTypePtr;
+typedef TSImage * ImageSaverTSQItemType;
+typedef ThreadSafeQueue<ImageSaverTSQItemType> ImageSaverTSQContainerType;
+typedef ImageSaverTSQContainerType* ImageSaverTSQContainerTypePtr;
 
 //class SavingThreadControllerTSQ
 //{
 //public:
 //	string fileName;                    // Name of the file to save the image down
-//	ContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
+//	ImageSaverTSQContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
 //	bool fileIsOpen;                    // Is there a file openning and ready to be written to
 //	HANDLE mtx;                         // Pointer to Mutex object used for making the thread multi-threading safe
 //
 //										// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
-//	SavingThreadControllerTSQ(string fileName, ContainerTypePtr container, bool fileIsOpen = true);
+//	SavingThreadControllerTSQ(string fileName, ImageSaverTSQContainerTypePtr container, bool fileIsOpen = true);
 //
 //	// Taken the last item off the to-be-saved list
 //	void removeFromToSave();
@@ -68,7 +69,7 @@ public:
 	CWinThread* threadObject;                                    // The object of the saving thread 
 
 	string fileName;                    // Name of the file to save the image down
-	ContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
+	ImageSaverTSQContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
 	bool fileIsOpen;                    // Is there a file openning and ready to be written to
 	bool filling;						// Flag showing if the queue of this thread is being filled up
 	HANDLE mtx;                         // Pointer to Mutex object used for making the thread multi-threading safe
@@ -77,7 +78,7 @@ public:
 	ImageSaverTSQ();
 
 	// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
-	ImageSaverTSQ(std::string fileName, boolean fileIsOpen = false, boolean filling = true);
+	ImageSaverTSQ(std::string fileName, bool fileIsOpen = false, bool filling = true);
 
 	~ImageSaverTSQ();
 
@@ -88,7 +89,7 @@ public:
 	bool isThreadRunning();
 
 	// Adding the item to to-be-saved list
-	void addToSave(ItemType item);
+	void addToSave(ImageSaverTSQItemType item);
 
 	// Get mutex object
 	HANDLE getThreadMutex();
@@ -105,5 +106,9 @@ public:
 	// Check if the queue has been detached
 	bool isDetached();
 };
+
+// Processor of the the saving thread
+// Parameter is a pointer pointing to an SavingThreadController object 
+UINT __cdecl savingThreadProcessorTSQ(LPVOID para);
 
 #endif

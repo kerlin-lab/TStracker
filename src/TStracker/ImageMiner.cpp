@@ -31,4 +31,5 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	}
 	miner->imageMiningStopped->write(true);
 	delete miner;
+	return 0;
 }

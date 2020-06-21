@@ -253,6 +253,7 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	if (runOp == nullptr)
 	{
 		// THis is first run
+		MessageBox("New Run Operator created", "Notice", MB_OK);
 		runOp = new RunOperator();				// This run the run all camera
 	}
 	else
@@ -268,6 +269,7 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		}
 		else
 		{
+			MessageBox("Found old RunOperator, new Run Operator created", "Notice", MB_OK);
 			delete runOp;
 			runOp = new RunOperator();
 		}

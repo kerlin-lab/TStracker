@@ -1,28 +1,10 @@
 #include "ImageSaverTSQ.h"
 
-// Generate a random string with given size
-string random_string(size_t length = DEFAULT_FILENAME_LENGTH);
-
-
-
-// Processor of the the saving thread
-// Parameter is a pointer pointing to an SavingThreadController object 
-UINT __cdecl savingThreadProcessor(LPVOID para);
-
-
-// Check if a file is already exist
-inline bool exists_test(const std::string& name) {
-	ifstream f(name.c_str());
-	return f.good();
-}
-
-// Get name of a provided file with no duplication
-string getNoNExistFileName(string fileName);
 
 ImageSaverTSQ::ImageSaverTSQ()
 {
 	this->fileName = getNoNExistFileName(random_string());
-	this->container = new ContainerType();
+	this->container = new ImageSaverTSQContainerType();
 	this->fileIsOpen = false;
 	this->fileIsOpen = true;
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
@@ -32,13 +14,13 @@ ImageSaverTSQ::ImageSaverTSQ()
 	}
 
 	// Create the thread
-	this->threadObject = AfxBeginThread(savingThreadProcessor, this);
+	this->threadObject = AfxBeginThread(savingThreadProcessorTSQ, this);
 
 }
 
-ImageSaverTSQ::ImageSaverTSQ(std::string fileName, boolean fileIsOpen, boolean filling)
+ImageSaverTSQ::ImageSaverTSQ(std::string fileName, bool fileIsOpen, bool filling)
 {
-	this->container = new ContainerType();
+	this->container = new ImageSaverTSQContainerType();
 	this->fileName = fileName;
 	this->fileIsOpen = fileIsOpen;
 	this->filling = filling;
@@ -48,7 +30,7 @@ ImageSaverTSQ::ImageSaverTSQ(std::string fileName, boolean fileIsOpen, boolean f
 		MessageBox(NULL, "Error", "CreateMutex error", 0);
 	}
 	// Create the thread
-	this->threadObject = AfxBeginThread(savingThreadProcessor, this);
+	this->threadObject = AfxBeginThread(savingThreadProcessorTSQ, this);
 }
 
 
@@ -85,7 +67,7 @@ bool ImageSaverTSQ::isThreadRunning()
 }
 
 // Adding the item to to-be-saved list
-void ImageSaverTSQ::addToSave(ItemType item)
+void ImageSaverTSQ::addToSave(ImageSaverTSQItemType item)
 {
 	this->container->enqueue(item);
 }
@@ -126,7 +108,7 @@ void ImageSaverTSQ::signalTermination()
 
 // Processor of the the saving thread
 // Parameter is a pointer pointing to an ImageSaverTSQ object 
-UINT __cdecl savingThreadProcessor(LPVOID para)
+UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 {
 	TSImagePtr image;
 	TiffWriter* tfWriter;
@@ -224,41 +206,4 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 
 	//MessageBox(NULL, "Saving thread terminating", "Error", MB_OK); 
 	return 0;
-}
-
-// Generate a random string with given size
-string random_string(size_t length)
-{
-	const string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-	random_device random_device;
-	mt19937 generator(random_device());
-	uniform_int_distribution<> distribution(0, CHARACTERS.size() - 1);
-
-	string random_string;
-
-	for (size_t i = 0; i < length; ++i)
-	{
-		random_string += CHARACTERS[distribution(generator)];
-	}
-
-	return random_string;
-}
-
-
-// Get name of a provided file with no duplication
-string getNoNExistFileName(string fileName)
-{
-	if (exists_test(fileName + DEFAULT_EXTENSION))
-	{
-		// Already exist
-		int counter = -1;
-		while (exists_test(fileName + string("_") + to_string(++counter) + DEFAULT_EXTENSION));
-		return fileName + string("_") + to_string(counter);
-	}
-	else
-	{
-		// Not exist
-		return fileName;
-	}
 }

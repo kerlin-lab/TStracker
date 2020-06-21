@@ -94,4 +94,5 @@ UINT __cdecl runDistribution(LPVOID para)
 	controller->currentSaver->Detach();
 	// free everything associate with ImageDistributor
 	delete controller;
+	return 0;
 }

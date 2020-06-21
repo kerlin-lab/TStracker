@@ -73,8 +73,8 @@ public:
 
 UINT __cdecl cvGUIRunProc(LPVOID para);
 
-void runGUI(GUIQueueListPtr guiQueue);
+void runGUI(CVDisplay * controller);
 
-void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList);
+void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList, CVDisplay* controller);
 
 #endif  // CV_DISPLAY_H

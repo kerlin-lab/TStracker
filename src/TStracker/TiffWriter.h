@@ -14,22 +14,22 @@
 #include <regex>
 
 #include <opencv2/core.hpp>
-
-#ifdef _TS_VER_2_
+//
+//#ifdef _TS_VER_2_
 #	include "TSImage.h"
 typedef TSImage ImageType;
-#	pragma message Using TIFFWriter with version 2
-#else
-#	ifdef _TS_VER_1_
-#		include "ImageInfo.h"
-typedef ImageInfo ImageType;
-#	pragma message Using TIFFWriter with version 1
-#	else
-#	pragma message No define _TS_VER_2_ or _TS_VER_1_ before inclusion of  this header file, so _TS_VER_1_ is being used by default
-#		include "ImageInfo.h"
-typedef ImageInfo ImageType;
-#	endif // _TS_VER_1_
-#endif // !_TS_VER_2_
+//#	pragma message("Using TIFFWriter with version 2")
+//#else
+//#	ifdef _TS_VER_1_
+//#		include "ImageInfo.h"
+//typedef ImageInfo ImageType;
+//#	pragma message("Using TIFFWriter with version 1")
+//#	else
+//#	pragma message("No define _TS_VER_2_ or _TS_VER_1_ before inclusion of  this header file, so _TS_VER_1_ is being used by default")
+//#		include "ImageInfo.h"
+//typedef ImageInfo ImageType;
+//#	endif // _TS_VER_1_
+//#endif // !_TS_VER_2_
 
 
 

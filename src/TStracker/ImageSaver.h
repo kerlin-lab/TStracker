@@ -36,13 +36,12 @@ using namespace cv;
 
 
 #include "ImageInfo.h"
-
-#define DEFAULT_FILENAME_LENGTH 5
+#include "utils.h"
 
 #define MAX_TIFF_STACK_SIZE 2000
 
-typedef ImageInfo* ItemType;
-typedef queue<ItemType> ContainerType;
+typedef ImageInfo* ImageSaverItemType;
+typedef queue<ImageSaverItemType> ImageSaverContainerType;
 
 template <typename T>
 class SavingThreadController
@@ -63,9 +62,9 @@ class SavingThreadController
 class ImageSaver
 {
     public:
-    ContainerType* saveQueue;                                // The queue contains list of image need to be saved to the output file
+    ImageSaverContainerType* saveQueue;                                // The queue contains list of image need to be saved to the output file
                                                                 // Use pointer so that the saving thread can access this
-    SavingThreadController<ContainerType>* threadController;    // The controller of the saving thread
+    SavingThreadController<ImageSaverContainerType>* threadController;    // The controller of the saving thread
     CWinThread* threadObject;                                    // The object of the saving thread 
 
     ImageSaver();
@@ -81,7 +80,7 @@ class ImageSaver
     bool isThreadRunning();
 
     // Adding the item to to-be-saved list
-    void addToSave(ItemType item);
+    void addToSave(ImageSaverItemType item);
 
     // Get mutex object
     HANDLE getThreadMutex();
@@ -91,23 +90,7 @@ class ImageSaver
 };
 
 
-// Generate a random string with given size
-string random_string(size_t length=DEFAULT_FILENAME_LENGTH);
-
-
-
 // Processor of the the saving thread
 // Parameter is a pointer pointing to an SavingThreadController object 
 UINT __cdecl savingThreadProcessor(LPVOID para);
-
-
-// Check if a file is already exist
-inline bool exists_test(const std::string& name) {
-	ifstream f(name.c_str());
-	return f.good();
-}
-
-// Get name of a provided file with no duplication
-string getNoNExistFileName(string fileName);
-
 #endif

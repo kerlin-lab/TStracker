@@ -1,5 +1,12 @@
 #ifndef _CAM_RECORDER_H_
 #define _CAM_RECORDER_H_
+
+// TStracker libs
+
+#include "ImageMiner.h"
+#include "ImageDistributor.h"
+#include "ThreadSafeQueue.h"
+
 // Spinview lib
 // Spinview lib
 // General API
@@ -7,12 +14,6 @@
 #include "SpinGenApi\SpinnakerGenApi.h"
 
 using namespace Spinnaker;
-
-// TStracker libs
-
-#include "ImageMiner.h"
-#include "ImageDistributor.h"
-#include "ThreadSafeQueue.h"
 
 typedef ThreadSafeQueue<ImagePtr> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;

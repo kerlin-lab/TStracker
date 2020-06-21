@@ -3,16 +3,16 @@
 
 ImageSaver::ImageSaver()
 {
-    this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController<ContainerType>(getNoNExistFileName(random_string()),this->saveQueue);
+    this->saveQueue = new ImageSaverContainerType();
+    this->threadController = new SavingThreadController<ImageSaverContainerType>(getNoNExistFileName(random_string()),this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
 
 ImageSaver::ImageSaver(std::string fileName)
 {
-    this->saveQueue = new ContainerType();
-    this->threadController = new SavingThreadController<ContainerType>(getNoNExistFileName(fileName),this->saveQueue);
+    this->saveQueue = new ImageSaverContainerType();
+    this->threadController = new SavingThreadController<ImageSaverContainerType>(getNoNExistFileName(fileName),this->saveQueue);
     // Create the thread
     this->threadObject = AfxBeginThread(savingThreadProcessor,this->threadController);
 }
@@ -61,7 +61,7 @@ bool ImageSaver::isThreadRunning()
 }
 
 // Adding the item to to-be-saved list
-void ImageSaver::addToSave(ItemType item)
+void ImageSaver::addToSave(ImageSaverItemType item)
 {
     WaitForSingleObject(this->getThreadMutex(),INFINITE);
 	this->saveQueue->push(item);
@@ -105,7 +105,7 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 	c_stackSize = 0;
 	tiff_part = 0;
 
-	SavingThreadController<ContainerType>* threadController = (SavingThreadController<ContainerType>*) para;
+	SavingThreadController<ImageSaverContainerType>* threadController = (SavingThreadController<ImageSaverContainerType>*) para;
     
     // TODO N: Check the saving procedure below
     WaitForSingleObject(threadController->mtx,INFINITE);
@@ -217,39 +217,3 @@ UINT __cdecl savingThreadProcessor(LPVOID para)
 	return 0;
 }
 
-// Generate a random string with given size
-string random_string(size_t length)
-{
-    const string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    random_device random_device;
-    mt19937 generator(random_device());
-    uniform_int_distribution<> distribution(0, CHARACTERS.size() - 1);
-
-    string random_string;
-
-    for (size_t i = 0; i < length; ++i)
-    {
-        random_string += CHARACTERS[distribution(generator)];
-    }
-
-    return random_string;
-}
-
-
-// Get name of a provided file with no duplication
-string getNoNExistFileName(string fileName)
-{
-	if (exists_test(fileName + DEFAULT_EXTENSION))
-	{
-		// Already exist
-		int counter = -1;
-		while (exists_test(fileName + string("_") + to_string(++counter) + DEFAULT_EXTENSION));
-		return fileName + string("_") + to_string(counter);
-	}
-	else
-	{
-		// Not exist
-		return fileName;
-	}
-}
