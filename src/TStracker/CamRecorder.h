@@ -6,6 +6,7 @@
 #include "ImageMiner.h"
 #include "ImageDistributor.h"
 #include "ThreadSafeQueue.h"
+#include "ThreadSafeVariable.h"
 
 // Spinview lib
 // Spinview lib
@@ -27,6 +28,8 @@ public:
 	GUIQueue * guiQueue;			// Queue used to save TSimage will be displayed by CVDisplay
 	ImageMiner * imgMiner;			// Image mineer thread
 	ImageDistributor * imgDist;		// Image distributor thread
+	ThreadSafeVariable<bool>* imageMinerStopped;		// if the imageMiner thread has stopped yet
+	ThreadSafeVariable<bool>* distributionStopped;		// if the ImageDistributor stopped yet
 	HANDLE mtx;						// This is for thread-safe access
 
 public:

@@ -17,7 +17,7 @@ typedef ThreadSafeQueue<TSImage*> GUIQueue;
 class ImageDistributor
 {
 public:
-	ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue,string camSerail,ThreadSafeVariable<bool>* imageMinerStopped);
+	ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue,string camSerail,ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped);
 	~ImageDistributor();
 	void Distribute();
 public:
@@ -27,9 +27,9 @@ public:
 	ThreadSafeVariable<bool>* distributionStopped;
 	ImageSaverTSQ * currentSaver;
 	string camSerial;
-	unsigned currentSaveQueueTotalImageCounter;
-	unsigned imageSaverCounter;
-	unsigned trailCounter;
+	uint64_t currentSaveQueueTotalImageCounter;
+	uint64_t imageSaverCounter;
+	uint64_t trailCounter;
 	CWinThread * imageDistributorThreadHandler;
 };
 

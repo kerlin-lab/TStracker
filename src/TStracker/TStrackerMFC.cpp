@@ -194,6 +194,14 @@ void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
 // Record all cameras button handler
 void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 {
+	// Check if there is any camera available, if not , don't run recording
+	SystemPtr sys = System::GetInstance();
+	CameraList camList = sys->GetCameras();
+	if(camList.GetSize() == 0)
+	{
+		MessageBox("No camera found, aborting recording", "Note", MB_OK);
+		return;
+	}
 
 	//// Close all currently running single camera video windows
 	

@@ -203,11 +203,9 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 	TiffWriter::CloseTIFFFile(tfWriter);
 
 	//// Cleaning up all allocated memory used for this thread
-	// Free the memory of the list associating with this thread
-	delete threadController->container;
-	// Free memory of the ImageSaverTSQ object of this thread
-	delete threadController;
 
-	//MessageBox(NULL, "Saving thread terminating", "Error", MB_OK); 
+	// Free memory of the ImageSaverTSQ object of this thread
+
+	delete threadController;
 	return 0;
 }

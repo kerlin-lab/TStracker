@@ -77,7 +77,7 @@ void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, unsigned size)
 void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam)
 {
 	// Get the current frame rate; acquisition frame rate recorded in hertz
-	CFloatPtr ptrAcquisitionFrameRate = nodeMap.GetNode("AcquisitionFrameRate");
+	CFloatPtr ptrAcquisitionFrameRate = nodeMap.GetNode("AcquisitionResultingFrameRate");
 
 	if (!IsAvailable(ptrAcquisitionFrameRate) || !IsReadable(ptrAcquisitionFrameRate))
 	{

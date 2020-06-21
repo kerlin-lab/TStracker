@@ -18,17 +18,20 @@ CVDisplay::CVDisplay(CamRecorderPtrListPtr camRecorderList, ThreadSafeVariable<b
 
 CVDisplay::~CVDisplay()
 {
-	this->guiIsRunning->write(false);
-	// Delete all CamRecorder
 	CamRecorder * camRecorder;
+	// Delete individual CamRecorder in the Camrecorder List
 	while (this->camRecorderList->size())
 	{
 		camRecorder = this->camRecorderList->back();
 		this->camRecorderList->pop_back();
-		delete camRecorder->guiQueue;		// Delete its gui queue
+		// Wait until the imageDistributor of this camRecorder stopped then delete this cam recorder
+		while (!camRecorder->distributionStopped->read());
 		delete camRecorder;
 	}
+	// Delete the CamreCorder vector
 	delete this->camRecorderList;
+	// Tell the RunOperator that it is fine to start another run
+	this->guiIsRunning->write(false);
 }
 
 
@@ -69,7 +72,7 @@ bool CVDisplay::isAllDistributorStopped()
 {
 	for (CamRecorder * camRec : *(this->camRecorderList))
 	{
-		if (!camRec->imgDist->distributionStopped->read())
+		if (!camRec->distributionStopped->read())
 		{
 			return false;
 		}
@@ -88,6 +91,7 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 
 	// Free memory, including CVDisplay object and the GUIQueueList
 	delete controller;
+
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
 	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
 	return 0;
@@ -144,8 +148,8 @@ void runGUI(CVDisplay * controller)
 					i--;
 					continue;
 				}
+				// Do nothing if the queue is empty or not first iteration
 			}
-			// Do nothing if the queue is empty
 		}
 
 		if (firstIteration)
@@ -168,6 +172,12 @@ void runGUI(CVDisplay * controller)
 			// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
 			//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 			GUIWindow = new TSImage(sumWidth + (imgList.size() + 1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+
+			// TODO: This is just place holder, try to fix in the future
+			frameRate.push_back(0);
+
+			// Reserve slot for first image timestamp saver
+			intialTimestamp.push_back(0);
 		}
 
 		firstIteration = false;			// Set flag so that iteration after the first one will be marked not first iteration
@@ -222,20 +232,18 @@ void runGUI(CVDisplay * controller)
 
 		// Draw the change to the window
 		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
-		MessageBox(NULL,"Should show something", "Notice", MB_OK);
+		//MessageBox(NULL,"Should show something", "Notice", MB_OK);
 
 		// Update the window
 		waitKey(1);
 		ReleaseMutex(mtx);
 	}
 	
-	// Free all the queues in the queue list and all the "background" images in the image list
+	// Free all the "background" images in the image list
 	for (unsigned i = 0; i < imgList.size();i++)
 	{
-		delete controller->at(i);
 		delete imgList[i];
 	}
-
 	// Destroy OpenCV window
 	destroyWindow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
 }
@@ -258,8 +266,8 @@ void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList, CVDisplay* controlle
 		if (cvui::button("Stop Recording"))
 		{
 			controller->stopAcquiring();
+			controller->stopSignalSent = true;
 		}
-		controller->stopSignalSent = true;
 	}
 
 	// Render the an images captured from each camera.

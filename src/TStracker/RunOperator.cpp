@@ -24,7 +24,7 @@ RunOperator::RunOperator()
 		}
 	}
 	sys->ReleaseInstance();
-	//this->cvDisplay = new CVDisplay(this->camRecs,this->running);
+	this->cvDisplay = new CVDisplay(this->camRecs,this->running);
 }
 
 RunOperator::~RunOperator()

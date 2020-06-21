@@ -2,12 +2,22 @@
 
 #define WAIT_TIME 500
 
-ImageMiner::ImageMiner(int index, RAWQueue* destQueue)
+ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>* imageMiningStopped)
 {	
 	this->camIndex = index;
 	this->rawQueue = destQueue;
-	this->imageMiningStopped = new ThreadSafeVariable<bool>(false);
+	this->imageMiningStopped = imageMiningStopped;
 	this->loopRunning = new ThreadSafeVariable<bool>(true);
+	// Getting camera Serial
+	SystemPtr sys = System::GetInstance();
+	CameraList camList = sys->GetCameras();
+	CameraPtr cam = camList.GetByIndex(index);
+	cam->Init();
+	this->camSerial = cam->DeviceSerialNumber();
+	cam->DeInit();
+	camList.Clear();
+	sys->ReleaseInstance();
+	// Start running the imageMiner thread
 	this->handler = AfxBeginThread(spawnImageMiner, this);
 }
 
@@ -63,6 +73,8 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 			//MessageBox(NULL, "Img 5", "Error", MB_OK);
 			tsimg = new TSImage();
 			tsimg->getFromImgPtr(img);
+			// Inject camera information
+			tsimg->camSerial = miner->camSerial;
 
 			// Put the TSImage object to the Raw queue
 			//MessageBox(NULL, "Img 6", "Error", MB_OK);
@@ -78,7 +90,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 			case SPINNAKER_ERR_TIMEOUT:
 				// This happens when we read the camera and there is no image on the RAM
 				// So do nothing
-				MessageBox(NULL,"Test", "Error", MB_OK);
+				//MessageBox(NULL,"Test", "Error", MB_OK);
 				break;
 			default:
 				MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
@@ -103,7 +115,9 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 
 	// Announce
 	miner->imageMiningStopped->write(true);
+
 	// Free memmory
 	delete miner;
+
 	return 0;
 }
