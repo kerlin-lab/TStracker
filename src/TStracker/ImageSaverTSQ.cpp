@@ -6,7 +6,7 @@ ImageSaverTSQ::ImageSaverTSQ()
 	this->fileName = getNoNExistFileName(random_string());
 	this->container = new ImageSaverTSQContainerType();
 	this->fileIsOpen = false;
-	this->fileIsOpen = true;
+	this->filling = true;
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
 	if (mtx == NULL)
 	{
@@ -86,6 +86,7 @@ void ImageSaverTSQ::Detach()
 	this->filling= false;
 	ReleaseMutex(this->getThreadMutex());
 }
+
 // Check if the queue has been detached
 bool ImageSaverTSQ::isDetached()
 {
@@ -148,6 +149,7 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 
 			// Save pointer to the image
 			image = threadController->container->dequeue();
+			
 			try
 			{
 				// Save the obtained image to the tiff file
@@ -186,11 +188,13 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 			break;
 		}
 
-		if (listSize == 0 || threadController->isDetached())
+
+		if (listSize == 0 && threadController->isDetached())
 		{
 			//MessageBox(NULL, "break", threadController->fileName.c_str(), MB_OK);
 			break;
 		}
+
 	}
 	
 	//cv::destroyWindow("Image received");

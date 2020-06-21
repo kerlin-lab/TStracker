@@ -25,26 +25,39 @@ TSImage::~TSImage() {}
 
 // Copy the image saved in ImagePtr spin_con to the Mat of this object
 // This function is based on the ImagePtr2CVMat_CV_8UC1 function in TStracker.h
-void TSImage::getFromImgPtr(ImagePtr& spin_con)
+void TSImage::getFromImgPtr(Spinnaker::ImagePtr& spin_con, string camSerial, int frameRate)
 {
-	uchar* rawDataFromCam = (uchar*)spin_con->GetData();
-	uchar* Dest = this->img.ptr<uchar>(0);
-	unsigned size = this->imgSize;
-	memcpy(Dest, rawDataFromCam, size);
+	// Updating the header
 
-	// Old style copy, assume to be slower than memcpy
-	//while (size--)
-	//{
-	//	*(Dest++) = *(rawDataFromCam++);
-	//}
+	// Camera Info
+	this->camSerial = camSerial;
+
+	// Framerate
+	this->framerate = frameRate;
 
 	// Save timestamp
 	this->timestamp = spin_con->GetTimeStamp();
 	this->frameID = spin_con->GetFrameID();
 	this->streamID = spin_con->GetID();
 
-	//MessageBox(NULL, to_string(spin_con->GetID()).c_str(), "streamID", MB_OK);
-	//MessageBox(NULL, to_string(spin_con->GetFrameID()).c_str(), "FrameID", MB_OK);
+	// Getting the dimension of spinnaker image and configure the Mat object of this TSIamge to the same configuration as the spinnaker one
+	this->changeImgSize(spin_con->GetWidth(), spin_con->GetHeight());
+
+	// Copying image data
+
+	// Get pointer to first data point in spinnaker image
+	uchar* rawDataFromCam = (uchar*)spin_con->GetData();
+	
+	// Get the pointer to first data point in Mat storage object
+	uchar* Dest = this->img.ptr<uchar>(0);
+
+	memcpy(Dest, rawDataFromCam, this->imgSize);
+
+	// Old style copy, assume to be slower than memcpy
+	//while (size--)
+	//{
+	//	*(Dest++) = *(rawDataFromCam++);
+	//}
 }
 
 /*

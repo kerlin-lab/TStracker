@@ -60,7 +60,7 @@ public:
 	* ideally, the check should be done before acquisition takes place
 	* Copy the image saved in ImagePtr spin_con to the Mat of this object
 	*/
-	void getFromImgPtr(Spinnaker::ImagePtr& spin_con);
+	void getFromImgPtr(Spinnaker::ImagePtr& spin_con,string camSerial="",int frameRate=-1);
 
 	/*
 	* Changing the size of the Mat member of this class

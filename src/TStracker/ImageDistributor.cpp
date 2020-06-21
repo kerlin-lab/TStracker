@@ -28,30 +28,34 @@ void ImageDistributor::Distribute()
 {
 	// Distribute one image from raw to the according save
 	// Get the image
+	//MessageBox(NULL, "0", "Error", MB_OK);
 	if (this->rawQueue->size())
 	{
-		MessageBox(NULL, "1", "Error", MB_OK);
+		//MessageBox(NULL, "1", "Error", MB_OK);
 		// if there is image in the queue
 		TSImage * img = this->rawQueue->dequeue();
 		// Duplicating the image
-		MessageBox(NULL, "2", "Errorasd", MB_OK);
-		MessageBox(NULL, to_string(img->timestamp).c_str(), "Errorasd", MB_OK);
-		TSImage* ts1 = img;
+		//MessageBox(NULL, "2", "Errorasd", MB_OK);
+		//MessageBox(NULL, to_string(img->timestamp).c_str(), "Errorasd", MB_OK);
+		TSImage* ts1 = new TSImage(*img);
 		//MessageBox(NULL, "3", "Error", MB_OK);
 		//ts1->getFromImgPtr(img);
 		//MessageBox(NULL, "4", "Error", MB_OK);
-		TSImage* ts2 = img;
-		//MessageBox(NULL, "5", "Error", MB_OK);
+		TSImage* ts2 = new TSImage(*img);
+		//MessageBox(NULL, (string("5")+to_string(ts2->timestamp)).c_str(), "Error", MB_OK);
 		//ts2->getFromImgPtr(img);
 		// Release the memeory of the Raw image
 		//img->Release();
 
 		// Distribute one copy to be displayed
 		this->guiQueue->enqueue(ts1);
+		//MessageBox(NULL, "6", "Error", MB_OK);
 
 		// Distribute one copy to be saved
 		this->currentSaver->addToSave(ts2);
+		//MessageBox(NULL, "7", "Error", MB_OK);
 		this->currentSaveQueueTotalImageCounter++;
+		//MessageBox(NULL, "8", "Error", MB_OK);
 
 		// Checking if we should move to the a different file
 		if (this->currentSaveQueueTotalImageCounter == QUEUE_THRES)
@@ -71,7 +75,7 @@ void ImageDistributor::Distribute()
 
 ImageSaverTSQ * getNewImageSaver(string camSerial, unsigned trailNumber, unsigned fileNumber)
 {
-	return new ImageSaverTSQ(generateFileName(camSerial, trailNumber, trailNumber));
+	return new ImageSaverTSQ(generateFileName(camSerial, trailNumber, fileNumber));
 }
 
 string generateFileName(string camSerial, unsigned trailNumber, unsigned fileNumber)
@@ -82,16 +86,18 @@ string generateFileName(string camSerial, unsigned trailNumber, unsigned fileNum
 UINT __cdecl runDistribution(LPVOID para)
 {
 	ImageDistributor * controller = (ImageDistributor *)para;
+	//MessageBox(NULL, "Get Here 1", "Error", MB_OK);
 	while (true)
 	{
 		if (controller->imageMinerStopped->read() && !controller->rawQueue->size())
 		{
+			//MessageBox(NULL, "Get Here break", "Error", MB_OK);
 			controller->distributionStopped->write(true);
 			break;
 		}
 		else
 		{
-			MessageBox(NULL, "Get Here", "Error", MB_OK);
+			//MessageBox(NULL, "Get Here Distribute", "Error", MB_OK);
 			controller->Distribute();
 		}
 	}
