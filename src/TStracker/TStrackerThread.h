@@ -71,7 +71,7 @@ void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGU
 void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo);
 
 // This function acquires and saves 10 images from a device.
-// @para runSignal: a boolean variable instrcuts the acquiring loop when to stop
+// @para runSignal: a boolean variable instrcuts the acquiring loop when to imageMinerStopped
 int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireGUIThreadInfo* threadInfo);
 
 // This function acts as the body of the example; please see NodeMapInfo example

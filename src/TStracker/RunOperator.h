@@ -5,19 +5,27 @@
 #include "SpinGenApi\SpinnakerGenApi.h"
 #include "CamRecorder.h"
 #include "CVDisplay.h"
+#include "ThreadSafeVariable.h"
 #include <vector>
 
 using namespace Spinnaker;
 
+typedef vector<CamRecorder*> CamRecorderPtrList;
+typedef vector<CamRecorder*> * CamRecorderPtrListPtr;
+
+// TODO 1: Resolve the loopy dependency issue of CVDisplay and RunOperator
 class RunOperator
 {
 public:
 	RunOperator();
-	void Stop();
-private:
-	std::vector<CamRecorder*> camRecs;
+	~RunOperator();
+
+public:
+	CamRecorderPtrListPtr camRecs;
 	CameraList camList;
 	CVDisplay *cvDisplay;
+	HANDLE mtx;
+	ThreadSafeVariable<bool> * running;				// Remember to release running
 };
 
 

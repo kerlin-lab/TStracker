@@ -1,7 +1,7 @@
 #ifndef _THREAD_SAFE_QUEUE_H_
 #define _THREAD_SAFE_QUEUE_H_
 
-#include "windows.h"
+#include "afxwin.h"
 
 #include <queue>
 

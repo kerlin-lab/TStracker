@@ -2,7 +2,10 @@
 #define _IMAGEMINER_H_
 
 #include <afxwin.h>
+
 #include "ThreadSafeQueue.h"
+#include "ThreadSafeVariable.h"
+
 // Spinview lib
 // General API
 #include "Spinnaker.h"
@@ -16,12 +19,14 @@ class ImageMiner
 {
 public:
 	ImageMiner(int, RAWQueue*);
+	~ImageMiner();
 	void Terminate();
 public:
 	CameraList camList;
 	CameraPtr cam;
 	RAWQueue* rawQueue;
-	bool stop = false;
+	ThreadSafeVariable<bool> * imageMiningStopped;
+	ThreadSafeVariable<bool> * loopRunning;
 	CWinThread* handler;
 };
 

@@ -11,13 +11,14 @@ TSImage::TSImage():imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), timesta
 	this->img = DEFAULT_BACKGROUND;
 }
 
-TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial, uint64_t timestamp, uint64_t frameID, uint64_t streamID)
+TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial, uint64_t timestamp, uint64_t frameID, uint64_t streamID, int framerate)
 {
 	this->changeImgSize(imgWidth, imgHeight);
 	this->camSerial = camSerial;
 	this->timestamp = timestamp;
 	this->frameID = frameID;
 	this->streamID = streamID;
+	this->framerate = framerate;
 }
 
 TSImage::~TSImage() {}

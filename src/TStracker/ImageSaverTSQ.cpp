@@ -36,9 +36,9 @@ ImageSaverTSQ::ImageSaverTSQ()
 
 }
 
-ImageSaverTSQ::ImageSaverTSQ(std::string fileName, ContainerTypePtr contPtr, boolean fileIsOpen, boolean filling)
+ImageSaverTSQ::ImageSaverTSQ(std::string fileName, boolean fileIsOpen, boolean filling)
 {
-	this->container = contPtr;
+	this->container = new ContainerType();
 	this->fileName = fileName;
 	this->fileIsOpen = fileIsOpen;
 	this->filling = filling;

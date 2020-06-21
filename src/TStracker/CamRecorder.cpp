@@ -7,7 +7,8 @@ CamRecorder::CamRecorder(int index)
 	this->guiQueue = new GUIQueue();
 	this->imgMiner = new ImageMiner(index, this->rawQueue);
 	// TODO 3: Adding this constructor to ImageDistributor
-	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue, QUEUE_THRES);
+	CameraList camList;
+	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue,string(camList.GetByIndex(index)->DeviceSerialNumber()),this->imgMiner->imageMiningStopped);
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
 }
 
@@ -17,13 +18,12 @@ CamRecorder::~CamRecorder()
 	//delete this->rawQueue;	// This is not needed because rawQueue will be free by ImageDistributor
 	// TODO 5: implement the comment below
 	//delete this->guiQueue;	// This is not needed because rawQueue will be closed by CVDisplay
-	// These 2 lines below is not needed becaues ImageMiner and imgDistributor will free memeory themself when Terminate is called
-	//delete this->imgMiner;
-	//delete this->imgDist;
+	//delete this->imgMiner;	// ImageMiner frees itself
+	//delete this->imgDist;		// imgDist frees itself
 	CloseHandle(this->mtx);
 }
 
 void CamRecorder::Detach()
 {
-	this->imgMiner->Terminate();		// Terminate Image miner to stop adding more image to the rawQueue
+	this->imgMiner->Terminate();		// Terminate Image miner to imageMinerStopped adding more image to the rawQueue
 }

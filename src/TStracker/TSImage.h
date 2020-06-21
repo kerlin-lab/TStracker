@@ -31,11 +31,12 @@ public:
 	uint64_t timestamp;	// Timestamp of the image
 	uint64_t frameID;	// Frame ID of the image, this is used to detect missed frame
 	uint64_t streamID;	// ID of the image in the stream, not sure if can be used to detect missed frame or missing image during transmission
+	int framerate;		// The framerate of the camera captured this image
 	std::string camSerial;	// The serial of the camera from which the object img of this is obtained
 
 	TSImage();
 
-	TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial = "", uint64_t timestamp = 0, uint64_t frameID = 0, uint64_t streamID = 0);
+	TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial = "", uint64_t timestamp = 0, uint64_t frameID = 0, uint64_t streamID = 0,int framerate = 0);
 
 	// Copy constructor
 	TSImage(const TSImage &obj);

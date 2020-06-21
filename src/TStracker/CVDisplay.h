@@ -13,6 +13,7 @@
 #include "ThreadSafeQueue.h"
 #include "TSImage.h"
 #include "TStracker.h"
+#include "CamRecorder.h"
 
 // Standard lib
 #include <vector>
@@ -31,21 +32,43 @@ typedef GUIQueueList* GUIQueueListPtr;
 
 typedef vector<TSImage*> TSImageList;
 
+typedef vector<CamRecorder*> CamRecorderPtrList;
+typedef vector<CamRecorder*> * CamRecorderPtrListPtr;
+
 class CVDisplay
 {
 public:
 
-	CVDisplay();
+	CVDisplay(CamRecorderPtrListPtr camRecorderList, ThreadSafeVariable<bool> * running);
 	~CVDisplay();
-
-	// Adding a pointer to a GUIQueue to the monitor list of the CVDisplay
-	void Attach(GUIQueuePtr);
 
 	// Launching the CVGUI thread of this class. Once the thread is launched, queueList is immutable
 	void launchGUI();
 
-	GUIQueueListPtr queueList;			// Memmory provided by this will be the deconstructor of this class
-	bool guiIsRunning;
+	// Get the ith GUIQueue
+	GUIQueuePtr getGUIQueue(unsigned i);	
+
+	// Get the ith GUIQueuee
+	GUIQueuePtr at(unsigned i);
+
+	// Get number of GUIQueue
+	unsigned getNumberGUIQueue();					
+
+	// Get number of GUIQueue
+	unsigned size();
+
+	// Stop the acquiring 
+	void stopAcquiring();
+
+	// Check if all imageDistributor stopped
+	bool isAllDistributorStopped();
+
+public:
+	CamRecorderPtrListPtr camRecorderList;			// List of all camrecorder
+	ThreadSafeVariable<bool> * guiIsRunning;
+	bool stopSignalSent;							// Whether a signal to imageMinerStopped recording has been sent
+	CWinThread * guiThreadHandle;
+
 };
 
 UINT __cdecl cvGUIRunProc(LPVOID para);

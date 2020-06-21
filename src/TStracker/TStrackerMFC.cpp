@@ -8,6 +8,8 @@ SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker S
 //unordered_map<string, CamAcquireGUIThreadInfo*> TStrackerMain::ThreadList;				
 GUI::GUIFactory TStrackerMain::gui;
 
+RunOperator * runOp = nullptr;
+
 TStrackerMain::TStrackerMain()
 {	
 	// Initializing mutex handle
@@ -248,19 +250,17 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	}
 
 	//// Create the thread that displays GUI and control panel
-	if (!ThreadList.count(ALL_CAM_RECORD_WINDOWS_NAME))
+	if (runOp == nullptr)
 	{
-		//MessageBox("2", "2", MB_OK);
-		// If user has never run the thread before, so create a threadinfo object for this
-		// Path to the folder is sent thr cSerial camSerial parameter
-		ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui,duration);
+		// THis is first run
+		runOp = new RunOperator();				// This run the run all camera
 	}
 	else
 	{
 		//MessageBox("3", "3", MB_OK);
 		// There already exists a ThreadInfo object
 		// Check if the thread is still alive
-		if (ThreadList[ALL_CAM_RECORD_WINDOWS_NAME]->threadStatus)
+		if (runOp->running->read())
 		{
 			// This thread is still running so may be user accidentally click record all again
 			// Inform them then
@@ -268,10 +268,8 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		}
 		else
 		{
-			// This thread has been terminated, so regenerate the thread
-			delete ThreadList[ALL_CAM_RECORD_WINDOWS_NAME];
-			// Path to the folder is sent thr cSerial camSerial parameter
-			ThreadList[ALL_CAM_RECORD_WINDOWS_NAME] = new CamAcquireGUIThreadInfo(openCVAllCamRecord, string((LPCTSTR)dlg.GetPathName()), nullptr, TStrackerMain::gui,duration);
+			delete runOp;
+			runOp = new RunOperator();
 		}
 	}
 	return;

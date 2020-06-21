@@ -451,7 +451,9 @@ void deinitAllCam(CameraList& camList)
 // Configure the external trigger to use when IEEE1588 is not available
 bool ConfigureExternalTrigger()
 {
-	// TODO 5: implement configure the external trigger
+	// I don't think you need to implement this
+	// Legacy of version 1
+	// Consider to remove
 	return true;
 }
 // Activate acquisition on all camera
@@ -621,7 +623,7 @@ bool ConfigureIEEE1588(const CameraList& camList)
 }
 
 
-// @para runGUI: a boolean variable instrcuts the acquiring loop when to stop
+// @para runGUI: a boolean variable instrcuts the acquiring loop when to imageMinerStopped
 int AcquireAndShowImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice, CamAcquireGUIThreadInfo* threadInfo)
 {
 	int result = 0;

@@ -2,17 +2,19 @@
 
 RunOperator::RunOperator()
 {
-	cvDisplay = new CVDisplay();
+	// Reserve memory
+	this->camRecs = new CamRecorderPtrList();
+	this->running = new ThreadSafeVariable<bool>(true);
+	// Filling
 	for (int i = 0; i < camList.GetSize(); i++) {
-		CamRecorder *camRec = new CamRecorder(i);
-		cvDisplay->Attach(camRec->guiQueue);
-		camRecs.push_back(camRec);
+		CamRecorder * camRec = new CamRecorder(i);
+		camRecs->push_back(camRec);
 	}
+	this->cvDisplay = new CVDisplay(this->camRecs,this->running);
 }
 
-void RunOperator::Stop()
+RunOperator::~RunOperator()
 {
-	for (CamRecorder* cam : camRecs) {
-		cam->Detach();
-	}
+	delete this->running;
+	//delete this->camRecs;			// Delete by CVDisplay
 }

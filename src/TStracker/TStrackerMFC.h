@@ -15,6 +15,7 @@
 
 #include "TStracker.h"
 #include "TStrackerThread.h"
+#include "RunOperator.h"
 #include "rc\resource.h"
 #include "InputDialog.h"
 

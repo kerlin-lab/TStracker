@@ -77,7 +77,7 @@ public:
 	ImageSaverTSQ();
 
 	// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
-	ImageSaverTSQ(std::string fileName, ContainerTypePtr contPtr, boolean fileIsOpen = false, boolean filling = true);
+	ImageSaverTSQ(std::string fileName, boolean fileIsOpen = false, boolean filling = true);
 
 	~ImageSaverTSQ();
 

@@ -33,42 +33,45 @@ project(${ProjName})
 cmake_minimum_required(VERSION 2.8)
 
 # TStracker Source code
-set(SOURCE_FILE
-	./rc/resource.h
+set(SOURCE_FILE				# This is what appears in the File manager when sort the TStracker folder by type
+	./CamRecorder.cpp
+	./CVDisplay.cpp
+	./ImageDistributor.cpp
+	./ImageInfo.cpp
+	./ImageMiner.cpp
+	./ImageSaver.cpp
+	./ImageSaverTSQ.cpp
+	./InputDialog.cpp
 	./main.cpp  
+	./RunOperator.cpp
+	./ThreadSafeQueue.cpp
+	./ThreadSafeVariable.cpp
+	./TiffWriter.cpp
+	./TSImage.cpp
 	./TStracker.cpp 
 	./TStrackerMFC.cpp
-	./TStrackerThread.cpp
-	./ImageInfo.cpp
-	./ImageSaver.cpp
-	./TiffWriter.cpp
-	./InputDialog.cpp
-	./ThreadSafeQueue.cpp
-	./TSImage.cpp
-	./CamRecorder.cpp
-	./RunOperator.cpp
-	./ImageMiner.cpp
-	./ImageDistributor.cpp
-	./CVDisplay.cpp)
+	./TStrackerThread.cpp)
 
-set(HEADER_FILE
-	./cvui.h
+set(HEADER_FILE				# This is what appears in the File manager when sort the TStracker folder by type
 	./rc/resource.h
+	./CamRecorder.h
+	./CVDisplay.h
+	./cvui.h
+	./ImageDistributor.h
+	./ImageInfo.h
+	./ImageMiner.h
+	./ImageSaver.h
+	./ImageSaverTSQ.h
+	./InputDialog.h
+	./RunOperator.h
+	./ThreadSafeQueue.h
+	./ThreadSafeVariable.h
+	./TiffWriter.h
+	./TSImage.h
 	./TStracker.h
 	./TStrackerMFC.h
 	./TStrackerThread.h
 	./stdafx.h
-	./ImageInfo.h
-	./ImageSaver.h
-	./TiffWriter.h
-	./InputDialog.h
-	./ThreadSafeQueue.h
-	./TSImage.h
-	./CamRecorder.h
-	./RunOperator.h
-	./ImageMiner.h
-	./ImageDistributor.h
-	./CVDisplay.h
 	./TStrackerType.h)
 
 # Open CV setting

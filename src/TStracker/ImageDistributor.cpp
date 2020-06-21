@@ -1,42 +1,97 @@
 #include "ImageDistributor.h"
 
-ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, int maxSize)
+#define QUEUE_THRES 2000
+
+ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped)
 {
 	this->rawQueue = rawQueue;
 	this->guiQueue = guiQueue;
-	this->saveQueue.push_back(new SaveQueue());
-	this->maxSize = maxSize;
+	this->camSerial = camSerial;
+	this->imageMinerStopped = imageMinerStopped;
+	this->distributionStopped = new  ThreadSafeVariable<bool>(false);
+	this->currentSaveQueueTotalImageCounter = 0;
+	this->imageSaverCounter = 0;
+	this->trailCounter = 0;
+	this->currentSaver = getNewImageSaver(camSerial,this->trailCounter,this->imageSaverCounter);
+	// run the thread
+	this->imageDistributorThreadHandler = AfxBeginThread(runDistribution, this);
 }
 
-void ImageDistributor::Terminate()
+ImageDistributor::~ImageDistributor()
 {
-	this->stop = true;
+	delete this->rawQueue;
+	delete this->imageMinerStopped;
 }
+
 
 void ImageDistributor::Distribute()
 {
 	// Distribute one image from raw to the according save
-	ImagePtr img = this->rawQueue->dequeue();
-	TSImage* ts1 = new TSImage();
-	ts1->getFromImgPtr(img);
-	TSImage* ts2 = new TSImage();
-	ts2->getFromImgPtr(img);
-	img->Release();
-	this->guiQueue->enqueue(ts1);
 
-	std::vector<SaveQueue*>::size_type size = this->saveQueue.size();
-	for (int i = 0; i < size; i++)
+	// Get the image
+	if (!this->rawQueue->size())
 	{
-		WaitForSingleObject(this->saveQueue[i]->mtx, INFINITE);
-		if (this->saveQueue[i]->size() < this->maxSize) {
-			this->saveQueue[i]->enqueue(ts2);
-			ReleaseMutex(this->saveQueue[i]->mtx);
+		// if there is image in the queue
+		ImagePtr img = this->rawQueue->dequeue();
+		// Duplicating the image
+		TSImage* ts1 = new TSImage();
+		ts1->getFromImgPtr(img);
+		TSImage* ts2 = new TSImage();
+		ts2->getFromImgPtr(img);
+		// Release the memeory of the Raw image
+		img->Release();
+
+		// Distribute one copy to be displayed
+		this->guiQueue->enqueue(ts1);
+
+		// Distribute one copy to be saved
+		this->currentSaver->addToSave(ts2);
+		this->currentSaveQueueTotalImageCounter++;
+
+		// Checking if we should move to the a different file
+		if (this->currentSaveQueueTotalImageCounter == QUEUE_THRES)
+		{
+			// Yes move to new file
+
+			// Reset counter
+			this->currentSaveQueueTotalImageCounter = 0;
+			// Detach current imageSaver
+			this->currentSaver->Detach();
+			// Get new ImageSaver
+			this->imageSaverCounter++;
+			this->currentSaver = getNewImageSaver(camSerial, this->trailCounter, this->imageSaverCounter);
+		}
+	}	
+}
+
+ImageSaverTSQ * getNewImageSaver(string camSerial, unsigned trailNumber, unsigned fileNumber)
+{
+	return new ImageSaverTSQ(generateFileName(camSerial, trailNumber, trailNumber));
+}
+
+string generateFileName(string camSerial, unsigned trailNumber, unsigned fileNumber)
+{
+	return 	camSerial + "_" + to_string(trailNumber) + "_" + to_string(fileNumber);
+}
+
+UINT __cdecl runDistribution(LPVOID para)
+{
+	ImageDistributor * controller = (ImageDistributor *)para;
+	while (true)
+	{
+		if (controller->imageMinerStopped->read() && !controller->rawQueue->size())
+		{
+			controller->distributionStopped->write(true);
 			break;
 		}
-		if (i == size - 1) {
-			// reached the end of the queue without finding an appropriate position for the image
-			this->saveQueue.push_back(new SaveQueue());
-			size++;
+		else
+		{
+			controller->Distribute();
 		}
 	}
+
+	// Close the current writing file
+	controller->currentSaver->Detach();
+	// free everything associate with ImageDistributor
+	delete controller;
 }
