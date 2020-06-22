@@ -1,6 +1,7 @@
 #include "ImageMiner.h"
 
 #define DEFAULT_WAIT_TIME 41
+#define TRIAL_COUNTER_START 1
 
 ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>* imageMiningStopped, uint64_t waitTime)
 {	
@@ -62,7 +63,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	// Run acquiring loop
 	TSImage * tsimg;
 	bool lastTrialEnd = true;
-	unsigned trialCounter = 0;		// This will be overflow to 0 in the first trial	
+	unsigned trialCounter = TRIAL_COUNTER_START;
 
 	while (miner->loopRunning->read()) 
 	{

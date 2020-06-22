@@ -1,6 +1,7 @@
 #include "ImageDistributor.h"
 
-#define QUEUE_THRES 3000
+#define QUEUE_THRES 2500
+#define TRIAL_START_INDEX 1
 
 ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
 	:savePath(savePath)
@@ -11,7 +12,7 @@ ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, strin
 	, distributionStopped(distributionStopped)
 	, currentSaveQueueTotalImageCounter(0)
 	,imageSaverCounter(0)
-	,trialCounter(0)
+	,trialCounter(TRIAL_START_INDEX)
 {
 	this->currentSaver = getNewImageSaver(savePath, camSerial,this->trialCounter,this->imageSaverCounter);
 	// run the thread

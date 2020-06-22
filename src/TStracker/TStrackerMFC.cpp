@@ -10,6 +10,8 @@ GUI::GUIFactory TStrackerMain::gui;
 
 RunOperator * runOp = nullptr;
 
+char* waitTimePrompt = "Input the time detection threshold (in ms)? (0 or blank mean don't implement trial scheme).\nThe program will use this number to detect the break between trials.\nRecommend input half the break length";
+
 TStrackerMain::TStrackerMain()
 {	
 	// Initializing mutex handle
@@ -224,7 +226,7 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	int waitTime;
 	InputDialog waitTimeAsk;
 	
-	waitTimeAsk.setPrompt("What is wait time between trial (in ms)? (0 or blank mean don't implement trial scheme)");
+	waitTimeAsk.setPrompt(waitTimePrompt);
 	
 	if (waitTimeAsk.DoModal() != IDOK)
 	{
