@@ -33,6 +33,7 @@ public:
 	uint64_t streamID;	// ID of the image in the stream, not sure if can be used to detect missed frame or missing image during transmission
 	int framerate;		// The framerate of the camera captured this image
 	std::string camSerial;	// The serial of the camera from which the object img of this is obtained
+	unsigned trialNumber;	// Which trial does this image belong to
 
 	TSImage();
 

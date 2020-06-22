@@ -1,6 +1,6 @@
 #include "RunOperator.h"
 
-RunOperator::RunOperator()
+RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),waitTime(waitTime)
 {
 	// Reserve memory
 	this->camRecs = new CamRecorderPtrList();
@@ -14,7 +14,7 @@ RunOperator::RunOperator()
 		{
 			cam = camList.GetByIndex(i);
 			cam->Init();
-			CamRecorder * camRec = new CamRecorder(i, string(cam->DeviceSerialNumber()));
+			CamRecorder * camRec = new CamRecorder(i, string(cam->DeviceSerialNumber()),savePath,waitTime);
 			cam->DeInit();
 			camRecs->push_back(camRec);
 		}

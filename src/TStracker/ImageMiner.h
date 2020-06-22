@@ -19,7 +19,7 @@ typedef ThreadSafeQueue<TSImage*> RAWQueue;
 class ImageMiner
 {
 public:
-	ImageMiner(int, RAWQueue*, ThreadSafeVariable<bool>*);
+	ImageMiner(int, RAWQueue*, ThreadSafeVariable<bool>*, uint64_t waitTime);
 	~ImageMiner();
 	void Terminate();
 public:
@@ -29,6 +29,7 @@ public:
 	CWinThread* handler;
 	unsigned camIndex;
 	string camSerial;
+	uint64_t waitTime;		// in ms
 };
 
 UINT __cdecl spawnImageMiner(LPVOID);

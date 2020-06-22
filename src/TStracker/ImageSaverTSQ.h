@@ -42,7 +42,7 @@ using namespace cv;
 
 #define DEFAULT_FILENAME_LENGTH 5
 
-#define MAX_TIFF_STACK_SIZE 2000
+//#define MAX_TIFF_STACK_SIZE 3000
 
 typedef TSImage * ImageSaverTSQItemType;
 typedef ThreadSafeQueue<ImageSaverTSQItemType> ImageSaverTSQContainerType;

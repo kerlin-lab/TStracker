@@ -1,18 +1,19 @@
 #include "ImageDistributor.h"
 
-#define QUEUE_THRES 2000
+#define QUEUE_THRES 3000
 
-ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped)
+ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
+	:savePath(savePath)
+	,rawQueue(rawQueue)
+	,guiQueue(guiQueue)
+	,camSerial(camSerial)
+	, imageMinerStopped(imageMinerStopped)
+	, distributionStopped(distributionStopped)
+	, currentSaveQueueTotalImageCounter(0)
+	,imageSaverCounter(0)
+	,trialCounter(0)
 {
-	this->rawQueue = rawQueue;
-	this->guiQueue = guiQueue;
-	this->camSerial = camSerial;
-	this->imageMinerStopped = imageMinerStopped;
-	this->distributionStopped = distributionStopped;
-	this->currentSaveQueueTotalImageCounter = 0;
-	this->imageSaverCounter = 0;
-	this->trailCounter = 0;
-	this->currentSaver = getNewImageSaver(camSerial,this->trailCounter,this->imageSaverCounter);
+	this->currentSaver = getNewImageSaver(savePath, camSerial,this->trialCounter,this->imageSaverCounter);
 	// run the thread
 	this->imageDistributorThreadHandler = AfxBeginThread(runDistribution, this);
 }
@@ -43,7 +44,25 @@ void ImageDistributor::Distribute()
 
 		// Send the original image to Saver to be saved to disk
 		TSImage* ts2 = img;
-		//delete img;
+
+		// Check if this is for a new trial
+		if (ts2->trialNumber != this->trialCounter)
+		{
+			// Update trial number
+			this->trialCounter = ts2->trialNumber;
+
+			// Reset saver counter
+			this->imageSaverCounter = 0;
+
+			// Stop writing to the current saver
+			this->currentSaver->Detach();
+
+			// Reset image counter to the saver
+			this->currentSaveQueueTotalImageCounter = 0;
+
+			// Get a new saver for this trial
+			this->currentSaver = getNewImageSaver(savePath, camSerial, this->trialCounter, this->imageSaverCounter);
+		}
 
 		// Distribute one copy to be saved
 		this->currentSaver->addToSave(ts2);
@@ -67,20 +86,27 @@ void ImageDistributor::Distribute()
 			this->imageSaverCounter++;
 
 			// Get new ImageSaver
-			this->currentSaver = getNewImageSaver(camSerial, this->trailCounter, this->imageSaverCounter);
+			this->currentSaver = getNewImageSaver(savePath,camSerial, this->trialCounter, this->imageSaverCounter);
 
 		}
 	}	
 }
 
-ImageSaverTSQ * getNewImageSaver(string camSerial, unsigned trailNumber, unsigned fileNumber)
+ImageSaverTSQ * getNewImageSaver(string savePath,string camSerial, unsigned trailNumber, unsigned fileNumber)
 {
-	return new ImageSaverTSQ(generateFileName(camSerial, trailNumber, fileNumber));
+	return new ImageSaverTSQ(generateFileName(savePath, camSerial, trailNumber, fileNumber));
 }
 
-string generateFileName(string camSerial, unsigned trailNumber, unsigned fileNumber)
+string generateFileName(string savePath, string camSerial, unsigned trailNumber, unsigned fileNumber)
 {
-	return 	camSerial + "_" + to_string(trailNumber) + "_" + to_string(fileNumber);
+	if (savePath.size())
+	{
+		return 	savePath + "\\" + camSerial + "_trial_" + to_string(trailNumber) + "_" + to_string(fileNumber);
+	}
+	else
+	{
+		return 	camSerial + "_trial_" + to_string(trailNumber) + "_" + to_string(fileNumber);
+	}
 }
 
 UINT __cdecl runDistribution(LPVOID para)

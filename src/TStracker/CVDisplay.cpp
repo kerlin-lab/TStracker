@@ -86,6 +86,9 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	// Decoding the address of the CVDisplay object
 	CVDisplay* controller = (CVDisplay*)para;
 
+	// Making this thread a high priority
+	SetThreadPriority(controller->guiThreadHandle, THREAD_PRIORITY_HIGHEST);			// This is lower than the ImageMiner
+
 	// Run the GUI
 	runGUI(controller);
 
@@ -101,7 +104,6 @@ void runGUI(CVDisplay * controller)
 {
 	TSImagePtr GUIWindow;		// The frame of the displayed window
 
-	// TODO 5: adding frame rate into TSImage and delete this frameRate vector below
 	vector<int> frameRate;
 	vector<uint64_t> duration, intialTimestamp;
 	uint64_t timestamp;
@@ -110,15 +112,66 @@ void runGUI(CVDisplay * controller)
 	int maxHeight, sumWidth;
 	maxHeight = sumWidth = 0;
 
-	// Create a list of "background" TSImage which will be used to display
+	// Create a list of "background" or place holder TSImage which will be used to display
 	TSImageList imgList(controller->getNumberGUIQueue());
 
 	// A flag to indicate if there is still image in the queue to be displayed
 	bool notAllQueueEmpty;
 
-	// Flag to indicate if this is the iteration of the while loop
-	bool firstIteration = true;
+	// Bootstrap the imgList with background images with the same size as the image each camera 
+	SystemPtr sys = System::GetInstance();
+	CameraList camList = sys->GetCameras();
+	int frameWidth,frameHeight;
 
+
+	for (unsigned i = 0; i < camList.GetSize(); i++)
+	{
+		// Get and configure the camera
+		CameraPtr& cam= camList.GetByIndex(i);
+		cam->Init();
+
+		// Get information from camera
+		INodeMap& nodeMap = cam->GetNodeMap();
+		frameWidth = ((CIntegerPtr)nodeMap.GetNode("Width"))->GetValue();
+		frameHeight = ((CIntegerPtr)nodeMap.GetNode("Height"))->GetValue();
+		frameRate.push_back((int)((CFloatPtr)nodeMap.GetNode("AcquisitionResultingFrameRate"))->GetValue());
+
+		// Configure the place holder TSImage of this camera
+		imgList[i] = new TSImage(frameWidth, frameHeight, string(cam->DeviceSerialNumber()));
+		imgList[i]->img = cv::Scalar(0, 0, 0);			// This just to make the place holder window has a different color from the parent GUI windows, can be deleted
+
+		// Some calculation for the parent GUI windows
+		// This is when the first image from each queue has been retrived
+		// Do the calculation for the display window here
+		// This block will only run once in the first iteration
+		// Find max height
+		if (maxHeight < imgList[i]->imgHeight)
+		{
+			maxHeight = imgList[i]->imgHeight;
+		}
+		// Find total width
+		sumWidth += imgList[i]->imgWidth;
+
+
+		// Reserve slot for first image timestamp saver
+		intialTimestamp.push_back(0);
+
+		//cam->DeInit();		Do not release camera here, will cause error, maybe because ImageMiner is using this cam already
+	}
+
+
+	// Some clean up
+	camList.Clear();
+	sys->ReleaseInstance();
+
+	// Configure the TSImage for the GUIparent window
+	// Initialize the Mat that will be used as the frame of the displayed window
+	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
+	//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+	GUIWindow = new TSImage(sumWidth + (imgList.size() + 1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+
+
+	// The main GUI loop
 	while(true)
 	{
 		//MessageBox(NULL,"GUI running", "Notice", MB_OK);
@@ -130,57 +183,14 @@ void runGUI(CVDisplay * controller)
 			{
 				// There is something in the queue
 				notAllQueueEmpty = true;		// set flag not empty to prevent this while loop gets broken
+				
 				// Before putting new image to the list, free the current image in the list
-				if (!firstIteration)
-				{
-					// Only free the image if this is not the first iteration
-					delete imgList[i];
-				}
+				delete imgList[i];
+
 				// Put new image to the display list
 				imgList[i] = controller->at(i)->dequeue();
 			}
-			else
-			{
-				if (firstIteration)
-				{
-					// If this is the first iteration, each slot in imgList needed to be filled
-					// so keep polling to see if images comes yet
-					i--;
-					continue;
-				}
-				// Do nothing if the queue is empty or not first iteration
-			}
 		}
-
-		if (firstIteration)
-		{
-			// This is when the first image from each queue has been retrived
-			// Do the calculation for the display window here
-			// This block will only run once in the first iteration
-			// Find max height
-			for (unsigned i = 0; i < imgList.size(); i++)
-			{
-				if (maxHeight < imgList[i]->imgHeight)
-				{
-					maxHeight = imgList[i]->imgHeight;
-				}
-				// Find total width
-				sumWidth += imgList[i]->imgWidth;
-			}
-
-			// Initialize the Mat that will be used as the frame of the displayed window
-			// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
-			//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
-			GUIWindow = new TSImage(sumWidth + (imgList.size() + 1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
-
-			// TODO: This is just place holder, try to fix in the future
-			frameRate.push_back(0);
-
-			// Reserve slot for first image timestamp saver
-			intialTimestamp.push_back(0);
-		}
-
-		firstIteration = false;			// Set flag so that iteration after the first one will be marked not first iteration
 
 		// If all queue are empty, then imageMinerStopped displaying
 		if ( controller->isAllDistributorStopped() && !notAllQueueEmpty)
@@ -229,6 +239,7 @@ void runGUI(CVDisplay * controller)
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
 		drawGUIAllCam(GUIWindow->img, imgList,controller);
+
 
 		// Draw the change to the window
 		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);

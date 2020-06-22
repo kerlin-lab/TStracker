@@ -73,7 +73,7 @@ private:
 	DECLARE_MESSAGE_MAP()
 };
 
-int readDuration(string duration);
+uint64_t readWaitTime(string duration);
 
 // Customized Dialog
 //template <class T>

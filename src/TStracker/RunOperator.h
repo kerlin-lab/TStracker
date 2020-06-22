@@ -14,11 +14,13 @@ using namespace Spinnaker;
 typedef vector<CamRecorder*> CamRecorderPtrList;
 typedef vector<CamRecorder*> * CamRecorderPtrListPtr;
 
-// TODO 1: Resolve the loopy dependency issue of CVDisplay and RunOperator
+// waitTime = 0 means don't implement trial scheme
 class RunOperator
 {
 public:
-	RunOperator();
+	// waitTime = 0 means don't implement trial scheme
+	RunOperator(string savePath,uint64_t waitTime);
+
 	~RunOperator();
 
 public:
@@ -26,6 +28,8 @@ public:
 	CVDisplay *cvDisplay;
 	HANDLE mtx;
 	ThreadSafeVariable<bool> * running;				// Remember to release running
+	string savePath;
+	uint64_t waitTime;
 };
 
 

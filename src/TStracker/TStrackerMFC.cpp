@@ -41,7 +41,7 @@ BOOL TStrackerMain::InitInstance()
 {
 	// TODO N: This setting real-time does not work in win10, is there  is way to fix?
 	// Making this process a Real-time process so that it receives the highest priority
-	SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+	SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
 
 	// *** NOTES ***
 	// Dialog based MFC applications may incorrectly initialize the threading model to MTA.
@@ -221,21 +221,21 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		}
 	}
 	// Ask for how long the user wants to record
-	int duration;
-	InputDialog DurationAsk;
+	int waitTime;
+	InputDialog waitTimeAsk;
 	
-	DurationAsk.setPrompt("Enter recording duration in second(s) (0 or blank mean no limit)");
+	waitTimeAsk.setPrompt("What is wait time between trial (in ms)? (0 or blank mean don't implement trial scheme)");
 	
-	if (DurationAsk.DoModal() != IDOK)
+	if (waitTimeAsk.DoModal() != IDOK)
 	{
-		MessageBox("No dutation given, aborting recording", "Note", MB_OK);
+		MessageBox("No wait time given, aborting recording", "Note", MB_OK);
 		return;
 	}
 	else
 	{
 		// Get user input value
-		duration = readDuration(string(DurationAsk.UserResponse));
-		//MessageBox(to_string(duration).c_str(), "Duration", MB_OK);
+		waitTime = readWaitTime(string(waitTimeAsk.UserResponse));
+		//MessageBox(to_string(waitTime).c_str(), "Duration", MB_OK);
 	}
 
 	//// Ask user where to save the images file 
@@ -261,8 +261,8 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	if (runOp == nullptr)
 	{
 		// THis is first run
-		MessageBox("New Run Operator created", "Notice", MB_OK);
-		runOp = new RunOperator();				// This run the run all camera
+		//MessageBox("New Run Operator created", "Notice", MB_OK);
+		runOp = new RunOperator(string(dlg.GetPathName()),waitTime);				// This run the run all camera
 	}
 	else
 	{
@@ -277,9 +277,9 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		}
 		else
 		{
-			MessageBox("Found old RunOperator, new Run Operator created", "Notice", MB_OK);
+			//MessageBox("Found old RunOperator, new Run Operator created", "Notice", MB_OK);
 			delete runOp;
-			runOp = new RunOperator();
+			runOp = new RunOperator(string(dlg.GetPathName()), waitTime);
 		}
 	}
 	return;
@@ -326,12 +326,12 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 //	return FALSE;
 //}
 
-int readDuration(string duration)
+uint64_t readWaitTime(string duration)
 {
-	int value;
+	uint64_t value;
 	try
 	{
-		value = stoi(duration);
+		value = stoll(duration);
 	}
 	catch (exception e)
 	{

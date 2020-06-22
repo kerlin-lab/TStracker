@@ -956,7 +956,10 @@ void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgS
 		else
 		{
 			retriveImageInfo(nodeMap, imgFrame, imgWidth, imgHeight, imgSize, frameRate, pCam);
-			pCam->BeginAcquisition();
+			if (!pCam->IsStreaming())
+			{
+				pCam->BeginAcquisition();
+			}
 			SS_Button_label = BUTTON_STOP;
 		}
 	}

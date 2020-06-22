@@ -30,10 +30,12 @@ public:
 	ImageDistributor * imgDist;		// Image distributor thread
 	ThreadSafeVariable<bool>* imageMinerStopped;		// if the imageMiner thread has stopped yet
 	ThreadSafeVariable<bool>* distributionStopped;		// if the ImageDistributor stopped yet
+	uint64_t waitTime;				// Wait time between trial			if this is 0, no trial scheme is implemented
+	string savePath;				// TIFF file save path
 	HANDLE mtx;						// This is for thread-safe access
 
 public:
-	CamRecorder(int index, string camSerial);
+	CamRecorder(int index, string camSerial, string savePath="", uint64_t waitTime=0);
 	~CamRecorder();
 
 	// A way for RunOperator to signal termination

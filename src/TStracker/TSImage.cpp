@@ -5,7 +5,7 @@
 using namespace Spinnaker;
 
 // Put this in the header and you will get LNK2005 when compiling
-TSImage::TSImage():imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), timestamp(0)
+TSImage::TSImage():imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), timestamp(0),trialNumber(0)
 {
 	// Fill the background with a nice color
 	this->img = DEFAULT_BACKGROUND;
@@ -19,6 +19,7 @@ TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial, uint64_t ti
 	this->frameID = frameID;
 	this->streamID = streamID;
 	this->framerate = framerate;
+	this->trialNumber = 0;
 }
 
 TSImage::~TSImage() {}
@@ -85,6 +86,7 @@ TSImage::TSImage(const TSImage &obj)
 	this->timestamp = obj.timestamp;
 	this->frameID = obj.frameID;
 	this->streamID = obj.streamID;
+	this->trialNumber = obj.trialNumber;
 }
 
 // Assignment = operator
@@ -98,5 +100,6 @@ TSImage& TSImage::operator= (const TSImage& obj)
 	this->timestamp = obj.timestamp;
 	this->frameID = obj.frameID;
 	this->streamID = obj.streamID;
+	this->trialNumber = obj.trialNumber;
 	return *this;
 }

@@ -1,15 +1,17 @@
 #include "CamRecorder.h"
 
-CamRecorder::CamRecorder(int index, string camSerial)
+CamRecorder::CamRecorder(int index, string camSerial,string savePath, uint64_t waitTime):
+	camIndex(index)
+	,waitTime(waitTime)
+	,camSerial(camSerial)
+	,savePath(savePath)
 {
-	this->camIndex = index;
-	this->camSerial = camSerial;
 	this->rawQueue = new RAWQueue();
 	this->guiQueue = new GUIQueue();
 	this->imageMinerStopped = new ThreadSafeVariable<bool>(false);
 	this->distributionStopped= new ThreadSafeVariable<bool>(false);		// if the ImageDistributor stopped yet
-	this->imgMiner = new ImageMiner(index, this->rawQueue,this->imageMinerStopped);
-	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue, camSerial , this->imageMinerStopped, this->distributionStopped);
+	this->imgMiner = new ImageMiner(index, this->rawQueue,this->imageMinerStopped,waitTime);
+	this->imgDist = new ImageDistributor(this->rawQueue, this->guiQueue, camSerial , this->imageMinerStopped, this->distributionStopped,savePath);
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
 }
 
