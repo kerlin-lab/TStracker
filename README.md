@@ -1,5 +1,5 @@
 # TStracker
-- Version: 1.0.0
+- Version: 2.0.0
 
 ## Developing team
 - Author: Huan Tran
@@ -14,7 +14,11 @@
 - Auto save images to multi-image TIFF files (tiff stack)
 - Retrieve and save images' timestamps and imageIDs to the metatags of each image in the tiff stacks
 - Provide high multi-image TIFF writing speed with auto tiff stack partitioning feature that overcomes the diminishing-write-speed problem of LibTiff when operating on multi-image TIFF files (performance varies from 3Mb/s to 20Mb/s or more depends on the quality of storage device (HDD, SSD, etc))
-- Timer recording allow user to preset recording duration
+
+## Changelot for version 2.0
+- Camera acquisition has been moved to dedicated threads to increase image acquiring speed and avoid missing frames.
+- Image saving has been moved to dedicated threads providing the ability to write multiple TIFF files concurrently.
+- Auto trial separation by detecting break interval between trials
 
 ## Project structure
 ```
