@@ -12,7 +12,7 @@ ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, strin
 	, imageMinerStopped(imageMinerStopped)
 	, distributionStopped(distributionStopped)
 	, currentSaveQueueTotalImageCounter(0)
-	,imageSaverCounter(0)
+	,imageSaverCounter(UINT64_MAX)
 	,trialCounter(TRIAL_START_INDEX)
 	,maxSaverQueue(MAX_CONCURRENT_SAVER)
 {
@@ -95,14 +95,6 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 		while (this->saverQueue->size() >= this->maxSaverQueue);
 	}
 
-	// Get new ImageSaver
-	this->currentSaver = new ImageSaverTSQ(generateFileName(savePath, camSerial, trialCounter, imageSaverCounter), saverQueue);
-
-	// Put the new saver to the saverQueue to be monitored
-	if (this->saverQueue != NULL)
-	{
-		this->saverQueue->enqueue(this->currentSaver);
-	}
 
 	// Reset total image counter of current saver
 	this->currentSaveQueueTotalImageCounter = 0;
@@ -117,6 +109,16 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 		// Increase imageSaver counter
 		this->imageSaverCounter++;
 	}
+
+	// Get new ImageSaver
+	this->currentSaver = new ImageSaverTSQ(generateFileName(savePath, camSerial, trialCounter, imageSaverCounter), saverQueue);
+
+	// Put the new saver to the saverQueue to be monitored
+	if (this->saverQueue != NULL)
+	{
+		this->saverQueue->enqueue(this->currentSaver);
+	}
+
 
 	return this->currentSaver;
 }
