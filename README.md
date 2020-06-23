@@ -15,10 +15,10 @@
 - Retrieve and save images' timestamps and imageIDs to the metatags of each image in the tiff stacks
 - Provide high multi-image TIFF writing speed with auto tiff stack partitioning feature that overcomes the diminishing-write-speed problem of LibTiff when operating on multi-image TIFF files (performance varies from 3Mb/s to 20Mb/s or more depends on the quality of storage device (HDD, SSD, etc))
 
-## Changelot for version 2.0
+## Changelog for version 2.0
 - Camera acquisition has been moved to dedicated threads to increase image acquiring speed and avoid missing frames.
 - Image saving has been moved to dedicated threads providing the ability to write multiple TIFF files concurrently.
-- Auto trial separation by detecting break interval between trials
+- Added auto trial separation by detecting break interval between trials feature
 
 ## Project structure
 ```
