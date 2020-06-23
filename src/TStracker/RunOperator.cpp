@@ -26,7 +26,7 @@ RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),
 			MessageBox(NULL, (string("HereUnable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
 		}
 	}
-	sys->ReleaseInstance();
+	//sys->ReleaseInstance();
 	this->cvDisplay = new CVDisplay(this->camRecs,this->running);
 }
 

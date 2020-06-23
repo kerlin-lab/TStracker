@@ -493,7 +493,7 @@ bool configAllCams4SimultenousRecording(CameraList& camList)
 		camList.Clear();
 
 		// Release system
-		system->ReleaseInstance();
+		//system->ReleaseInstance();
 
 		MessageBox(NULL, "No camera detected", "Error", MB_OK);
 		return false;

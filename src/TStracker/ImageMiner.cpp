@@ -21,7 +21,7 @@ ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>*
 		cam->DeInit();
 	}
 	camList.Clear();
-	sys->ReleaseInstance();
+	//sys->ReleaseInstance();
 	// Start running the imageMiner thread
 	this->handler = AfxBeginThread(spawnImageMiner, this);
 }
@@ -143,7 +143,8 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 		cam->EndAcquisition();
 		cam->DeInit();
 		camList.Clear();
-		sys->ReleaseInstance();
+		// The command below is the cause of silient crash when running with 2 cameras, erro at retrun 
+		//sys->ReleaseInstance();				
 	}
 	catch (Spinnaker::Exception e)
 	{
@@ -153,10 +154,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	// Announce
 	miner->imageMiningStopped->write(true);
 
-
 	// Free memmory
 	delete miner;
-	MessageBox(NULL, (string("Image miner stopped") ).c_str(), "Yup", MB_OK);
-
 	return 0;
 }

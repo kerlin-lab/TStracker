@@ -32,7 +32,6 @@ CVDisplay::~CVDisplay()
 	delete this->camRecorderList;
 	// Tell the RunOperator that it is fine to start another run
 	this->guiIsRunning->write(false);
-	MessageBox(NULL, "CVDisplay", "NOTE", MB_OK);
 }
 
 
@@ -93,12 +92,8 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	// Run the GUI
 	runGUI(controller);
 
-	MessageBox(NULL, "CV Dispay 1", "NOTE", MB_OK);
-
 	// Free memory, including CVDisplay object and the GUIQueueList
 	delete controller;
-
-	MessageBox(NULL, "CV Dispay 2", "NOTE", MB_OK);
 
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
 	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
@@ -160,7 +155,7 @@ void runGUI(CVDisplay * controller)
 
 	// Some clean up
 	camList.Clear();
-	sys->ReleaseInstance();
+	//sys->ReleaseInstance();
 
 	// Calculate display FPS base on the frameRate
 	displayFPS = ceil(1000.0 / (*max_element(frameRate.begin(), frameRate.end())));
@@ -248,7 +243,6 @@ void runGUI(CVDisplay * controller)
 
 	// Destroy OpenCV window
 	destroyWindow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
-	MessageBox(NULL, "CV Dispay 0", "NOTE", MB_OK);
 }
 
 
