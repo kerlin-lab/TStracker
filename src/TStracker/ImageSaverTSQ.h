@@ -44,9 +44,12 @@ using namespace cv;
 
 //#define MAX_TIFF_STACK_SIZE 3000
 
+class ImageSaverTSQ;
+
 typedef TSImage * ImageSaverTSQItemType;
 typedef ThreadSafeQueue<ImageSaverTSQItemType> ImageSaverTSQContainerType;
 typedef ImageSaverTSQContainerType* ImageSaverTSQContainerTypePtr;
+typedef ThreadSafeQueue<ImageSaverTSQ *> SAVERQueue;
 
 //class SavingThreadControllerTSQ
 //{
@@ -70,6 +73,8 @@ public:
 
 	string fileName;                    // Name of the file to save the image down
 	ImageSaverTSQContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
+	ThreadSafeQueue<ImageSaverTSQ *> * saverQueue;			// The saver queue of the ImageDistributor managing this iamgeSaver
+										// If NULL is given, don't care about this
 	bool fileIsOpen;                    // Is there a file openning and ready to be written to
 	bool filling;						// Flag showing if the queue of this thread is being filled up
 	HANDLE mtx;                         // Pointer to Mutex object used for making the thread multi-threading safe
@@ -78,7 +83,7 @@ public:
 	ImageSaverTSQ();
 
 	// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
-	ImageSaverTSQ(std::string fileName, bool fileIsOpen = false, bool filling = true);
+	ImageSaverTSQ(std::string fileName, SAVERQueue * saverQueue ,bool fileIsOpen = false, bool filling = true);
 
 	~ImageSaverTSQ();
 

@@ -16,7 +16,10 @@ ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>*
 	CameraPtr cam = camList.GetByIndex(index);
 	cam->Init();
 	this->camSerial = cam->DeviceSerialNumber();
-	cam->DeInit();
+	if (!cam->IsStreaming())
+	{
+		cam->DeInit();
+	}
 	camList.Clear();
 	sys->ReleaseInstance();
 	// Start running the imageMiner thread
@@ -37,6 +40,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 {
 	ImageMiner* miner = (ImageMiner*)params;
 	ImagePtr img;
+	uint64_t initialTimestamp = 0;
 
 	// Making this thread a high priority
 	SetThreadPriority(miner->handler, THREAD_PRIORITY_TIME_CRITICAL);
@@ -84,9 +88,15 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 			//MessageBox(NULL, "Img 5", "Error", MB_OK);
 			tsimg = new TSImage();
 			tsimg->getFromImgPtr(img);
-			// Inject other information (camera , trailnumber, ...)
+			// Inject other information (camera , trailnumber, timestamp normalize ...)
 			tsimg->camSerial = miner->camSerial;
 			tsimg->trialNumber = trialCounter;
+			// Normalized timestamp (otherwise, timestamp will start with a very large number)
+			if (initialTimestamp == 0)
+			{
+				initialTimestamp = tsimg->timestamp;
+			}
+			tsimg->timestamp -= initialTimestamp;
 
 			// Put the TSImage object to the Raw queue
 			miner->rawQueue->enqueue(tsimg);
@@ -143,8 +153,10 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	// Announce
 	miner->imageMiningStopped->write(true);
 
+
 	// Free memmory
 	delete miner;
+	MessageBox(NULL, (string("Image miner stopped") ).c_str(), "Yup", MB_OK);
 
 	return 0;
 }

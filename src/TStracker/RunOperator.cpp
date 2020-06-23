@@ -15,7 +15,10 @@ RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),
 			cam = camList.GetByIndex(i);
 			cam->Init();
 			CamRecorder * camRec = new CamRecorder(i, string(cam->DeviceSerialNumber()),savePath,waitTime);
-			cam->DeInit();
+			if (!cam->IsStreaming())
+			{
+				cam->DeInit();
+			}
 			camRecs->push_back(camRec);
 		}
 		catch (Spinnaker::Exception e)

@@ -13,6 +13,7 @@ using namespace Spinnaker;
 
 typedef ThreadSafeQueue<TSImage*> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;
+typedef ThreadSafeQueue<ImageSaverTSQ *> SAVERQueue;
 
 class ImageDistributor
 {
@@ -21,8 +22,9 @@ public:
 	~ImageDistributor();
 	void Distribute();
 public:
-	RAWQueue* rawQueue;
-	GUIQueue* guiQueue;
+	RAWQueue * rawQueue;
+	GUIQueue * guiQueue;
+	SAVERQueue * saverQueue;
 	ThreadSafeVariable<bool>* imageMinerStopped;
 	ThreadSafeVariable<bool>* distributionStopped;
 	ImageSaverTSQ * currentSaver;
@@ -31,12 +33,12 @@ public:
 	uint64_t currentSaveQueueTotalImageCounter;
 	uint64_t imageSaverCounter;
 	uint64_t trialCounter;
+	unsigned maxSaverQueue;
 	CWinThread * imageDistributorThreadHandler;
+	ImageSaverTSQ * getNewImageSaver(bool resetSaverCounter);
 };
 
 string generateFileName(string savePath, string camSerial, unsigned trailNumber, unsigned fileNumber);
-
-ImageSaverTSQ * getNewImageSaver(string savePath, string camSerial, unsigned trailNumber, unsigned fileNumber);
 
 UINT __cdecl runDistribution(LPVOID para);
 #endif //_IMAGE_DISTRIBUTOR_H_

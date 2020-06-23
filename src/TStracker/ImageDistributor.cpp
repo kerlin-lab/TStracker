@@ -1,7 +1,8 @@
 #include "ImageDistributor.h"
 
-#define QUEUE_THRES 2500
+#define QUEUE_THRES 1000
 #define TRIAL_START_INDEX 1
+#define MAX_CONCURRENT_SAVER 5				// The highest number of saver can concurrently run
 
 ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
 	:savePath(savePath)
@@ -13,8 +14,11 @@ ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, strin
 	, currentSaveQueueTotalImageCounter(0)
 	,imageSaverCounter(0)
 	,trialCounter(TRIAL_START_INDEX)
+	,maxSaverQueue(MAX_CONCURRENT_SAVER)
 {
-	this->currentSaver = getNewImageSaver(savePath, camSerial,this->trialCounter,this->imageSaverCounter);
+	this->saverQueue = new SAVERQueue();
+	this->currentSaver = NULL;
+	this->getNewImageSaver(false);
 	// run the thread
 	this->imageDistributorThreadHandler = AfxBeginThread(runDistribution, this);
 }
@@ -22,6 +26,9 @@ ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, strin
 ImageDistributor::~ImageDistributor()
 {
 	delete this->rawQueue;
+	// Make sure no writer is running before delete the queue
+	while (this->saverQueue->size());
+	delete this->saverQueue;
 }
 
 
@@ -52,17 +59,8 @@ void ImageDistributor::Distribute()
 			// Update trial number
 			this->trialCounter = ts2->trialNumber;
 
-			// Reset saver counter
-			this->imageSaverCounter = 0;
-
-			// Stop writing to the current saver
-			this->currentSaver->Detach();
-
-			// Reset image counter to the saver
-			this->currentSaveQueueTotalImageCounter = 0;
-
-			// Get a new saver for this trial
-			this->currentSaver = getNewImageSaver(savePath, camSerial, this->trialCounter, this->imageSaverCounter);
+			//// Get a new saver for this trial
+			this->getNewImageSaver(true);
 		}
 
 		// Distribute one copy to be saved
@@ -75,27 +73,52 @@ void ImageDistributor::Distribute()
 		// Checking if we should move to the a different file
 		if (this->currentSaveQueueTotalImageCounter == QUEUE_THRES)
 		{
-			// Yes move to new file
-
-			// Reset counter
-			this->currentSaveQueueTotalImageCounter = 0;
-
-			// Detach current imageSaver
-			this->currentSaver->Detach();
-
-			// Increase imageSaver counter
-			this->imageSaverCounter++;
-
 			// Get new ImageSaver
-			this->currentSaver = getNewImageSaver(savePath,camSerial, this->trialCounter, this->imageSaverCounter);
-
+			this->getNewImageSaver(false);
 		}
 	}	
 }
 
-ImageSaverTSQ * getNewImageSaver(string savePath,string camSerial, unsigned trailNumber, unsigned fileNumber)
+ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 {
-	return new ImageSaverTSQ(generateFileName(savePath, camSerial, trailNumber, fileNumber));
+	// Detach current imageSaver
+	if (this->currentSaver != NULL)
+	{
+		this->currentSaver->Detach();
+	}
+
+	if (this->saverQueue != NULL)
+	{
+		// Only create new saver when the number of currently running saver of this 
+		// CamRecorder is below the limit
+		// if not, let's wait for one saver to stop
+		while (this->saverQueue->size() >= this->maxSaverQueue);
+	}
+
+	// Get new ImageSaver
+	this->currentSaver = new ImageSaverTSQ(generateFileName(savePath, camSerial, trialCounter, imageSaverCounter), saverQueue);
+
+	// Put the new saver to the saverQueue to be monitored
+	if (this->saverQueue != NULL)
+	{
+		this->saverQueue->enqueue(this->currentSaver);
+	}
+
+	// Reset total image counter of current saver
+	this->currentSaveQueueTotalImageCounter = 0;
+
+	// Update imageSavercounter
+	if (resetSaverCounter)
+	{
+		this->imageSaverCounter = 0;
+	}
+	else
+	{
+		// Increase imageSaver counter
+		this->imageSaverCounter++;
+	}
+
+	return this->currentSaver;
 }
 
 string generateFileName(string savePath, string camSerial, unsigned trailNumber, unsigned fileNumber)
@@ -130,11 +153,15 @@ UINT __cdecl runDistribution(LPVOID para)
 	// Close the current writing file
 	controller->currentSaver->Detach();
 
+
+	// Wait for all saver to close 
+	while (controller->saverQueue->size());
+
 	// Let CVDisplay know that this ImageDistributor has stopped distributing images (no more image go to queue)
 	controller->distributionStopped->write(true);
 
-	// free everything associate with ImageDistributor
 
+	// free everything associate with ImageDistributor
 	delete controller;
 
 	return 0;

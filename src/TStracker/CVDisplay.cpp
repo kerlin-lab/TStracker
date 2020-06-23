@@ -32,6 +32,7 @@ CVDisplay::~CVDisplay()
 	delete this->camRecorderList;
 	// Tell the RunOperator that it is fine to start another run
 	this->guiIsRunning->write(false);
+	MessageBox(NULL, "CVDisplay", "NOTE", MB_OK);
 }
 
 
@@ -92,8 +93,12 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	// Run the GUI
 	runGUI(controller);
 
+	MessageBox(NULL, "CV Dispay 1", "NOTE", MB_OK);
+
 	// Free memory, including CVDisplay object and the GUIQueueList
 	delete controller;
+
+	MessageBox(NULL, "CV Dispay 2", "NOTE", MB_OK);
 
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
 	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
@@ -103,10 +108,8 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 void runGUI(CVDisplay * controller)
 {
 	TSImagePtr GUIWindow;		// The frame of the displayed window
-
 	vector<int> frameRate;
-	vector<uint64_t> duration, intialTimestamp;
-	uint64_t timestamp;
+	int displayFPS;
 
 	// These below are to calculate the height and width of the display window
 	int maxHeight, sumWidth;
@@ -152,17 +155,15 @@ void runGUI(CVDisplay * controller)
 		// Find total width
 		sumWidth += imgList[i]->imgWidth;
 
-
-		// Reserve slot for first image timestamp saver
-		intialTimestamp.push_back(0);
-
 		//cam->DeInit();		Do not release camera here, will cause error, maybe because ImageMiner is using this cam already
 	}
-
 
 	// Some clean up
 	camList.Clear();
 	sys->ReleaseInstance();
+
+	// Calculate display FPS base on the frameRate
+	displayFPS = ceil(1000.0 / (*max_element(frameRate.begin(), frameRate.end())));
 
 	// Configure the TSImage for the GUIparent window
 	// Initialize the Mat that will be used as the frame of the displayed window
@@ -217,19 +218,8 @@ void runGUI(CVDisplay * controller)
 		// Process each images in the image list
 		for (unsigned i = 0; i<imgList.size(); i++)
 		{
-			// Get timestamp
-			timestamp = imgList[i]->timestamp;
-			if (intialTimestamp[i] == UINT64_MAX)
-			{
-				intialTimestamp[i] = timestamp;
-			}
-			timestamp -= intialTimestamp[i];
-
-			// Save the adjusted timestamp not the original timestmap since the original timestamp does not get reseted before each run
-			imgList[i]->timestamp = timestamp;
-
 			// Draw timestamp and framerate
-			drawTimeAndFPS(imgList[i]->img, timestamp / 1000000000.0, frameRate[i]);
+			drawTimeAndFPS(imgList[i]->img, imgList[i]->timestamp / 1000000000.0, frameRate[i]);
 		}
 
 		// --------------------- Drawing the GUI -----------------------------------
@@ -246,7 +236,7 @@ void runGUI(CVDisplay * controller)
 		//MessageBox(NULL,"Should show something", "Notice", MB_OK);
 
 		// Update the window
-		waitKey(1);
+		waitKey(displayFPS);
 		ReleaseMutex(mtx);
 	}
 	
@@ -255,8 +245,10 @@ void runGUI(CVDisplay * controller)
 	{
 		delete imgList[i];
 	}
+
 	// Destroy OpenCV window
 	destroyWindow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
+	MessageBox(NULL, "CV Dispay 0", "NOTE", MB_OK);
 }
 
 

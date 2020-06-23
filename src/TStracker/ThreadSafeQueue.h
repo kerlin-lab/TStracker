@@ -4,6 +4,7 @@
 #include "afxwin.h"
 
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -26,6 +27,8 @@ public:
 
 	T& front();				// The object at the front of the queue
 
+	bool erase(T& item, bool all = true);		// Remove the elements in the queue matches item, return true if deletion happened
+											// if all = true, remove all instance, otherwise, remove the one closest to the back of the queue
 	unsigned size() const;
 };
 
@@ -92,5 +95,46 @@ unsigned ThreadSafeQueue<T>::size() const
 	unsigned size = this->Queue->size();
 	ReleaseMutex(this->mtx);
 	return size;
+}
+
+// Remove the elements in the queue matches item, return true if deletion happened
+// if all = true, remove all instance, otherwise, remove the one closest to the back of the queue
+template<typename T>
+bool ThreadSafeQueue<T>::erase(T& item, bool all)
+{
+	queue<T> tmp;
+	bool result = false;
+	WaitForSingleObject(this->mtx, INFINITE);
+	while (this->Queue->size())
+	{
+		if (this->Queue->front() == item)
+		{
+			this->Queue->pop();
+			result = true;
+			if (!all)
+			{
+				// Transer the rest to tmp queue
+				while (this->Queue->size())
+				{
+					tmp.push(this->Queue->front());
+					this->Queue->pop();
+				}
+				break;
+			}
+		}
+		else
+		{
+			tmp.push(this->Queue->front());
+			this->Queue->pop();
+		}
+	}
+	// Put things in the queue front to list
+	while (tmp.size())
+	{
+		this->Queue->push(tmp.front());
+		tmp.pop();
+	}
+	ReleaseMutex(this->mtx);
+	return result;
 }
 #endif // !_THREAD_SAFE_QUEUE_H_
