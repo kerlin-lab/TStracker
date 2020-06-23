@@ -2,7 +2,7 @@
 
 #define QUEUE_THRES 1000
 #define TRIAL_START_INDEX 1
-#define MAX_CONCURRENT_SAVER 5				// The highest number of saver can concurrently run
+#define MAX_CONCURRENT_SAVER 3				// The highest number of saver can concurrently run
 
 ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
 	:savePath(savePath)
