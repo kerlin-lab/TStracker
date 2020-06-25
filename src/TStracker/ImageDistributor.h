@@ -13,7 +13,8 @@ using namespace Spinnaker;
 
 typedef ThreadSafeQueue<TSImage*> RAWQueue;
 typedef ThreadSafeQueue<TSImage*> GUIQueue;
-typedef ThreadSafeQueue<ImageSaverTSQ *> SAVERQueue;
+typedef ThreadSafeVariable<unsigned> SaverCounter;
+typedef ThreadSafeVariable<bool> BoolFlag;
 
 class ImageDistributor
 {
@@ -24,9 +25,9 @@ public:
 public:
 	RAWQueue * rawQueue;
 	GUIQueue * guiQueue;
-	SAVERQueue * saverQueue;
-	ThreadSafeVariable<bool>* imageMinerStopped;
-	ThreadSafeVariable<bool>* distributionStopped;
+	SaverCounter * currentRunningSaverCounter;
+	BoolFlag * imageMinerStopped;
+	BoolFlag * distributionStopped;
 	ImageSaverTSQ * currentSaver;
 	string camSerial;
 	string savePath;

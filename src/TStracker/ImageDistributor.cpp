@@ -1,8 +1,8 @@
 #include "ImageDistributor.h"
 
-#define QUEUE_THRES 1000
+#define QUEUE_THRES 2000
 #define TRIAL_START_INDEX 1
-#define MAX_CONCURRENT_SAVER 3				// The highest number of saver can concurrently run
+#define MAX_CONCURRENT_SAVER 5				// The highest number of saver can concurrently run
 
 ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
 	:savePath(savePath)
@@ -16,7 +16,7 @@ ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, strin
 	,trialCounter(TRIAL_START_INDEX)
 	,maxSaverQueue(MAX_CONCURRENT_SAVER)
 {
-	this->saverQueue = new SAVERQueue();
+	this->currentRunningSaverCounter = new SaverCounter(0);
 	this->currentSaver = NULL;
 	this->getNewImageSaver(false);
 	// run the thread
@@ -27,8 +27,8 @@ ImageDistributor::~ImageDistributor()
 {
 	delete this->rawQueue;
 	// Make sure no writer is running before delete the queue
-	while (this->saverQueue->size());
-	delete this->saverQueue;
+	this->currentRunningSaverCounter->waitTillZero();
+	delete this->currentRunningSaverCounter;
 }
 
 
@@ -87,12 +87,12 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 		this->currentSaver->Detach();
 	}
 
-	if (this->saverQueue != NULL)
+	if (this->currentRunningSaverCounter != NULL)
 	{
 		// Only create new saver when the number of currently running saver of this 
 		// CamRecorder is below the limit
 		// if not, let's wait for one saver to stop
-		while (this->saverQueue->size() >= this->maxSaverQueue);
+		while (this->currentRunningSaverCounter->read() >= this->maxSaverQueue);
 	}
 
 
@@ -111,12 +111,14 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 	}
 
 	// Get new ImageSaver
-	this->currentSaver = new ImageSaverTSQ(generateFileName(savePath, camSerial, trialCounter, imageSaverCounter), saverQueue);
+	this->currentSaver = new ImageSaverTSQ(generateFileName(savePath, camSerial, trialCounter, imageSaverCounter), currentRunningSaverCounter);
 
-	// Put the new saver to the saverQueue to be monitored
-	if (this->saverQueue != NULL)
+	// Update saver counter
+	if (this->currentRunningSaverCounter != NULL)
 	{
-		this->saverQueue->enqueue(this->currentSaver);
+		WaitForSingleObject(this->currentRunningSaverCounter->mtx, INFINITE);
+		this->currentRunningSaverCounter->var++;
+		ReleaseMutex(this->currentRunningSaverCounter->mtx);
 	}
 
 
@@ -155,9 +157,10 @@ UINT __cdecl runDistribution(LPVOID para)
 	// Close the current writing file
 	controller->currentSaver->Detach();
 
+	//MessageBox(NULL, "ImageDistributor ended 1", "Test", MB_OK);
 
 	// Wait for all saver to close 
-	while (controller->saverQueue->size());
+	controller->currentRunningSaverCounter->waitTillZero();
 
 	// Let CVDisplay know that this ImageDistributor has stopped distributing images (no more image go to queue)
 	controller->distributionStopped->write(true);

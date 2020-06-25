@@ -43,8 +43,6 @@ set(SOURCE_FILE				# This is what appears in the File manager when sort the TStr
 	./InputDialog.cpp
 	./main.cpp  
 	./RunOperator.cpp
-	./ThreadSafeQueue.cpp
-	./ThreadSafeVariable.cpp
 	./TiffWriter.cpp
 	./TSImage.cpp
 	./TStracker.cpp 

@@ -156,5 +156,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 
 	// Free memmory
 	delete miner;
+
+	//MessageBox(NULL, "Miner ended", "Test", MB_OK);
 	return 0;
 }

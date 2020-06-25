@@ -18,11 +18,11 @@ ImageSaverTSQ::ImageSaverTSQ()
 
 }
 
-ImageSaverTSQ::ImageSaverTSQ(std::string fileName, SAVERQueue * saverQueue, bool fileIsOpen, bool filling):
+ImageSaverTSQ::ImageSaverTSQ(std::string fileName, SaverCounter * saverCounter, bool fileIsOpen, bool filling):
 	fileName(fileName),
 	fileIsOpen(fileIsOpen),
 	filling(filling),
-	saverQueue(saverQueue)
+	currentRunningSaverCounter(saverCounter)
 {
 	this->container = new ImageSaverTSQContainerType();
 	this->mtx = CreateMutex(NULL, FALSE, NULL);
@@ -203,10 +203,12 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 	// Closing and save everything to the file
 	TiffWriter::CloseTIFFFile(tfWriter);
 
-	// If saverQueue is given, take this imageSaver off the queue
-	if (threadController->saverQueue != NULL)
+	// If currentRunningSaverCounter is given, decrease the running saver counter
+	if (threadController->currentRunningSaverCounter != NULL)
 	{
-		threadController->saverQueue->erase(threadController);
+		WaitForSingleObject(threadController->currentRunningSaverCounter->mtx,INFINITE);
+		threadController->currentRunningSaverCounter->var--;
+		ReleaseMutex(threadController->currentRunningSaverCounter->mtx);
 	}
 
 	//// Cleaning up all allocated memory used for this thread
