@@ -66,7 +66,7 @@ void ImageDistributor::Distribute()
 		// Distribute one copy to be saved
 		this->currentSaver->addToSave(ts2);
 
-		// Increase total iamge couner for the current saver
+		// Increase total iamge counter for the current saver
 		this->currentSaveQueueTotalImageCounter++;
 
 
@@ -92,7 +92,12 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 		// Only create new saver when the number of currently running saver of this 
 		// CamRecorder is below the limit
 		// if not, let's wait for one saver to stop
-		while (this->currentRunningSaverCounter->read() >= this->maxSaverQueue);
+		unsigned tmp;
+		do
+		{
+			tmp = this->currentRunningSaverCounter->read();
+			Sleep(100);
+		} while (tmp >= this->maxSaverQueue);
 	}
 
 

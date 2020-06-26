@@ -4,8 +4,8 @@ unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the came
 
 																// Static member initialization
 CameraSelectionDlg * TStrackerMain::camSelectDlg= nullptr;		// Pointer to the camera selector dialog
-SystemPtr TStrackerMain::spinSys;								// Pointer to the kernel of Spinnaker SDK
-//unordered_map<string, CamAcquireGUIThreadInfo*> TStrackerMain::ThreadList;				
+
+																//unordered_map<string, CamAcquireGUIThreadInfo*> TStrackerMain::ThreadList;				
 GUI::GUIFactory TStrackerMain::gui;
 
 RunOperator * runOp = nullptr;
@@ -20,9 +20,14 @@ TStrackerMain::TStrackerMain()
 	{
 		MessageBox(NULL,"Error", "CreateMutex error",0);
 	}
+	spinSystem = System::GetInstance();
+	SpinSysMTX = CreateMutex(NULL, FALSE, NULL);
 }
 TStrackerMain::~TStrackerMain()
 {
+	spinSystem->ReleaseInstance();
+	CloseHandle(mtx);
+	CloseHandle(SpinSysMTX);
 }
 
 CameraSelectionDlg* camSelectInitializer()
@@ -61,9 +66,6 @@ BOOL TStrackerMain::InitInstance()
 	camSelectDlg=camSelectInitializer();
 	//camSelectDlg->Open();				// Show camera selector
 
-
-	// Initialize the pointer to communicate with Spinnaker kernel
-	spinSys = System::GetInstance();
 
 	// Initialize the main window of this application
 	// Without this window, the application will terminates right after this function returns
@@ -197,8 +199,9 @@ void TStrackerMainWnd::OpenCamSelectDialogButtonClickHandler()
 void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 {
 	// Check if there is any camera available, if not , don't run recording
-	SystemPtr sys = System::GetInstance();
-	CameraList camList = sys->GetCameras();
+	WaitForSingleObject(SpinSysMTX, INFINITE);
+	CameraList camList = spinSystem->GetCameras();
+	ReleaseMutex(SpinSysMTX);
 	if(camList.GetSize() == 0)
 	{
 		MessageBox("No camera found, aborting recording", "Note", MB_OK);

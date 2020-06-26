@@ -1,4 +1,5 @@
 #include "TStrackerThread.h"
+#include "stdafx.h"
 
 extern string ALL_CAM_RECORD_WINDOWS_NAME = "All cameras";
 
@@ -93,10 +94,10 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo)
 //{
 //	// TODO N: Check the Code down here
-//	CameraList camList;
+//	CameraList cameraList;
 //
 //	//Config all cameras for simultenous recording
-//	if (!configAllCams4SimultenousRecording(camList))
+//	if (!configAllCams4SimultenousRecording(cameraList))
 //	{
 //		// If cannot do this
 //		MessageBox(NULL, "Attempt to config all cameras failed", "Error", MB_OK);
@@ -104,14 +105,14 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //	else
 //	{
 //		/// Run the GUI
-//		runGUIRecordAllCams(threadInfo,camList);
+//		runGUIRecordAllCams(threadInfo,cameraList);
 //	}
 //
 //	// De-init all cam
-//	deinitAllCam(camList);
+//	deinitAllCam(cameraList);
 //}
 //
-//void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList)
+//void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& cameraList)
 //{
 //	//// Some setting up before run GUI
 //	CameraPtr pCam;	// This is just middleman
@@ -135,10 +136,10 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //	uint64_t timestamp , recordDuration = threadInfo->duration * 1e9 ;
 //	
 //
-//	for(unsigned i=0;i<camList.GetSize();i++)
+//	for(unsigned i=0;i<cameraList.GetSize();i++)
 //	{
 //		// Get the camera object
-//		pCam = camList.GetByIndex(i);
+//		pCam = cameraList.GetByIndex(i);
 //		// Create an image object obtained from the camera
 //		camCapImg.emplace_back();
 //		// Reverse space to save framerate
@@ -171,7 +172,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //	//for (unsigned i = 0; i<N; i++)
 //	//{
 //	//	// Get the camera object
-//	//	pCam = camList.GetByIndex(0);
+//	//	pCam = cameraList.GetByIndex(0);
 //	//	// Create an image object obtained from the camera
 //	//	camCapImg.emplace_back();
 //	//	// Retrive information about the image represneted by this object from the camera
@@ -196,10 +197,10 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //
 //	// Create the Mat object to hold images and the GUI compoenents (buttons. windows)
 //	//ImageInfo GUIWindow(N * sumWidth + (N+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
-//	ImageInfo GUIWindow(sumWidth + (camList.GetSize()+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
+//	ImageInfo GUIWindow(sumWidth + (cameraList.GetSize()+1) * WINDOW_PADDING, maxHeight + GENERAL_BUTTON_HEIGHT + CAPTION_HEIGHT + 2 * WINDOW_PADDING);
 //
 //	// start acquisition on all cameras
-//	runAcquisitionAllCams(camList);
+//	runAcquisitionAllCams(cameraList);
 //
 //	while (threadInfo->runGUI)
 //	{
@@ -226,7 +227,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //			{
 //
 //				// Get image from each camera
-//				for(unsigned i=0;i<camList.GetSize();i++)
+//				for(unsigned i=0;i<cameraList.GetSize();i++)
 //				{
 //					// Do not acquire image from cameras that have run long enough
 //					if (recordDuration != 0 && duration[i] >= recordDuration)
@@ -235,7 +236,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //					}
 //
 //					// Get camera pointer
-//					pCam = camList.GetByIndex(i);
+//					pCam = cameraList.GetByIndex(i);
 //
 //					//
 //					// Retrieve next received image
@@ -336,7 +337,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //		cvui::context(ALL_CAM_RECORD_WINDOWS_NAME);
 //
 //		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
-//		drawGUIAllCam(GUIWindow.img, camCapImg,threadInfo, camList);
+//		drawGUIAllCam(GUIWindow.img, camCapImg,threadInfo, cameraList);
 //
 //		// Draw the change to the window
 //		cvui::imshow(ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow.img);
@@ -350,9 +351,9 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //	destroyWindow(ALL_CAM_RECORD_WINDOWS_NAME);			// This is important as if the OpenCV window does not get destroyed, the next time you call imshow with the same window name, OpenCV won't create new windows. It would be just silence
 //
 //	// End Streaming
-//	for (unsigned i = 0; i < camList.GetSize(); i++)
+//	for (unsigned i = 0; i < cameraList.GetSize(); i++)
 //	{
-//		pCam = camList.GetByIndex(i);
+//		pCam = cameraList.GetByIndex(i);
 //		if (pCam->IsStreaming())
 //		{
 //			pCam->EndAcquisition();
@@ -375,7 +376,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //}
 //
 //
-//void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList camList)
+//void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg,CamAcquireGUIThreadInfo* threadInfo, CameraList cameraList)
 //{
 //	static bool textDrawn = false;			// This prevent text caption from being drawn many times
 //
@@ -405,7 +406,7 @@ UINT __cdecl openCVCamTuning(LPVOID para)
 //	}
 //
 //	// Test N windows using 1 camera.  Remember to multiply the GUIWindow's sumWidth 
-//	// by N, comment the code snippet below "Draw images" above and change the camList.getSize() to N to run this test
+//	// by N, comment the code snippet below "Draw images" above and change the cameraList.getSize() to N to run this test
 //	//unsigned N = 2;
 //	//for(unsigned i = 0; i < N;i++)
 //	//{
@@ -470,7 +471,7 @@ bool runAcquisitionAllCams(CameraList& camList)
 		}
 		catch (Spinnaker::Exception e)
 		{
-			MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+			MessageBox(NULL, (string("Cant start acquisition ") + string(e.what())).c_str(), "Error", MB_OK);
 			return false;
 		}
 	}
@@ -481,16 +482,13 @@ bool runAcquisitionAllCams(CameraList& camList)
 
 // Congifuring all available cameras
 // Return true if succesfully initializing all cameras
-bool configAllCams4SimultenousRecording(CameraList& camList)
+bool configAllCams4SimultenousRecording(CameraList& cameraList)
 {
-	SystemPtr system = System::GetInstance();
-	camList = system->GetCameras();
-
 	// Finish if there are no cameras
-	if (camList.GetSize() == 0)
+	if (cameraList.GetSize() == 0)
 	{
 		// Clear camera list before releasing system
-		camList.Clear();
+		//cameraList.Clear();
 
 		// Release system
 		//system->ReleaseInstance();
@@ -501,11 +499,11 @@ bool configAllCams4SimultenousRecording(CameraList& camList)
 	else
 	{
 		// Init all camera
-		initAllCam(camList);
+		initAllCam(cameraList);
 
 		//// TODO 6: Uncomment this
 		//// Synchronize all camera timer by enabling IEE1588
-		//if (ConfigureIEEE1588(camList))
+		//if (ConfigureIEEE1588(cameraList))
 		//{
 		//	return true;
 		//} // if IEEE1588 is not available, then try to use external trigger system

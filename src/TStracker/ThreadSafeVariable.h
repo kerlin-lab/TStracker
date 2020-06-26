@@ -33,7 +33,10 @@ inline ThreadSafeVariable<T>::~ThreadSafeVariable()
 template<typename T>
 T ThreadSafeVariable<T>::read()
 {
-	return var;
+	WaitForSingleObject(this->mtx, INFINITE);
+	T copy = this->var;
+	ReleaseMutex(this->mtx);
+	return copy;
 }
 
 template<typename T>

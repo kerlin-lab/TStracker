@@ -207,14 +207,17 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 	if (threadController->currentRunningSaverCounter != NULL)
 	{
 		WaitForSingleObject(threadController->currentRunningSaverCounter->mtx,INFINITE);
+		//MessageBox(NULL, to_string(threadController->currentRunningSaverCounter->read()).c_str(), "Error", MB_OK);
 		threadController->currentRunningSaverCounter->var--;
+		//MessageBox(NULL, to_string(threadController->currentRunningSaverCounter->read()).c_str(), "Error", MB_OK);
 		ReleaseMutex(threadController->currentRunningSaverCounter->mtx);
 	}
 
 	//// Cleaning up all allocated memory used for this thread
 
 	// Free memory of the ImageSaverTSQ object of this thread
-
+	string name = threadController->fileName;
 	delete threadController;
+	//MessageBox(NULL, name.c_str(), "Error", MB_OK);
 	return 0;
 }

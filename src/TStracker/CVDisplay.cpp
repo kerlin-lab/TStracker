@@ -1,4 +1,5 @@
 #include "CVDisplay.h"
+#include "stdafx.h"
 
 string CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
 
@@ -117,15 +118,17 @@ void runGUI(CVDisplay * controller)
 	bool notAllQueueEmpty;
 
 	// Bootstrap the imgList with background images with the same size as the image each camera 
-	SystemPtr sys = System::GetInstance();
-	CameraList camList = sys->GetCameras();
 	int frameWidth,frameHeight;
+	WaitForSingleObject(SpinSysMTX, INFINITE);
+	CameraList cameraList = spinSystem->GetCameras();
+	ReleaseMutex(SpinSysMTX);
 
 
-	for (unsigned i = 0; i < camList.GetSize(); i++)
+	for (unsigned i = 0; i < cameraList.GetSize(); i++)
 	{
 		// Get and configure the camera
-		CameraPtr& cam= camList.GetByIndex(i);
+
+		CameraPtr& cam= cameraList.GetByIndex(i);
 		cam->Init();
 
 		// Get information from camera
@@ -150,12 +153,8 @@ void runGUI(CVDisplay * controller)
 		// Find total width
 		sumWidth += imgList[i]->imgWidth;
 
-		//cam->DeInit();		Do not release camera here, will cause error, maybe because ImageMiner is using this cam already
 	}
 
-	// Some clean up
-	camList.Clear();
-	//sys->ReleaseInstance();
 
 	// Calculate display FPS base on the frameRate
 	displayFPS = ceil(1000.0 / (*max_element(frameRate.begin(), frameRate.end())));
@@ -283,7 +282,7 @@ void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList, CVDisplay* controlle
 	}
 
 	// Test N windows using 1 camera.  Remember to multiply the GUIWindow's sumWidth 
-	// by N, comment the code snippet below "Draw images" above and change the camList.getSize() to N to run this test
+	// by N, comment the code snippet below "Draw images" above and change the cameraList.getSize() to N to run this test
 	//unsigned N = 2;
 	//for(unsigned i = 0; i < N;i++)
 	//{

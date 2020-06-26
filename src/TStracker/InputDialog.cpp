@@ -1,7 +1,6 @@
 // InputDialog.cpp : implementation file
 //
 
-#include "stdafx.h"
 #include "TStracker.h"
 #include "InputDialog.h"
 #include "afxdialogex.h"

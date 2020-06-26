@@ -1,4 +1,5 @@
 #include "ImageMiner.h"
+#include "stdafx.h"
 
 #define DEFAULT_WAIT_TIME 41
 #define TRIAL_COUNTER_START 1
@@ -11,17 +12,13 @@ ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>*
 	this->loopRunning = new ThreadSafeVariable<bool>(true);
 	this->waitTime = (waitTime == 0 ? DEFAULT_WAIT_TIME : waitTime);				// Should use 1/2 of wait time to detect trial stop
 	// Getting camera Serial
-	SystemPtr sys = System::GetInstance();
-	CameraList camList = sys->GetCameras();
-	CameraPtr cam = camList.GetByIndex(index);
+	WaitForSingleObject(SpinSysMTX, INFINITE);
+	CameraList cameraList = spinSystem->GetCameras();
+	ReleaseMutex(SpinSysMTX);
+	CameraPtr cam = cameraList.GetByIndex(index);
 	cam->Init();
 	this->camSerial = cam->DeviceSerialNumber();
-	if (!cam->IsStreaming())
-	{
-		cam->DeInit();
-	}
-	camList.Clear();
-	//sys->ReleaseInstance();
+
 	// Start running the imageMiner thread
 	this->handler = AfxBeginThread(spawnImageMiner, this);
 }
@@ -46,13 +43,14 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	SetThreadPriority(miner->handler, THREAD_PRIORITY_TIME_CRITICAL);
 
 	// Getting the handle of the camera
-	SystemPtr sys = System::GetInstance();
-	CameraList camList = sys->GetCameras();
-	CameraPtr cam = camList.GetByIndex(miner->camIndex);
-
+	WaitForSingleObject(SpinSysMTX, INFINITE);
+	CameraList cameraList = spinSystem->GetCameras();
+	ReleaseMutex(SpinSysMTX);
+	CameraPtr cam = cameraList.GetByIndex(miner->camIndex);
 	// Setting up the camera
 	try
 	{
+		cam->GetTLDeviceNodeMap();
 		cam->Init();
 		//MessageBox(NULL, "Img 2", "Error", MB_OK);
 		cam->BeginAcquisition();
@@ -60,10 +58,9 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	}
 	catch (Spinnaker::Exception e)
 	{
-		MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
-		return false;
+		MessageBox(NULL, (string("ImageSaver unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+		goto terminating_thread;
 	}
-
 	// Run acquiring loop
 	TSImage * tsimg;
 	bool lastTrialEnd = true;
@@ -127,7 +124,7 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 				needToBreak = false;
 				break;
 			default:
-				MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+				MessageBox(NULL, (string("Unable acquire images from camera due to ") + string(e.what())).c_str(), "Error", MB_OK);
 				needToBreak = true;
 			}
 			if (needToBreak)
@@ -141,16 +138,13 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	try 
 	{
 		cam->EndAcquisition();
-		cam->DeInit();
-		camList.Clear();
-		// The command below is the cause of silient crash when running with 2 cameras, erro at retrun 
-		//sys->ReleaseInstance();				
 	}
 	catch (Spinnaker::Exception e)
 	{
-		MessageBox(NULL, (string("Unable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+		MessageBox(NULL, (string("Unable to end acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
 	}
 
+terminating_thread:
 	// Announce
 	miner->imageMiningStopped->write(true);
 

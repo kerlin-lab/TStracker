@@ -18,6 +18,7 @@
 #include "RunOperator.h"
 #include "rc\resource.h"
 #include "InputDialog.h"
+#include "stdafx.h"
 
 #define CVUI_IMPLEMENTATION
 #include "cvui.h"
@@ -53,7 +54,6 @@ public:
 	// For GUI 
 	static GUI::GUIFactory gui;
 	static CameraSelectionDlg * camSelectDlg;		// Pointer to the camera selector dialog
-	static SystemPtr spinSys;						// Pointer to the kernel of Spinnaker SDK
 													//static unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
 };
 

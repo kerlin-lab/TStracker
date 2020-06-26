@@ -1,4 +1,5 @@
 #include "RunOperator.h"
+#include"stdafx.h"
 
 RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),waitTime(waitTime)
 {
@@ -6,27 +7,33 @@ RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),
 	this->camRecs = new CamRecorderPtrList();
 	this->running = new ThreadSafeVariable<bool>(true);
 	// Filling
-	SystemPtr sys = System::GetInstance();
-	CameraList camList = sys->GetCameras();
 	CameraPtr cam;
-	for (unsigned i = 0; i < camList.GetSize(); i++) {
+	vector<string> camSerial;
+
+	// Gettin Serial from each camera
+	WaitForSingleObject(SpinSysMTX, INFINITE);
+	CameraList cameraList = spinSystem->GetCameras();
+	ReleaseMutex(SpinSysMTX);
+	for (unsigned i = 0; i < cameraList.GetSize(); i++)
+	{
 		try
 		{
-			cam = camList.GetByIndex(i);
+			cam = cameraList.GetByIndex(i);
 			cam->Init();
-			CamRecorder * camRec = new CamRecorder(i, string(cam->DeviceSerialNumber()),savePath,waitTime);
-			if (!cam->IsStreaming())
-			{
-				cam->DeInit();
-			}
-			camRecs->push_back(camRec);
+			camSerial.push_back((string)cam->DeviceSerialNumber());
 		}
 		catch (Spinnaker::Exception e)
 		{
-			MessageBox(NULL, (string("HereUnable to start acquisition of all cameras due to ") + string(e.what())).c_str(), "Error", MB_OK);
+			MessageBox(NULL, (string("RunOperator unables to obtain device serial due to") + string(e.what())).c_str(), "Error", MB_OK);
 		}
 	}
-	//sys->ReleaseInstance();
+
+	// Create CamRecorder for each camera
+	for (unsigned i = 0; i < camSerial.size(); i++) 
+	{
+			CamRecorder * camRec = new CamRecorder(i, camSerial[i],savePath,waitTime);
+			camRecs->push_back(camRec);
+	}
 	this->cvDisplay = new CVDisplay(this->camRecs,this->running);
 }
 
