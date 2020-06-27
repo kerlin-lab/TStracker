@@ -23,7 +23,7 @@ public:
 
 	void pop();				// Dequeue the the item at front of the queue
 
-	T& dequeue();			// Dequeue the object at the front of the queue and return it
+	T dequeue();			// Dequeue the object at the front of the queue and return it
 
 	T& front();				// The object at the front of the queue
 
@@ -66,17 +66,17 @@ void ThreadSafeQueue<T>::pop()
 }
 
 template<typename T>
-T& ThreadSafeQueue<T>::dequeue()
+T ThreadSafeQueue<T>::dequeue()
 {
-	T * item;
+	T item;
 	WaitForSingleObject(this->mtx, INFINITE);
 	if (this->Queue->size())
 	{
-		item = &(this->Queue->front());
+		item = this->Queue->front();
 		this->Queue->pop();
 	}
 	ReleaseMutex(this->mtx);
-	return *item;
+	return item;
 }
 
 template<typename T>

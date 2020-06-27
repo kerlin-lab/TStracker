@@ -150,6 +150,7 @@ UINT __cdecl savingThreadProcessorTSQ(LPVOID para)
 
 			// Save pointer to the image
 			image = threadController->container->dequeue();
+			const uchar* Dest = image->img.ptr<uchar>(0);
 			try
 			{
 				// Save the obtained image to the tiff file
