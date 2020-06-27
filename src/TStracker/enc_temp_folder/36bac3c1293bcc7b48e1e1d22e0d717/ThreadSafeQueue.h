@@ -25,7 +25,7 @@ public:
 
 	T dequeue();			// Dequeue the object at the front of the queue and return it
 
-	T front();				// The object at the front of the queue
+	T& front();				// The object at the front of the queue
 
 	bool erase(T& item, bool all = true);		// Remove the elements in the queue matches item, return true if deletion happened
 											// if all = true, remove all instance, otherwise, remove the one closest to the back of the queue
@@ -80,12 +80,12 @@ T ThreadSafeQueue<T>::dequeue()
 }
 
 template<typename T>
-T ThreadSafeQueue<T>::front()
+T& ThreadSafeQueue<T>::front()
 {
 	WaitForSingleObject(this->mtx,INFINITE);
-	T item = &this->Queue->front();
+	T * item = &this->Queue->front();
 	ReleaseMutex(this->mtx);
-	return item;
+	return *item;
 }
 
 template<typename T>
