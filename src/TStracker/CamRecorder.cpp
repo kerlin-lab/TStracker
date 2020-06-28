@@ -17,9 +17,6 @@ CamRecorder::CamRecorder(int index, string camSerial,string savePath, uint64_t w
 
 CamRecorder::~CamRecorder()
 {
-	//delete this->rawQueue;	// This is not needed because rawQueue will be free by ImageDistributor
-	//delete this->imgMiner;	// ImageMiner frees itself
-	//delete this->imgDist;		// imgDist frees itself
 	delete this->guiQueue;
 	delete this->imageMinerStopped;
 	delete this->distributionStopped;
@@ -28,5 +25,6 @@ CamRecorder::~CamRecorder()
 
 void CamRecorder::Detach()
 {
-	this->imgMiner->Terminate();		// Terminate Image miner to imageMinerStopped adding more image to the rawQueue
+	// Terminate Image miner to imageMinerStopped adding more image to the rawQueue
+	this->imgMiner->Terminate();
 }

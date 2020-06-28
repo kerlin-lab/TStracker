@@ -24,8 +24,10 @@ TSImage::TSImage(int imgWidth, int imgHeight, std::string camSerial, uint64_t ti
 
 TSImage::~TSImage() {}
 
-// Copy the image saved in ImagePtr spin_con to the Mat of this object
-// This function is based on the ImagePtr2CVMat_CV_8UC1 function in TStracker.h
+/*
+* Copy the image saved in ImagePtr spin_con to the Mat of this object
+* This function is based on the ImagePtr2CVMat_CV_8UC1 function in TStracker.h
+*/
 void TSImage::getFromImgPtr(Spinnaker::ImagePtr& spin_con, string camSerial, int frameRate)
 {
 	// Updating the header
@@ -53,12 +55,6 @@ void TSImage::getFromImgPtr(Spinnaker::ImagePtr& spin_con, string camSerial, int
 	uchar* Dest = this->img.ptr<uchar>(0);
 
 	memcpy(Dest, rawDataFromCam, this->imgSize);
-
-	// Old style copy, assume to be slower than memcpy
-	//while (size--)
-	//{
-	//	*(Dest++) = *(rawDataFromCam++);
-	//}
 }
 
 /*
@@ -66,11 +62,13 @@ void TSImage::getFromImgPtr(Spinnaker::ImagePtr& spin_con, string camSerial, int
 */
 void TSImage::changeImgSize(int imgWidth, int imgHeight)
 {
+	// Reseting the image dimension and allocate memory accordingly
 	this->imgWidth = imgWidth;
 	this->imgHeight = imgHeight;
 	this->imgSize = imgWidth * imgHeight;
 	this->img.release();
 	this->img.create(imgHeight, imgWidth, CV_8UC1);
+
 	// Fill the background with a nice color
 	this->img = DEFAULT_BACKGROUND;
 }

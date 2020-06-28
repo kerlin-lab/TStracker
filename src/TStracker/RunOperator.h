@@ -14,7 +14,6 @@ using namespace Spinnaker;
 typedef vector<CamRecorder*> CamRecorderPtrList;
 typedef vector<CamRecorder*> * CamRecorderPtrListPtr;
 
-// waitTime = 0 means don't implement trial scheme
 class RunOperator
 {
 public:
@@ -27,7 +26,7 @@ public:
 	CamRecorderPtrListPtr camRecs;
 	CVDisplay *cvDisplay;
 	HANDLE mtx;
-	ThreadSafeVariable<bool> * running;				// Remember to release running
+	ThreadSafeVariable<bool> * running;
 	string savePath;
 	uint64_t waitTime;
 };

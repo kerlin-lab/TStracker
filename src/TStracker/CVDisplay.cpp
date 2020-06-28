@@ -36,7 +36,6 @@ CVDisplay::~CVDisplay()
 }
 
 
-// Launching the CVGUI thread of this class. Once the thread is launched, queueList is immutable
 void CVDisplay::launchGUI()
 {
 	this->guiThreadHandle = AfxBeginThread(cvGUIRunProc, this);
@@ -87,9 +86,6 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	// Decoding the address of the CVDisplay object
 	CVDisplay* controller = (CVDisplay*)para;
 
-	// Making this thread a high priority
-	SetThreadPriority(controller->guiThreadHandle, THREAD_PRIORITY_HIGHEST);			// This is lower than the ImageMiner
-
 	// Run the GUI
 	runGUI(controller);
 
@@ -97,7 +93,6 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 	delete controller;
 
 	// Test for termination of threads, uncomment this and the messagebox at the end of savingThreadProcessor to test
-	//MessageBox(NULL, "GUI thread terminated", "Error", MB_OK);
 	return 0;
 }
 
@@ -169,7 +164,6 @@ void runGUI(CVDisplay * controller)
 	// The main GUI loop
 	while(true)
 	{
-		//MessageBox(NULL,"GUI running", "Notice", MB_OK);
 		// Pull the next image to be displayed from each camera queue and place them to the display list to be displayed
 		notAllQueueEmpty = false;
 		for (unsigned i = 0; i < controller->size(); i++)
@@ -227,7 +221,6 @@ void runGUI(CVDisplay * controller)
 
 		// Draw the change to the window
 		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
-		//MessageBox(NULL,"Should show something", "Notice", MB_OK);
 
 		// Update the window
 		waitKey(displayFPS);

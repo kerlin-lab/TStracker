@@ -54,7 +54,6 @@ public:
 	// For GUI 
 	static GUI::GUIFactory gui;
 	static CameraSelectionDlg * camSelectDlg;		// Pointer to the camera selector dialog
-													//static unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
 };
 
 
@@ -74,26 +73,6 @@ private:
 };
 
 uint64_t readWaitTime(string duration);
-
-// Customized Dialog
-//template <class T>
-//class TStrackerDialog : public CWinApp
-//{
-//public:
-//	//TStrackerDialog();
-//	BOOL InitInstance();
-//};
-//
-//class CInputDialog : public CDialog
-//{
-//	CEdit m_edit;
-//	TStrackerDialog<CInputDialog> core;
-//
-//public:
-//	CInputDialog(CWnd* dlg);
-//	~CInputDialog();
-//	virtual BOOL OnInitDialog();
-//};
 
 #endif // !TSTRACKERMFC_H
 

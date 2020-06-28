@@ -10,7 +10,7 @@ ImageMiner::ImageMiner(int index, RAWQueue* destQueue, ThreadSafeVariable<bool>*
 	this->rawQueue = destQueue;
 	this->imageMiningStopped = imageMiningStopped;
 	this->loopRunning = new ThreadSafeVariable<bool>(true);
-	this->waitTime = (waitTime == 0 ? DEFAULT_WAIT_TIME : waitTime);				// Should use 1/2 of wait time to detect trial stop
+	this->waitTime = (waitTime == 0 ? DEFAULT_WAIT_TIME : waitTime);
 	// Getting camera Serial
 	WaitForSingleObject(SpinSysMTX, INFINITE);
 	CameraList cameraList = spinSystem->GetCameras();
@@ -50,11 +50,8 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 	// Setting up the camera
 	try
 	{
-		cam->GetTLDeviceNodeMap();
 		cam->Init();
-		//MessageBox(NULL, "Img 2", "Error", MB_OK);
 		cam->BeginAcquisition();
-		//MessageBox(NULL, "Img 3", "Error", MB_OK);
 	}
 	catch (Spinnaker::Exception e)
 	{
@@ -71,7 +68,6 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 		try
 		{
 			// Obtain an image from the camera
-			//MessageBox(NULL, "Img 4", "Error", MB_OK);
 			img = cam->GetNextImage(miner->waitTime);
 			if (img->IsIncomplete())
 			{
@@ -82,12 +78,13 @@ UINT __cdecl spawnImageMiner(LPVOID params)
 			lastTrialEnd = false;
 
 			// Create a copy of the obtained Spinnaker image by converting to TSImage object
-			//MessageBox(NULL, "Img 5", "Error", MB_OK);
 			tsimg = new TSImage();
 			tsimg->getFromImgPtr(img);
+
 			// Inject other information (camera , trailnumber, timestamp normalize ...)
 			tsimg->camSerial = miner->camSerial;
 			tsimg->trialNumber = trialCounter;
+
 			// Normalized timestamp (otherwise, timestamp will start with a very large number)
 			if (initialTimestamp == 0)
 			{
@@ -151,6 +148,5 @@ terminating_thread:
 	// Free memmory
 	delete miner;
 
-	//MessageBox(NULL, "Miner ended", "Test", MB_OK);
 	return 0;
 }

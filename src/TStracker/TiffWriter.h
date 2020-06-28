@@ -14,24 +14,10 @@
 #include <regex>
 
 #include <opencv2/core.hpp>
-//
-//#ifdef _TS_VER_2_
-#	include "TSImage.h"
+
+
+#include "TSImage.h"
 typedef TSImage ImageType;
-//#	pragma message("Using TIFFWriter with version 2")
-//#else
-//#	ifdef _TS_VER_1_
-//#		include "ImageInfo.h"
-//typedef ImageInfo ImageType;
-//#	pragma message("Using TIFFWriter with version 1")
-//#	else
-//#	pragma message("No define _TS_VER_2_ or _TS_VER_1_ before inclusion of  this header file, so _TS_VER_1_ is being used by default")
-//#		include "ImageInfo.h"
-//typedef ImageInfo ImageType;
-//#	endif // _TS_VER_1_
-//#endif // !_TS_VER_2_
-
-
 
 namespace tf
 {
@@ -55,9 +41,6 @@ public:
 	
 	// Write the cv::Mat to file
 	void write(const cv::Mat& img, int width, int height);
-
-	//// Write the cv::Mat to file with timestamp
-	//void write(const cv::Mat& img, int width, int height,uint64_t timestamp);
 
 	// Getting a handle to a new and writable TIFF file
 	static TiffWriter* OpenNewTIFFtoWrite(std::string filename, bool isMultipage = true);

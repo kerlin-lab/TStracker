@@ -2,7 +2,6 @@
 
 using namespace Spinnaker;
 
-// Put this in the header and you will get LNK2005 when compiling
 ImageInfo::ImageInfo() :imgWidth(0), imgHeight(0), imgSize(0), camSerial(""), timestamp(0)
 {
 	// Fill the background with a nice color
@@ -29,19 +28,10 @@ void ImageInfo::getFromImgPtr(ImagePtr& spin_con)
 	unsigned size = this->imgSize;
 	memcpy(Dest, rawDataFromCam, size);
 	
-	// Old style copy, assume to be slower than memcpy
-	//while (size--)
-	//{
-	//	*(Dest++) = *(rawDataFromCam++);
-	//}
-	
 	// Save timestamp
 	this->timestamp = spin_con->GetTimeStamp();
 	this->frameID = spin_con->GetFrameID();
 	this->streamID = spin_con->GetID();
-
-	//MessageBox(NULL, to_string(spin_con->GetID()).c_str(), "streamID", MB_OK);
-	//MessageBox(NULL, to_string(spin_con->GetFrameID()).c_str(), "FrameID", MB_OK);
 }
 
 /*
