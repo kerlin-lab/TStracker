@@ -54,7 +54,7 @@ inline void ThreadSafeVariable<T>::waitTillZero(DWORD timeBeforeCheck)
 	T tmp;
 	do
 	{
-		Sleep(timeBeforeCheck);
+		SwitchToThread();									// This is to create a small delay before each iteration preventing this thread from racing for the mutex
 		WaitForSingleObject(this->mtx,INFINITE);
 		tmp = this->var;
 		ReleaseMutex(this->mtx);

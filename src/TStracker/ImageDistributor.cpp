@@ -1,8 +1,9 @@
 #include "ImageDistributor.h"
 
-#define QUEUE_THRES 2000
-#define TRIAL_START_INDEX 1
+#define QUEUE_THRES 2000					// Maximum number of tiff image per tiff file
+#define TRIAL_START_INDEX 1					// First trial index
 #define MAX_CONCURRENT_SAVER 5				// The highest number of saver can concurrently run
+#define WAIT_TILL_ONE_SAVER_TERMINATE 100	
 
 ImageDistributor::ImageDistributor(RAWQueue* rawQueue, GUIQueue* guiQueue, string camSerial, ThreadSafeVariable<bool>* imageMinerStopped, ThreadSafeVariable<bool>* distributionStopped, string savePath)
 	:savePath(savePath)
@@ -34,9 +35,9 @@ ImageDistributor::~ImageDistributor()
 
 void ImageDistributor::Distribute()
 {
-	// Distribute one image from raw to the according save
+	//// Distribute one image from raw to the current saver
+	
 	// Get the image
-	//MessageBox(NULL, "0", "Error", MB_OK);
 	if (this->rawQueue->size())
 	{
 		// if there is image in the queue, take it off
@@ -96,7 +97,7 @@ ImageSaverTSQ * ImageDistributor::getNewImageSaver(bool resetSaverCounter)
 		do
 		{
 			tmp = this->currentRunningSaverCounter->read();
-			Sleep(100);
+			SwitchToThread();
 		} while (tmp >= this->maxSaverQueue);
 	}
 
@@ -145,24 +146,27 @@ string generateFileName(string savePath, string camSerial, unsigned trailNumber,
 UINT __cdecl runDistribution(LPVOID para)
 {
 	ImageDistributor * controller = (ImageDistributor *)para;
-	//MessageBox(NULL, "Get Here 1", "Error", MB_OK);
+
+	// Making this thread a high priority
+	SetThreadPriority(controller->imageDistributorThreadHandler, THREAD_PRIORITY_ABOVE_NORMAL);
+
+	// Distribute
 	while (true)
 	{
 		if (controller->imageMinerStopped->read() && !controller->rawQueue->size())
 		{
+			// Stop distributing when the imageMiner of the camera has stopped and there is no more image in the rawQueue to be distributed
 			break;
 		}
 		else
 		{
-			//MessageBox(NULL, "Get Here Distribute", "Error", MB_OK);
+			// Otherwise, distribute the image to the saver
 			controller->Distribute();
 		}
 	}
 
 	// Close the current writing file
 	controller->currentSaver->Detach();
-
-	//MessageBox(NULL, "ImageDistributor ended 1", "Test", MB_OK);
 
 	// Wait for all saver to close 
 	controller->currentRunningSaverCounter->waitTillZero();

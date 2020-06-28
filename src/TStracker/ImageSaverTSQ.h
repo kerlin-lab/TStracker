@@ -50,20 +50,6 @@ typedef ThreadSafeQueue<ImageSaverTSQItemType> ImageSaverTSQContainerType;
 typedef ImageSaverTSQContainerType* ImageSaverTSQContainerTypePtr;
 typedef ThreadSafeVariable<unsigned> SaverCounter;
 
-//class SavingThreadControllerTSQ
-//{
-//public:
-//	string fileName;                    // Name of the file to save the image down
-//	ImageSaverTSQContainerTypePtr container;                       // Pointer to a container containing the images needed to be saved (can be queue, stack, vector, ect)
-//	bool fileIsOpen;                    // Is there a file openning and ready to be written to
-//	HANDLE mtx;                         // Pointer to Mutex object used for making the thread multi-threading safe
-//
-//										// Change the fileIsOpen = true to false to prevent automatic image saving when the thread is started
-//	SavingThreadControllerTSQ(string fileName, ImageSaverTSQContainerTypePtr container, bool fileIsOpen = true);
-//
-//	// Taken the last item off the to-be-saved list
-//	void removeFromToSave();
-//};
 
 class ImageSaverTSQ
 {

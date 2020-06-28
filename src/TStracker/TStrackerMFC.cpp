@@ -46,9 +46,6 @@ CameraSelectionDlg* camSelectInitializer()
 
 BOOL TStrackerMain::InitInstance()
 {
-	// TODO N: This setting real-time does not work in win10, is there  is way to fix?
-	// Making this process a Real-time process so that it receives the highest priority
-	SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
 
 	// *** NOTES ***
 	// Dialog based MFC applications may incorrectly initialize the threading model to MTA.
@@ -64,7 +61,6 @@ BOOL TStrackerMain::InitInstance()
 
 	// Initialize the camera selector dialog
 	camSelectDlg=camSelectInitializer();
-	//camSelectDlg->Open();				// Show camera selector
 
 
 	// Initialize the main window of this application
@@ -87,7 +83,6 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 	bool isSystem)
 {
 	// for now, only process if a camera is clicked
-	//MessageBox(NULL, "CALLED", "INFORM", MB_OK);
 	try
 	{
 
@@ -102,7 +97,6 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 			// Check if there is already a connection to this camera in ThreadList
 			if (ThreadList.count(camSerial))
 			{
-				//MessageBox(NULL, "OLD", "INFORM", MB_OK);
 				// There is one CameraPtr in the list to this camera
 
 				CamAcquireGUIThreadInfo* threadInfo = ThreadList[camSerial];
@@ -110,7 +104,6 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 				if (!threadInfo->threadStatus)
 				{
 					// Thread has been terminated
-					//MessageBox(NULL, "Thread terminated", "INFORM", MB_OK);
 					// So delete the object of the old thread
 					delete threadInfo;
 					// create a new thread and get it running acquisition 
@@ -129,7 +122,6 @@ void TStrackerMain::CameraSelectionDialogCamDoubleClickHandler(
 			}
 			else
 			{
-				//MessageBox(NULL, "NEW", "INFORM", MB_OK);
 				// This camera is new!
 
 				// Create a thread object to acquire the image from this camera
@@ -213,7 +205,6 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	for (auto thread: ThreadList)
 	{
 		// Terminate GUI thread of windows that is still alive (only single-camera windows)
-		//MessageBox("1", "1", MB_OK);
 		if (thread.second->threadStatus && thread.first.compare(ALL_CAM_RECORD_WINDOWS_NAME)!=0)
 		{
 			// This needs to be threadsafe, so
@@ -240,16 +231,7 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	{
 		// Get user input value
 		waitTime = readWaitTime(string(waitTimeAsk.UserResponse));
-		//MessageBox(to_string(waitTime).c_str(), "Duration", MB_OK);
 	}
-
-	//// Ask user where to save the images file 
-
-	//CFileDialog dlg(TRUE, "bmp", "*.bmp");
-	//if (dlg.DoModal() == IDOK) {
-	//	CFile file;
-	//	VERIFY(file.Open(dlg.GetPathName(), CFile::modeRead));
-	//}
 
 	MessageBox("Please pick an EMPTY folder to save the images", "Note", MB_OK);
 
@@ -266,12 +248,10 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	if (runOp == nullptr)
 	{
 		// THis is first run
-		//MessageBox("New Run Operator created", "Notice", MB_OK);
 		runOp = new RunOperator(string(dlg.GetPathName()),waitTime);				// This run the run all camera
 	}
 	else
 	{
-		//MessageBox("3", "3", MB_OK);
 		// There already exists a ThreadInfo object
 		// Check if the thread is still alive
 		if (runOp->running->read())
@@ -282,7 +262,6 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		}
 		else
 		{
-			//MessageBox("Found old RunOperator, new Run Operator created", "Notice", MB_OK);
 			delete runOp;
 			runOp = new RunOperator(string(dlg.GetPathName()), waitTime);
 		}
@@ -290,46 +269,6 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 	return;
 }
 
-////// Customized Dialog
-////template <class T>
-////TStrackerDialog<T>::TStrackerDialog()
-////{	
-////}
-//
-//template <class T>
-//BOOL TStrackerDialog<T>::InitInstance()
-//{
-//	CWinApp::InitInstance();
-//
-//	T Dlg(NULL);
-//	this->m_pMainWnd = &Dlg;
-//	Dlg.DoModal();
-//	return TRUE;
-//}
-//
-//
-//CInputDialog::CInputDialog(CWnd* pr)
-//{
-//	this->Create(IDD_PROPPAGE_SMALL, pr);
-//}
-//
-//CInputDialog::~CInputDialog()
-//{
-//
-//}
-//
-//BOOL CInputDialog::OnInitDialog()
-//{
-//	CDialog::OnInitDialog();
-//
-//	CRect rect(0,0, 10, 20);
-//
-//	m_edit.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |
-//		ES_AUTOHSCROLL | WS_BORDER,
-//		rect, this, 12);
-//	m_edit.SetFocus();
-//	return FALSE;
-//}
 
 uint64_t readWaitTime(string duration)
 {

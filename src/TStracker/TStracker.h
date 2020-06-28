@@ -43,9 +43,6 @@ using namespace Spinnaker::GUI_WPF;
 
 using namespace cv;
 
-//// Win32 lib
-//#include <Windows.h>
-
 
 // Global variables
 extern HANDLE mtx;
@@ -98,8 +95,4 @@ void retriveImageInfo(INodeMap& nodeMap, Mat& imgFrame, int& imgWidth, int& imgH
 
 // Processing recording feature
 void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight, int frameRate, VideoWriter& vOut, string file_prefix, string videoType);
-
-
-//int oldmain(int /*argc*/, char** /*argv*/);
-
 #endif // !TStracker_H

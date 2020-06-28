@@ -10,7 +10,7 @@ RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),
 	CameraPtr cam;
 	vector<string> camSerial;
 
-	// Gettin Serial from each camera
+	// Getting Serial from each camera
 	WaitForSingleObject(SpinSysMTX, INFINITE);
 	CameraList cameraList = spinSystem->GetCameras();
 	ReleaseMutex(SpinSysMTX);
@@ -40,5 +40,4 @@ RunOperator::RunOperator(string savePath, uint64_t waitTime):savePath(savePath),
 RunOperator::~RunOperator()
 {
 	delete this->running;
-	//delete this->camRecs;			// Delete by CVDisplay
 }

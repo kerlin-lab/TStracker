@@ -2,7 +2,6 @@
 
 HANDLE mtx;
 
-
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp)
 {
@@ -64,12 +63,6 @@ void ImagePtr2CVMat_CV_8UC1(ImagePtr& spin_con, Mat& cv_con, unsigned size)
 	uchar* rawDataFromCam = (uchar*)spin_con->GetData();
 	uchar* Dest = cv_con.ptr<uchar>(0);
 	memcpy(Dest, rawDataFromCam, size);
-
-	// Old style copy, assume to be slower than memcpy
-	//while (size--)
-	//{
-	//	*(Dest++) = *(rawDataFromCam++);
-	//}
 }
 
 
@@ -135,83 +128,3 @@ void runRecordFeature(bool runRecord, Mat imgFrame, int imgWidth, int imgHeight,
 		}
 	}
 }
-
-
-
-
-
-// Example entry point; please see Enumeration example for more in-depth
-// comments on preparing and cleaning up the system.
-//int oldmain(int /*argc*/, char** /*argv*/)
-//{
-//	int result = 0;
-//	// Retrieve singleton reference to system object
-//	SystemPtr system = System::GetInstance();
-//
-//	// Retrieve list of cameras from the system
-//	CameraList camList = system->GetCameras();
-//
-//	const unsigned int numCameras = camList.GetSize();
-//
-//	cout << "Number of cameras detected: " << numCameras << endl << endl;
-//
-//	// Finish if there are no cameras
-//	if (numCameras == 0)
-//	{
-//		// Clear camera list before releasing system
-//		camList.Clear();
-//
-//		// Release system
-//		system->ReleaseInstance();
-//
-//		cout << "Not enough cameras!" << endl;
-//		cout << "Done! Press Enter to exit..." << endl;
-//		getchar();
-//
-//		return -1;
-//	}
-//	else
-//	{
-//		// Camera found, so run
-//
-//		CameraPtr pCam = nullptr;
-//
-//
-//		// use the first camera found
-//		pCam = camList.GetByIndex(0);
-//
-//		// Run acquisition
-//		RunAcquisition(pCam);
-//
-//		// Clean UP
-//		pCam = nullptr;
-//
-//		// Clear camera list before releasing system
-//		camList.Clear();
-//
-//		// Release system
-//		system->ReleaseInstance();
-//
-//		cout << endl << "Done! Press Enter to exit..." << endl;
-//		getchar();
-//
-//	}
-//
-//	return result;
-//}
-
-/*
-
-
-// Open Acquisition and the property dialog box for the clicked
-(*pCamera)->Init();										//Init the camera first otherwise, DialogBox->Connect(cam) will result in runtime errors
-// Set up property dialog for this camera
-TStrackerMain::gui.ConnectGUILib(*pCamera);				// This some how prevent the camera selection box from disapearing after choosing a camera
-PropertyGridDlg* dlg = TStrackerMain::gui.GetPropertyGridDlg();
-
-//PropertyGridDlg* dlg = new GUI::PropertyGridDlg();
-dlg->Connect(*pCamera);									// Connect the dialog to the camera
-dlg->Open();											// show the dialog
-
-// Set up a thread uses OpenCV to acquire and save image
-AfxBeginThread(openCVCamTuning, pCamera);*/

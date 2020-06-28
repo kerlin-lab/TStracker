@@ -58,17 +58,10 @@ public:
 // Using openCV to show image in a different thread
 UINT __cdecl openCVCamTuning(LPVOID camPtr);
 
-//// Run the all cameras record process
-//UINT __cdecl openCVAllCamRecord(LPVOID para);
 
 // Draw GUI components
 void drawGUI(Mat& frame, Mat& imgFrame, int& imgWidth, int& imgHeight, int& imgSize, int& frameRate, CameraPtr& pCam, INodeMap& nodeMap, CamAcquireGUIThreadInfo* threadInfo);
 
-//// Drawing the GUI for all cam capture
-//void drawGUIAllCam(Mat& displayFrame, vector<ImageInfo>& camCapImg, CamAcquireGUIThreadInfo* threadInfo, CameraList camList);
-
-//// Execute the camrecord all process
-//void RunRecordAll(CamAcquireGUIThreadInfo* threadInfo);
 
 // This function acquires and saves 10 images from a device.
 // @para runSignal: a boolean variable instrcuts the acquiring loop when to imageMinerStopped
@@ -97,7 +90,4 @@ bool ConfigureExternalTrigger();
 
 // Activate acquisition on all camera
 bool runAcquisitionAllCams(CameraList& camList);
-
-// Running the OpenCV GUI of recording all
-void runGUIRecordAllCams(CamAcquireGUIThreadInfo* threadInfo, CameraList& camList);
 #endif

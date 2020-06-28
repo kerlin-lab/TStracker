@@ -58,15 +58,7 @@ void InputDialog::setPrompt(string prompt)
 	this->displayPrompt = prompt;
 }
 
-
-//void InputDialog::OnStnClickedPrompt()
-//{
-//	// TODO: Add your control notification handler code here
-//}
-
-
 void InputDialog::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	CDialog::OnOK();
 }

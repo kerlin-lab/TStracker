@@ -3,14 +3,12 @@
 #include "rc/resource.h"
 
 
-// InputDialog dialog
-
 class InputDialog : public CDialog
 {
 	DECLARE_DYNAMIC(InputDialog)
 
 public:
-	InputDialog(CWnd* pParent = NULL);   // standard constructor
+	InputDialog(CWnd* pParent = NULL);
 	InputDialog(string prompt);
 	int OnInitDialog();
 	virtual ~InputDialog();
@@ -26,15 +24,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	// The prompt of the Dialog
-//	string Prompt;
 	CString UserResponse;
 	CButton OKButton;
 	CButton CancelButton;
 	// Setting the dialog prompt text
-	void setPrompt(string prompt);
-//	afx_msg void OnStnClickedPrompt();
 	CStatic prompt;
 	string displayPrompt;
-	afx_msg void OnBnClickedOk();
 	string answer;
+
+public:
+	afx_msg void OnBnClickedOk();
+	void setPrompt(string prompt);
 };
