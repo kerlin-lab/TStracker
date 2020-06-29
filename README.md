@@ -14,6 +14,7 @@
 - Auto save images to multi-image TIFF files (tiff stack)
 - Retrieve and save images' timestamps in string format and imageID in JSON format to "DateTime" and "ImageDescription" tags of each image in the tiff stacks respectively
 - Provide high multi-image TIFF writing speed with auto tiff stack partitioning feature that overcomes the diminishing-write-speed problem of LibTiff when operating on multi-image TIFF files (performance varies from 3Mb/s to 20Mb/s or more depends on the quality of storage device (HDD, SSD, etc))
+- Automatically save images to different files for different trials
 
 ## Changelog for version 2.1
 - Fixed major bug of silent termination while acquiring images after a random number of trials (ThreadSafeQueue::dequeue() had bad design)
