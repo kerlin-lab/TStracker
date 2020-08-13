@@ -54,7 +54,7 @@ while True:
     print(f'Analyzing file {full_file_name}')
     with tf.TiffFile(full_file_name) as img:
       for p in range(len(img.pages)):
-        print(f'Processing page {p}')
+        # print(f'Processing page {p}')
         # Get tags data
         tags = img.pages[p].tags
         # Load the image pixel data of this frame to memory
@@ -76,7 +76,6 @@ while True:
             append=True
           )
         # Append tiff page to file
-        print(extract_tags(tags))
         out_img.save(
           data=img_data,
           extratags=extract_tags(tags),
