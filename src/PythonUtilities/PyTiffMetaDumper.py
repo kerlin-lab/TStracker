@@ -4,7 +4,7 @@ import tifffile as tf
 EXTENSION = '.tiff'
 
 ## File suffix
-fname = '/home/trankimhuan/Desktop/19144902_trial_1_'
+fname = '/home/trankimhuan/Desktop/19144903_trial_0_'
 # fname = input('suffix of the file you want to dump: ')
 
 ## Number of ile with the suffix to dump
