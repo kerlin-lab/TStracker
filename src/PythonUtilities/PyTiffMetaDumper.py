@@ -4,7 +4,7 @@ import tifffile as tf
 EXTENSION = '.tiff'
 
 ## File suffix
-fname = '19144902_'
+fname = '/home/trankimhuan/Desktop/19144902_trial_1_'
 # fname = input('suffix of the file you want to dump: ')
 
 ## Number of ile with the suffix to dump
@@ -36,4 +36,3 @@ for i in range(num_file):
 		print('\nPage ' + str(p))
 		for tag in tag_list:
 			print(tag + ': '+ str(img.pages[p].tags[tag].value))
-		# input()
