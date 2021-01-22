@@ -15,7 +15,7 @@
 ## Generating the project Visual Studio Solution
 - From Windows taskbar, Search and Run CMake GUI
 - Delete Cache by click on File -> Delete Cache on the top leftcorner
-- Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \HuanGUI\src\Windows\TStracker in this repository
+- Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \src\TStracker in this repository
 - Hit **Configure**
 - If the configuration window pops up, in the first box, select the Visual Studio version that is currently installed in your machine
 - The second box should be x64. Then hit OK
@@ -29,4 +29,18 @@
 - Hit **Build->Build Solution**
 - If the solution building encounters error due to missing MFC library, this thread could help [Here](https://stackoverflow.com/a/43075169)
 - When building finishes, the folder **Release** should contain the program **TStracker.exe**
-- When you run the TStracker.exe and the program complains about missing DLL file of OpenCV library, copy all the *.dll files from TStracker\src\DevelopmentSuite\lib\OpenCVLib4Windows\OpenCV_DLL\ReleaseUseDLL to your System32 folder (normally resides at C:\Windows\System32)
+## Common issues
+### I was able to compile the program but TStracker complains about missing DLL file of OpenCV library when being executed
+- There are 2 ways to resolve this
+#### Solution 1 - Adding the path to the compiled OpenCV lib to the system environment PATH variable
+- Hit Windows key -> search "Edit the system environment variables"
+- A window pops up, click on Environemt Variables
+- Under the "User variables for "Your user name", click on Path and hit Edit
+- Hit New and add a new entry with the path pointing to the bin\Release and bin\Debug folders of your compiled OpenCV library
+- Normally they look like C:\OpenCV\build_new\bin\Debug and C:\OpenCV\build_new\bin\Release
+- Then hit Ok -> Ok -> Ok and and close the popped up in Window
+- You should be able to run TStracker now, if it stills complains about the missing DLL, try restart the computer and try again. Or try the following solution
+#### Solution 2 - Copy the dll manually
+- Copy all the *.dll files from src\DevelopmentSuite\lib\OpenCVLib4Windows\OpenCV_DLL\ReleaseUseDLL in this repository to your System32 folder (normally resides at C:\Windows\System32)
+- There is an install.bat file in the folder to help you do this, right click on it and choose run as Administrator.
+- When you want to remove TStracker, run the uninstall.bat as Adminstrator

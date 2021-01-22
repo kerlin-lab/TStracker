@@ -44,8 +44,12 @@ using namespace Spinnaker::GUI_WPF;
 using namespace cv;
 
 
+// TStracker lib
+#include "TSRecordingSetting.h"
+
 // Global variables
 extern HANDLE mtx;
+extern TSRecordingSetting recorderSetting;
 
 
 // OpenCV gui

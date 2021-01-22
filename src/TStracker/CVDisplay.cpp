@@ -1,11 +1,11 @@
 #include "CVDisplay.h"
 #include "stdafx.h"
 
-string CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
-
 #define GENERAL_BUTTON_HEIGHT 33
 #define CAPTION_HEIGHT 30
 #define WINDOW_PADDING 10
+
+string CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME = "Recording all cameras";
 
 
 CVDisplay::CVDisplay(CamRecorderPtrListPtr camRecorderList, ThreadSafeVariable<bool> * running)
@@ -98,9 +98,14 @@ UINT __cdecl cvGUIRunProc(LPVOID para)
 
 void runGUI(CVDisplay * controller)
 {
-	TSImagePtr GUIWindow;		// The frame of the displayed window
-	vector<int> frameRate;
-	int displayFPS;
+	TSImagePtr GUIWindow;						// The frame of the displayed window
+	TSImagePtr tmpImage;
+	vector<int> acquisitionFrameRate;			// Acquisition rate of each camera
+	vector<unsigned int> frameDropPerCam;		// How many frame need to be dropped for each camera to get the set display fps
+	int delayBetweenFrames;
+
+	// Todo 1: remove this
+	recorderSetting.gui_fps = 60;
 
 	// These below are to calculate the height and width of the display window
 	int maxHeight, sumWidth;
@@ -130,7 +135,7 @@ void runGUI(CVDisplay * controller)
 		INodeMap& nodeMap = cam->GetNodeMap();
 		frameWidth = ((CIntegerPtr)nodeMap.GetNode("Width"))->GetValue();
 		frameHeight = ((CIntegerPtr)nodeMap.GetNode("Height"))->GetValue();
-		frameRate.push_back((int)((CFloatPtr)nodeMap.GetNode("AcquisitionResultingFrameRate"))->GetValue());
+		acquisitionFrameRate.push_back((int)((CFloatPtr)nodeMap.GetNode("AcquisitionResultingFrameRate"))->GetValue());
 
 		// Configure the place holder TSImage of this camera
 		imgList[i] = new TSImage(frameWidth, frameHeight, string(cam->DeviceSerialNumber()));
@@ -148,11 +153,14 @@ void runGUI(CVDisplay * controller)
 		// Find total width
 		sumWidth += imgList[i]->imgWidth;
 
+		// Calculating how many frame needs to be dropped to reduce frame rate to the display framerate
+		frameDropPerCam.push_back(ceil(((double)acquisitionFrameRate.back()) / recorderSetting.gui_fps));
 	}
 
 
-	// Calculate display FPS base on the frameRate
-	displayFPS = ceil(1000.0 / (*max_element(frameRate.begin(), frameRate.end())));
+	// Calculate delay between displayed base on the recordingSetting gui framerate
+	// delayBetweenFrames = ceil(1000.0 / (*max_element(acquisitionFrameRate.begin(), acquisitionFrameRate.end())));
+	delayBetweenFrames = ceil(1000.0 / recorderSetting.gui_fps);
 
 	// Configure the TSImage for the GUIparent window
 	// Initialize the Mat that will be used as the frame of the displayed window
@@ -171,13 +179,28 @@ void runGUI(CVDisplay * controller)
 			if (controller->at(i)->size())
 			{
 				// There is something in the queue
-				notAllQueueEmpty = true;		// set flag not empty to prevent this while loop gets broken
+				notAllQueueEmpty = true;							// set flag not empty to prevent this while loop gets broken
 				
-				// Before putting new image to the list, free the current image in the list
-				delete imgList[i];
+				// Applying frame skipping to speed up gui display
+				while (controller->at(i)->size())
+				{
+					tmpImage = controller->at(i)->dequeue();
+					if (tmpImage->frameID % frameDropPerCam[i] == 0)
+					{
+						// Before putting new image to the list, free the current image in the list
+						delete imgList[i];
 
-				// Put new image to the display list
-				imgList[i] = controller->at(i)->dequeue();
+						// Put new image to the display list
+						imgList[i] = tmpImage;
+
+						// Break out to show the image
+						break;
+					}
+					else
+					{
+						delete tmpImage;
+					}
+				}
 			}
 		}
 
@@ -207,7 +230,7 @@ void runGUI(CVDisplay * controller)
 		for (unsigned i = 0; i<imgList.size(); i++)
 		{
 			// Draw timestamp and framerate
-			drawTimeAndFPS(imgList[i]->img, imgList[i]->timestamp / 1000000000.0, frameRate[i]);
+			drawTimeAndFPS(imgList[i]->img, imgList[i]->timestamp / 1000000000.0, acquisitionFrameRate[i]);
 		}
 
 		// --------------------- Drawing the GUI -----------------------------------
@@ -216,14 +239,14 @@ void runGUI(CVDisplay * controller)
 		cvui::context(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME);
 
 		// Draw the cvui gui ( Draw GUI after drawing the image to make the GUI on top
-		drawGUIAllCam(GUIWindow->img, imgList,controller);
+		drawGUIAllCam(GUIWindow->img, imgList, controller);
 
 
 		// Draw the change to the window
 		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
 
 		// Update the window
-		waitKey(displayFPS);
+		waitKey(delayBetweenFrames);
 		ReleaseMutex(mtx);
 	}
 	
@@ -248,7 +271,7 @@ void drawGUIAllCam(Mat& displayFrame, TSImageList& imgList, CVDisplay* controlle
 	// Render the button
 	if (controller->stopSignalSent)
 	{
-		cvui::button("Waiting to stop");			// No action handler needed
+		cvui::button("Saving down frames and stop...");			// No action handler needed
 	}
 	else
 	{

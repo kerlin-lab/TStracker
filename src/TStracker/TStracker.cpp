@@ -1,6 +1,7 @@
 ﻿#include "TStracker.h"
 
 HANDLE mtx;
+TSRecordingSetting recorderSetting;
 
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp)
