@@ -182,8 +182,14 @@ void runGUI(CVDisplay * controller)
 				notAllQueueEmpty = true;							// set flag not empty to prevent this while loop gets broken
 				
 				// Applying frame skipping to speed up gui display
-				while (controller->at(i)->size())
+				while (!controller->stopSignalSent)
 				{
+					if (!controller->at(i)->size())
+					{
+						// Create a small delay to wait for the queue to be restock with new iamge before checking again
+						SwitchToThread();
+						continue;
+					}
 					tmpImage = controller->at(i)->dequeue();
 					if (tmpImage->frameID % frameDropPerCam[i] == 0)
 					{
@@ -199,6 +205,13 @@ void runGUI(CVDisplay * controller)
 					else
 					{
 						delete tmpImage;
+					}
+				}
+				if (controller->stopSignalSent)
+				{
+					while (controller->at(i)->size())
+					{
+						delete controller->at(i)->dequeue();
 					}
 				}
 			}
@@ -249,6 +262,16 @@ void runGUI(CVDisplay * controller)
 		waitKey(delayBetweenFrames);
 		ReleaseMutex(mtx);
 	}
+	
+	//Free remaining image in GUIQueue
+	for (unsigned i = 0; i < controller->size();i++)
+	{
+		while (controller->at(i)->size())
+		{
+			delete controller->at(i)->dequeue();
+		}
+	}
+
 	
 	// Free all the "background" images in the image list
 	for (unsigned i = 0; i < imgList.size();i++)
