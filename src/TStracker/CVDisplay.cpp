@@ -103,6 +103,7 @@ void runGUI(CVDisplay * controller)
 	vector<int> acquisitionFrameRate;			// Acquisition rate of each camera
 	vector<unsigned int> frameDropPerCam;		// How many frame need to be dropped for each camera to get the set display fps
 	int delayBetweenFrames;
+	TickMeter imgRetrTimer;						// Timer to measure how long image retrieval process last and adjust the delay between frames accordingly so that the frames are displayed at the gui_fps rate
 
 	// Todo 1: remove this
 	recorderSetting.gui_fps = 60;
@@ -172,6 +173,9 @@ void runGUI(CVDisplay * controller)
 	// The main GUI loop
 	while(true)
 	{
+		// Start timer measuring how long image retrieval process last
+		imgRetrTimer.reset();
+		imgRetrTimer.start();
 		// Pull the next image to be displayed from each camera queue and place them to the display list to be displayed
 		notAllQueueEmpty = false;
 		for (unsigned i = 0; i < controller->size(); i++)
@@ -258,8 +262,12 @@ void runGUI(CVDisplay * controller)
 		// Draw the change to the window
 		cvui::imshow(CV_DISPLAY_ALL_CAM_RECORD_WINDOWS_NAME, GUIWindow->img);
 
+		// Measure the see how long image retrieval process took
+		imgRetrTimer.stop();
+
 		// Update the window
-		waitKey(delayBetweenFrames);
+		// Wait with an approriate amount of time to keep the display rate equal gui_fps, minimum delay is 1ms
+		waitKey((delayBetweenFrames - imgRetrTimer.getTimeMilli()) >= 1? delayBetweenFrames - imgRetrTimer.getTimeMilli() : 1);
 		ReleaseMutex(mtx);
 	}
 	

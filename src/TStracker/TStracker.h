@@ -61,6 +61,7 @@ extern TSRecordingSetting recorderSetting;
 
 #define CODEC CV_FOURCC('M','J','P','G')
 
+
 // Return time from running acquisition in sub milisecond
 uint64_t getReadableTimestamp(uint64_t timestamp);
 
