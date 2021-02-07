@@ -232,23 +232,6 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		return;
 	}
 
-	//// Ask for how long the user wants to record
-	//int waitTime;
-	//InputDialog waitTimeAsk;
-	//
-	//waitTimeAsk.setPrompt(waitTimePrompt);
-	//
-	//if (waitTimeAsk.DoModal() != IDOK)
-	//{
-	//	MessageBox("No wait time given, aborting recording", "Note", MB_OK);
-	//	return;
-	//}
-	//else
-	//{
-	//	// Get user input value
-	//	waitTime = readWaitTime(string(waitTimeAsk.UserResponse));
-	//}
-
 	MessageBox("Please pick an EMPTY folder to save the images", "Note", MB_OK);
 
 	CFolderPickerDialog dlg;
