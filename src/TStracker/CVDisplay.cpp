@@ -105,8 +105,14 @@ void runGUI(CVDisplay * controller)
 	int delayBetweenFrames;
 	TickMeter imgRetrTimer;						// Timer to measure how long image retrieval process last and adjust the delay between frames accordingly so that the frames are displayed at the gui_fps rate
 
+	// Controlling when to display images
+	// This help synchronize the timestamps of displayed images from all cameras
+	// ImagePtr array controlling when the new images from cameras are displayed. These images are displayed only when all cameras has gotten their new images with the right index to display
+	vector<TSImagePtr> newImgToDisplay(spinSystem->GetCameras().GetSize(), NULL);
+	bool newImgArrayIsFilled;			// Are all slot in the newImgToDisplay has been filled?, if this turns to true, these images in the array will be displayed
+
 	// Todo 1: remove this
-	recorderSetting.gui_fps = 60;
+	recorderSetting.gui_fps = 20;
 
 	// These below are to calculate the height and width of the display window
 	int maxHeight, sumWidth;
@@ -178,46 +184,70 @@ void runGUI(CVDisplay * controller)
 		imgRetrTimer.start();
 		// Pull the next image to be displayed from each camera queue and place them to the display list to be displayed
 		notAllQueueEmpty = false;
+		// Preset the flag to check if all cameras have the correct images of which indexes are correct to be displayed
+		newImgArrayIsFilled = true;
 		for (unsigned i = 0; i < controller->size(); i++)
 		{
-			if (controller->at(i)->size())
+			if (newImgToDisplay[i] == NULL)
 			{
-				// There is something in the queue
-				notAllQueueEmpty = true;							// set flag not empty to prevent this while loop gets broken
-				
-				// Applying frame skipping to speed up gui display
-				while (!controller->stopSignalSent)
+				if (controller->at(i)->size())
 				{
-					if (!controller->at(i)->size())
+					// There is something in the queue
+					notAllQueueEmpty = true;							// set flag not empty to prevent this while loop gets broken
+
+					if (newImgToDisplay[i] != NULL)
 					{
-						// Create a small delay to wait for the queue to be restock with new iamge before checking again
-						SwitchToThread();
 						continue;
 					}
-					tmpImage = controller->at(i)->dequeue();
-					if (tmpImage->frameID % frameDropPerCam[i] == 0)
+
+					// Applying frame skipping to speed up gui display
+					while (!controller->stopSignalSent)
 					{
-						// Before putting new image to the list, free the current image in the list
-						delete imgList[i];
-
-						// Put new image to the display list
-						imgList[i] = tmpImage;
-
-						// Break out to show the image
-						break;
+						if (!controller->at(i)->size())
+						{
+							// Stop getting images from the queue when the queue is empty
+							newImgArrayIsFilled = false;
+							break;
+						}
+						tmpImage = controller->at(i)->dequeue();
+						if (tmpImage->frameID % frameDropPerCam[i] == 0)
+						{
+							newImgToDisplay[i] = tmpImage;
+							//// Break out to show the image
+							break;
+						}
+						else
+						{
+							delete tmpImage;
+						}
 					}
-					else
+					if (controller->stopSignalSent)
 					{
-						delete tmpImage;
+						while (controller->at(i)->size())
+						{
+							delete controller->at(i)->dequeue();
+						}
+						newImgArrayIsFilled = false;
 					}
 				}
-				if (controller->stopSignalSent)
+				else
 				{
-					while (controller->at(i)->size())
-					{
-						delete controller->at(i)->dequeue();
-					}
+					newImgArrayIsFilled = false;
 				}
+			}
+		}
+
+		// If all cameras have their images to be dislayed, copy over to imgList to display them
+		if (newImgArrayIsFilled)
+		{
+			for (unsigned i = 0; i < controller->size(); i++)
+			{
+				// Before putting new image to the list, free the current image in the list
+				delete imgList[i];
+
+				// Put new image to the display list
+				imgList[i] = newImgToDisplay[i];
+				newImgToDisplay[i] = NULL;
 			}
 		}
 
@@ -266,17 +296,30 @@ void runGUI(CVDisplay * controller)
 		imgRetrTimer.stop();
 
 		// Update the window
-		// Wait with an approriate amount of time to keep the display rate equal gui_fps, minimum delay is 1ms
-		waitKey((delayBetweenFrames - imgRetrTimer.getTimeMilli()) >= 1? delayBetweenFrames - imgRetrTimer.getTimeMilli() : 1);
+		if (newImgArrayIsFilled)
+		{
+			// If there are new images to be displayed, then
+			// Wait with an approriate amount of time to keep the display rate equal gui_fps, minimum delay is 1ms
+			waitKey((delayBetweenFrames - imgRetrTimer.getTimeMilli()) >= 1 ? delayBetweenFrames - imgRetrTimer.getTimeMilli() : 1);
+		}
+		else
+		{
+			// Just the fastest frame refresh to check the button evenclick and prevent the windows from being frozen
+			waitKey(1);
+		}
 		ReleaseMutex(mtx);
 	}
 	
-	//Free remaining image in GUIQueue
+	//Free remaining image in GUIQueue and the newImageToBeDisplayed queue
 	for (unsigned i = 0; i < controller->size();i++)
 	{
 		while (controller->at(i)->size())
 		{
 			delete controller->at(i)->dequeue();
+		}
+		if (newImgToDisplay[i] != NULL)
+		{
+			delete newImgToDisplay[i];
 		}
 	}
 

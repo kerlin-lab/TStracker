@@ -70,6 +70,7 @@ set(HEADER_FILE				# This is what appears in the File manager when sort the TStr
 	./TStrackerThread.h
 	./stdafx.h
 	./TStrackerType.h
+	./TSRecordingSetting.h
 	./utils.h)
 
 # Open CV setting
