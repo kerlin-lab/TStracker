@@ -41,11 +41,11 @@ void TSSettingDialog::OnBnClickedOk()
 	int l;
 	try
 	{
-		l = trialBreakDetectThreshold.GetLine(0, buff);
+		l = trialBreakDetectThreshold.GetLine(0, buff,100);
 		buff[l] = '\0';
 		recorderSetting.wait_time = std::stoi(buff);
 		// GetLine does not add null terminator
-		l = guiFPS.GetLine(0, buff);
+		l = guiFPS.GetLine(0, buff,100);
 		buff[l] = '\0';
 		recorderSetting.gui_fps = std::stoi(buff);
 	}
