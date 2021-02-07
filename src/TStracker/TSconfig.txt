@@ -1,2 +1,2 @@
-<BreakTime>123</BreakTime>
-<GUIFPS>123</GUIFPS>
+<BreakTime>100</BreakTime>
+<GUIFPS>200</GUIFPS>

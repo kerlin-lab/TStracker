@@ -59,7 +59,7 @@ bool TSRecordingSetting::saveConfig(std::string pathToConfigFile)
 {
 	std::ofstream configFile;
 	char buff[100];
-	configFile.open(pathToConfigFile);
+	configFile.open(pathToConfigFile, std::ofstream::out | std::ofstream::trunc);
 	if (!configFile.is_open())
 	{
 		return false;

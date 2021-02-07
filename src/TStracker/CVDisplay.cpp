@@ -111,9 +111,6 @@ void runGUI(CVDisplay * controller)
 	vector<TSImagePtr> newImgToDisplay(controller->getNumberGUIQueue(), NULL);
 	bool newImgArrayIsFilled;			// Are all slot in the newImgToDisplay has been filled?, if this turns to true, these images in the array will be displayed
 
-	// Todo 1: remove this
-	recorderSetting.gui_fps = 20;
-
 	// These below are to calculate the height and width of the display window
 	int maxHeight, sumWidth;
 	maxHeight = sumWidth = 0;

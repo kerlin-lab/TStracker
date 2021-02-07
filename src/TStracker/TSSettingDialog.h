@@ -27,4 +27,5 @@ public:
 	CEdit trialBreakDetectThreshold;
 	CEdit guiFPS;
 	virtual BOOL OnInitDialog();
+	afx_msg void OnEnChangeEdit2();
 };
