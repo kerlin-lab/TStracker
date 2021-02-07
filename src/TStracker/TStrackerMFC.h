@@ -18,6 +18,7 @@
 #include "RunOperator.h"
 #include "rc\resource.h"
 #include "InputDialog.h"
+#include "TSSettingDialog.h"
 #include "stdafx.h"
 
 #define CVUI_IMPLEMENTATION
@@ -25,6 +26,7 @@
 
 #define CAM_SELECT_DIALOG_BUTTON_ID 1
 #define RECORD_ALL_CAMS_BUTTON_ID 2
+#define TSTRACKER_SETTING_BUTTON_ID 3
 
 // Global variable
 extern unordered_map<string, CamAcquireGUIThreadInfo*>	ThreadList;		// Mapping the camera to the object using its serial
@@ -66,9 +68,13 @@ public:
 	// These button handler function must be decleared inside TStrackerMainWnd so that they can be mentioned in the class's MESSAGE_BEGIN_MAP block
 	afx_msg void OpenCamSelectDialogButtonClickHandler();
 	afx_msg void RecordAllCamButtonClickHandler();
+	afx_msg void TStrackerSettingButtonClickHandler();
+
 private:
 	CButton CamTuning;
 	CButton RecordAllCam;
+	CButton TStrackerSetting;
+
 	DECLARE_MESSAGE_MAP()
 };
 

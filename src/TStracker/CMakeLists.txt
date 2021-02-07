@@ -48,6 +48,8 @@ set(SOURCE_FILE				# This is what appears in the File manager when sort the TStr
 	./TStracker.cpp 
 	./TStrackerMFC.cpp
 	./TStrackerThread.cpp
+	./TSRecordingSetting.cpp
+	./TSSettingDialog.cpp
 	./utils.cpp)
 
 set(HEADER_FILE				# This is what appears in the File manager when sort the TStracker folder by type
@@ -71,6 +73,7 @@ set(HEADER_FILE				# This is what appears in the File manager when sort the TStr
 	./stdafx.h
 	./TStrackerType.h
 	./TSRecordingSetting.h
+	./TSSettingDialog.h
 	./utils.h)
 
 # Open CV setting

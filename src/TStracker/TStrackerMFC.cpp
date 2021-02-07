@@ -12,6 +12,8 @@ RunOperator * runOp = nullptr;
 
 char* waitTimePrompt = "Input the time detection threshold (in ms)? (0 or blank mean don't implement trial scheme).\nThe program will use this number to detect the break between trials.\nRecommend input half the break length";
 
+char* summaryPrompt = "Start recording with following parameters: \nBreak detect threshold: %dms\nDisplaying FPS: %d\nSaving folder: %s";
+
 TStrackerMain::TStrackerMain()
 {	
 	// Initializing mutex handle
@@ -68,7 +70,7 @@ BOOL TStrackerMain::InitInstance()
 	TStrackerMainWnd *pnframe = new TStrackerMainWnd;
 	m_pMainWnd = pnframe;
 	pnframe->Create(0, APP_NAME);
-	pnframe->SetWindowPos(m_pMainWnd, 100, 100, 200, 150, SWP_NOZORDER);
+	pnframe->SetWindowPos(m_pMainWnd, 100, 100, 200, 170, SWP_NOZORDER);
 	pnframe->ShowWindow(SW_SHOW);
 	return TRUE;
 }
@@ -141,6 +143,7 @@ BEGIN_MESSAGE_MAP(TStrackerMainWnd,CFrameWnd)
 		ON_WM_CREATE()
 		ON_BN_CLICKED(CAM_SELECT_DIALOG_BUTTON_ID, OpenCamSelectDialogButtonClickHandler)
 		ON_BN_CLICKED(RECORD_ALL_CAMS_BUTTON_ID, RecordAllCamButtonClickHandler)
+		ON_BN_CLICKED(TSTRACKER_SETTING_BUTTON_ID, TStrackerSettingButtonClickHandler)
 END_MESSAGE_MAP()
 
 int TStrackerMainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -158,6 +161,12 @@ int TStrackerMainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 		CRect(20, 50, 160, 70),
 		this, RECORD_ALL_CAMS_BUTTON_ID);
+
+	// Setting button
+	TStrackerSetting.Create(_T("Setting"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		CRect(20, 80, 160, 100),
+		this, TSTRACKER_SETTING_BUTTON_ID);
 
 	return 0;
 }
@@ -216,22 +225,29 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 			thread.second->propDialog->Close();
 		}
 	}
-	// Ask for how long the user wants to record
-	int waitTime;
-	InputDialog waitTimeAsk;
-	
-	waitTimeAsk.setPrompt(waitTimePrompt);
-	
-	if (waitTimeAsk.DoModal() != IDOK)
+
+	if (!recorderSetting.loadConfig(CONFIG_FILE_NAME))
 	{
-		MessageBox("No wait time given, aborting recording", "Note", MB_OK);
+		MessageBox("No config file found, if you have not set the recording configuration, please click Setting", "Error", MB_OK);
 		return;
 	}
-	else
-	{
-		// Get user input value
-		waitTime = readWaitTime(string(waitTimeAsk.UserResponse));
-	}
+
+	//// Ask for how long the user wants to record
+	//int waitTime;
+	//InputDialog waitTimeAsk;
+	//
+	//waitTimeAsk.setPrompt(waitTimePrompt);
+	//
+	//if (waitTimeAsk.DoModal() != IDOK)
+	//{
+	//	MessageBox("No wait time given, aborting recording", "Note", MB_OK);
+	//	return;
+	//}
+	//else
+	//{
+	//	// Get user input value
+	//	waitTime = readWaitTime(string(waitTimeAsk.UserResponse));
+	//}
 
 	MessageBox("Please pick an EMPTY folder to save the images", "Note", MB_OK);
 
@@ -244,11 +260,19 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		return;
 	}
 
+	// Show summary of the recording setting
+	char prompt[200];
+	sprintf(prompt, summaryPrompt, recorderSetting.wait_time, recorderSetting.gui_fps, (string(dlg.GetPathName())).c_str());
+	if (MessageBox(prompt, "Summary", MB_OKCANCEL) == IDCANCEL)
+	{
+		return;
+	}
+
 	//// Create the thread that displays GUI and control panel
 	if (runOp == nullptr)
 	{
 		// THis is first run
-		runOp = new RunOperator(string(dlg.GetPathName()),waitTime);				// This run the run all camera
+		runOp = new RunOperator(string(dlg.GetPathName()),recorderSetting.wait_time);				// This run the run all camera
 	}
 	else
 	{
@@ -263,10 +287,16 @@ void TStrackerMainWnd::RecordAllCamButtonClickHandler()
 		else
 		{
 			delete runOp;
-			runOp = new RunOperator(string(dlg.GetPathName()), waitTime);
+			runOp = new RunOperator(string(dlg.GetPathName()), recorderSetting.wait_time);
 		}
 	}
 	return;
+}
+
+void TStrackerMainWnd::TStrackerSettingButtonClickHandler()
+{
+	TSSettingDialog settingDiag;
+	settingDiag.DoModal();
 }
 
 

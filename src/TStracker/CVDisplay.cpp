@@ -108,7 +108,7 @@ void runGUI(CVDisplay * controller)
 	// Controlling when to display images
 	// This help synchronize the timestamps of displayed images from all cameras
 	// ImagePtr array controlling when the new images from cameras are displayed. These images are displayed only when all cameras has gotten their new images with the right index to display
-	vector<TSImagePtr> newImgToDisplay(spinSystem->GetCameras().GetSize(), NULL);
+	vector<TSImagePtr> newImgToDisplay(controller->getNumberGUIQueue(), NULL);
 	bool newImgArrayIsFilled;			// Are all slot in the newImgToDisplay has been filled?, if this turns to true, these images in the array will be displayed
 
 	// Todo 1: remove this

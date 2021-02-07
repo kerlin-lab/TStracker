@@ -47,6 +47,8 @@ using namespace cv;
 // TStracker lib
 #include "TSRecordingSetting.h"
 
+#define CONFIG_FILE_NAME "TSconfig.txt"
+
 // Global variables
 extern HANDLE mtx;
 extern TSRecordingSetting recorderSetting;

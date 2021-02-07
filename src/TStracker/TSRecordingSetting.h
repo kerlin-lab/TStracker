@@ -12,5 +12,14 @@ class TSRecordingSetting
 	public:
 		BreakWaitTime wait_time;
 		GUIFps gui_fps;
+
+	public:
+		TSRecordingSetting();
+
+	public:
+		bool loadConfig(std::string pathToConfigFile);
+		bool saveConfig(std::string pathToConfigFile);
+
+
 };
 #endif
