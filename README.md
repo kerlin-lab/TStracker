@@ -58,7 +58,7 @@ Root
 ### Generating the project Visual Studio Solution
 - From Windows taskbar, Search and Run CMake GUI
 - Delete Cache by click on File -> Delete Cache on the top leftcorner
-- Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \HuanGUI\src\Windows\TStracker in this repository
+- Redirect the "Where is the source code" box and "Where to build the binaries" box to the folder \src\TStracker in this repository
 - Hit **Configure**
 - If the configuration window pops up, in the first box, select the Visual Studio version that is currently installed in your machine
 - The second box should be x64. Then hit OK
@@ -73,3 +73,8 @@ Root
 - If the solution building encounters error due to missing MFC library, this thread could help [Here](https://stackoverflow.com/a/43075169)
 - When building finishes, the folder **Release** should contain the program **TStracker.exe**
 - When you run the TStracker.exe and the program complains about missing DLL file of OpenCV library, copy all the *.dll files from TStracker\src\DevelopmentSuite\lib\OpenCVLib4Windows\OpenCV_DLL\ReleaseUseDLL to your System32 folder (normally resides at C:\Windows\System32)
+## Errors and fixes
+### CMAKE error "Configuruing incomplete, errors occured!"
+- You might have installed the Visual Studio but not its C++ development suite
+- Open the Visual Studio Installer and install C++ Development Suite
+- You should see the CMAKE plugin for Visual Studio in the list of packages of this suite.
